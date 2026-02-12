@@ -38,18 +38,6 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 
 ### Paso 6: Marcar como completado (esto se hara una ves YO, el usuario, te confirme que funciona.)
 - En todo.md, cambiar el estado de la tarea de `[ ]` a `[x]`.
-- Hacer commit con mensaje descriptivo que indique que tarea se completo.
-
-### Paso 7: Commit
-- El mensaje de commit debe ser claro y descriptivo.
-- Formato sugerido: `tipo(modulo): descripcion breve`
-- Tipos: feat, fix, docs, style, refactor, config, db
-- Ejemplos:
-  - `feat(backend): agregar endpoint POST /api/courses`
-  - `feat(frontend): crear componente CourseList`
-  - `db(schema): crear tabla certificates`
-  - `config(docker): configurar volumen persistente para PDFs`
-  - `docs(readme): documentar modulo de cursos`
 
 ## Reglas generales
 
