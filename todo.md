@@ -20,10 +20,10 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 - [x] 1.12 - Crear archivo backend/src/app.js con configuracion de middlewares globales (cors, helmet, json parser, morgan)
 - [x] 1.13 - Crear archivo backend/src/config/environment.js para carga de variables de entorno con dotenv
 - [x] 1.14 - Crear archivo backend/src/config/database.js con conexion a PostgreSQL usando pg Pool
-- [ ] 1.15 - Verificar que docker compose up levanta los 3 servicios sin errores
-- [ ] 1.16 - Verificar que el hot reload funciona en frontend (modificar un archivo y ver el cambio reflejado)
-- [ ] 1.17 - Verificar que nodemon reinicia el backend al modificar archivos
-- [ ] 1.18 - Verificar que PostgreSQL acepta conexiones desde el backend
+- [x] 1.15 - Verificar que docker compose up levanta los 3 servicios sin errores
+- [x] 1.16 - Verificar que el hot reload funciona en frontend (modificar un archivo y ver el cambio reflejado)
+- [x] 1.17 - Verificar que nodemon reinicia el backend al modificar archivos
+- [x] 1.18 - Verificar que PostgreSQL acepta conexiones desde el backend
 
 ## Bloque 2: Base de Datos - Esquema Inicial
 
