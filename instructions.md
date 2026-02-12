@@ -38,6 +38,7 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 
 ### Paso 6: Marcar como completado (esto se hara una ves YO, el usuario, te confirme que funciona.)
 - En todo.md, cambiar el estado de la tarea de `[ ]` a `[x]`.
+- Dar una recomendación de commit (utilizando convenciones).
 
 ## Reglas generales
 

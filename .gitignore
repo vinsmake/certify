@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno
+.env
+
+# Build de frontend
+dist/
+
+# Certificados PDF generados
+storage/certificates/
+
+# Datos de PostgreSQL
+pgdata/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
