@@ -68,24 +68,60 @@ docker compose up --build
 - Crear usuarios emisores y asignarlos a dependencias
 - (Opcional) Crear nuevas plantillas de certificado
 
-## Comandos Docker Utiles
+## Scripts NPM
 
-### Destruir y reconstruir completamente los contenedores
+El proyecto incluye un `package.json` en la raiz con scripts para gestionar Docker y datos.
 
-Los datos (base de datos, PDFs, logos) son persistentes y se conservan entre reinicios. Para destruir y reconstruir solo los contenedores e imagenes:
+### Docker
+
+| Script | Descripcion |
+|---|---|
+| `npm run up` | Levantar contenedores |
+| `npm run up:build` | Reconstruir imagenes y levantar |
+| `npm run down` | Detener contenedores |
+| `npm run logs` | Ver logs en tiempo real |
+| `npm run ps` | Ver estado de servicios |
+
+### Backup y Restore
+
+| Script | Descripcion |
+|---|---|
+| `npm run backup` | Generar backup de BD y storage (tar.gz) |
+| `npm run backup:db` | Backup solo de base de datos |
+| `npm run backup:storage` | Backup solo de PDFs y logos |
+| `npm run restore` | Restaurar BD y storage desde backups |
+| `npm run restore:db` | Restaurar solo base de datos |
+| `npm run restore:storage` | Restaurar solo PDFs y logos |
+| `npm run pull:sync` | Detener, restaurar datos y reconstruir (usar despues de git pull) |
+
+### Destruir y reconstruir contenedores
 
 ```bash
 # Detener y eliminar contenedores y redes (los datos persisten)
-docker compose down
+npm run down
 
 # Eliminar las imagenes construidas del proyecto
 docker rmi certify-frontend certify-backend
 
 # Reconstruir y levantar todo desde cero
-docker compose up --build
+npm run up:build
 ```
 
-> **Nota:** Los datos se almacenan en carpetas locales del proyecto, no en volumenes de Docker. Ningun comando de Docker puede eliminarlos. Para reiniciar la base de datos desde cero, elimina manualmente la carpeta `database/data/`. Los PDFs y logos se encuentran en `storage/certificates/` y `storage/logos/`.
+> **Nota:** Los datos se almacenan en carpetas locales del proyecto, no en volumenes de Docker. Ningun comando de Docker puede eliminarlos. Para reiniciar la base de datos desde cero, elimina manualmente la carpeta `database/data/`.
+
+### Migrar datos entre maquinas
+
+Los backups (`.tar.gz`) se incluyen en git, lo que permite migrar datos entre maquinas:
+
+```bash
+# Maquina origen: generar backups y subir
+npm run backup
+git add . && git commit -m "backup: actualizar datos" && git push
+
+# Maquina destino: descargar y sincronizar
+git pull
+npm run pull:sync
+```
 
 ## Estructura del Proyecto
 

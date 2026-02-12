@@ -280,15 +280,28 @@ Para instalar la plataforma en una nueva organizacion:
 ## 7. Respaldo y migracion
 
 ### 7.1 Que respaldar
-- Carpeta database/data/ (base de datos completa)
-- Carpeta storage/certificates/ (todos los PDFs)
-- Carpeta storage/logos/ (todos los logos: institucionales y de dependencias)
-- Archivo .env
+
+Ejecutar `npm run backup` genera dos archivos que se incluyen en git:
+- `database/backup.tar.gz` - base de datos completa
+- `storage/backup.tar.gz` - todos los PDFs y logos
+
+Adicionalmente respaldar:
+- Archivo .env (no se commitea por seguridad)
 
 ### 7.2 Restaurar en otro servidor
-1. Instalar Docker y Docker Compose.
+1. Instalar Docker, Docker Compose y Node.js.
 2. Clonar el repositorio.
-3. Restaurar el archivo .env.
-4. Restaurar las carpetas de datos (database/data/, storage/certificates/, storage/logos/).
-5. Ejecutar docker compose up --build.
-6. El sistema estara operativo con todos los datos, certificados, logos y plantillas intactos.
+3. Crear el archivo .env a partir de .env.example.
+4. Ejecutar `npm run pull:sync` (restaura datos de los backups y levanta los contenedores).
+5. El sistema estara operativo con todos los datos, certificados, logos y plantillas intactos.
+
+### 7.3 Migrar datos entre maquinas
+```bash
+# Maquina origen
+npm run backup
+git add . && git commit -m "backup: actualizar datos" && git push
+
+# Maquina destino
+git pull
+npm run pull:sync
+```

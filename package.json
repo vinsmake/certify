@@ -10,8 +10,11 @@
     "logs": "docker compose logs -f",
     "ps": "docker compose ps",
     "backup:db": "tar -czf database/backup.tar.gz -C database data",
-    "restore:db": "tar -xzf database/backup.tar.gz -C database",
     "backup:storage": "tar -czf storage/backup.tar.gz -C storage certificates logos",
-    "restore:storage": "tar -xzf storage/backup.tar.gz -C storage"
+    "backup": "npm run backup:db && npm run backup:storage",
+    "restore:db": "rm -rf database/data && tar -xzf database/backup.tar.gz -C database",
+    "restore:storage": "rm -rf storage/certificates storage/logos && tar -xzf storage/backup.tar.gz -C storage",
+    "restore": "npm run restore:db && npm run restore:storage",
+    "pull:sync": "npm run down && npm run restore && npm run up:build"
   }
 }
