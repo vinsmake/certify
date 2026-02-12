@@ -86,12 +86,14 @@ El proyecto incluye un `package.json` en la raiz con scripts para gestionar Dock
 
 | Script | Descripcion |
 |---|---|
-| `npm run backup` | Generar backup de BD y storage (tar.gz) |
+| `npm run backup` | Generar backup de BD y storage (backup.tar.gz) |
 | `npm run backup:db` | Backup solo de base de datos |
 | `npm run backup:storage` | Backup solo de PDFs y logos |
 | `npm run restore` | Restaurar BD y storage desde backups |
 | `npm run restore:db` | Restaurar solo base de datos |
 | `npm run restore:storage` | Restaurar solo PDFs y logos |
+| `npm run snapshot` | Generar snapshot de BD y storage (snapshot.tar.gz) |
+| `npm run reset` | Snapshot + eliminar datos + reconstruir desde cero |
 | `npm run pull:sync` | Detener, restaurar datos y reconstruir (usar despues de git pull) |
 
 ### Destruir y reconstruir contenedores
