@@ -7,6 +7,8 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 ### Paso 1: Seleccionar la tarea
 - Abrir todo.md e identificar la siguiente tarea pendiente en orden.
 - No saltarse tareas a menos que haya una dependencia bloqueante documentada.
+- Se realizará una tarea a la ves, no se hara mas de una tarea por consulta.
+- Cada tarea debera ser validada por el usuario.
 
 ### Paso 2: Entender el contexto
 - Leer arquitectura.md para entender donde encaja la tarea dentro del sistema.
@@ -34,7 +36,7 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
   - Si es configuracion nueva: documentar en config.md y en la seccion correspondiente del readme.
 - La documentacion en el readme debe incluir: que hace, como funciona, y como se usa.
 
-### Paso 6: Marcar como completado (esto se hara una ves YO te confirme que funciona.)
+### Paso 6: Marcar como completado (esto se hara una ves YO, el usuario, te confirme que funciona.)
 - En todo.md, cambiar el estado de la tarea de `[ ]` a `[x]`.
 - Hacer commit con mensaje descriptivo que indique que tarea se completo.
 
