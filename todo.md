@@ -15,7 +15,7 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 - [x] 1.07 - Instalar dependencias del frontend (react-router-dom, axios)
 - [x] 1.08 - Crear vite.config.js configurado para hot reload dentro de Docker (host: true)
 - [x] 1.09 - Inicializar proyecto backend con npm init y crear package.json
-- [ ] 1.10 - Instalar dependencias del backend (express, pg, knex, cors, helmet, dotenv, jsonwebtoken, bcrypt, express-validator, puppeteer, qrcode, multer, uuid, morgan, nodemon)
+- [x] 1.10 - Instalar dependencias del backend (express, pg, knex, cors, helmet, dotenv, jsonwebtoken, bcrypt, express-validator, puppeteer, qrcode, multer, uuid, morgan, nodemon)
 - [ ] 1.11 - Crear archivo backend/src/index.js con inicializacion basica de Express
 - [ ] 1.12 - Crear archivo backend/src/app.js con configuracion de middlewares globales (cors, helmet, json parser, morgan)
 - [ ] 1.13 - Crear archivo backend/src/config/environment.js para carga de variables de entorno con dotenv
