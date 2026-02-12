@@ -34,7 +34,7 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
   - Si es configuracion nueva: documentar en config.md y en la seccion correspondiente del readme.
 - La documentacion en el readme debe incluir: que hace, como funciona, y como se usa.
 
-### Paso 6: Marcar como completado
+### Paso 6: Marcar como completado (esto se hara una ves YO te confirme que funciona.)
 - En todo.md, cambiar el estado de la tarea de `[ ]` a `[x]`.
 - Hacer commit con mensaje descriptivo que indique que tarea se completo.
 
