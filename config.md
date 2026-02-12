@@ -280,15 +280,15 @@ Para instalar la plataforma en una nueva organizacion:
 ## 7. Respaldo y migracion
 
 ### 7.1 Que respaldar
-- Volumen pgdata (base de datos completa)
-- Volumen certificates_data (todos los PDFs)
-- Volumen logos_data (todos los logos: institucionales y de dependencias)
+- Carpeta database/data/ (base de datos completa)
+- Carpeta storage/certificates/ (todos los PDFs)
+- Carpeta storage/logos/ (todos los logos: institucionales y de dependencias)
 - Archivo .env
 
 ### 7.2 Restaurar en otro servidor
 1. Instalar Docker y Docker Compose.
 2. Clonar el repositorio.
 3. Restaurar el archivo .env.
-4. Restaurar los volumenes de datos.
+4. Restaurar las carpetas de datos (database/data/, storage/certificates/, storage/logos/).
 5. Ejecutar docker compose up --build.
 6. El sistema estara operativo con todos los datos, certificados, logos y plantillas intactos.

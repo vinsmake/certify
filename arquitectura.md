@@ -79,8 +79,8 @@ Una **dependencia** es una unidad organizacional (ej: "Direccion de Capacitacion
 - Imagen base: node:20-alpine
 - Puerto expuesto: 3000
 - Volumen montado: ./backend/src -> /app/src (live reload con nodemon)
-- Volumen montado: certificates_data -> /app/storage (persistente)
-- Volumen montado: logos_data -> /app/storage/logos (persistente)
+- Volumen montado: ./storage/certificates -> /app/storage/certificates (persistente, carpeta local)
+- Volumen montado: ./storage/logos -> /app/storage/logos (persistente, carpeta local)
 - Variables de entorno: desde archivo .env
 - Comando: npx nodemon src/index.js
 - Depende de: database
@@ -88,14 +88,17 @@ Una **dependencia** es una unidad organizacional (ej: "Direccion de Capacitacion
 ### 5.3 Servicio: database
 - Imagen: postgres:16-alpine
 - Puerto expuesto: 5432
-- Volumen montado: pgdata -> /var/lib/postgresql/data (persistente)
+- Volumen montado: ./database/data -> /var/lib/postgresql/data (persistente, carpeta local)
 - Volumen montado: ./database/init -> /docker-entrypoint-initdb.d (scripts iniciales)
 - Variables de entorno: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
 
-### 5.4 Volumenes persistentes
-- pgdata: datos de PostgreSQL
-- certificates_data: PDFs de certificados generados
-- logos_data: logos institucionales y de dependencias
+### 5.4 Datos persistentes (carpetas locales)
+
+Los datos se almacenan en carpetas locales del proyecto, no en volumenes de Docker. Ningun comando de Docker puede eliminarlos. Solo se borran si el usuario elimina manualmente las carpetas.
+
+- ./database/data/ - datos de PostgreSQL
+- ./storage/certificates/ - PDFs de certificados generados
+- ./storage/logos/ - logos institucionales y de dependencias
 
 ## 6. Estructura de Carpetas
 
