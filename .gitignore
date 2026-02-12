@@ -7,11 +7,10 @@ node_modules/
 # Build de frontend
 dist/
 
-# Certificados PDF generados
+# Datos persistentes (carpetas locales)
+database/data/
 storage/certificates/
-
-# Datos de PostgreSQL
-pgdata/
+storage/logos/
 
 # Logs
 *.log

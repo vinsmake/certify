@@ -68,6 +68,25 @@ docker compose up --build
 - Crear usuarios emisores y asignarlos a dependencias
 - (Opcional) Crear nuevas plantillas de certificado
 
+## Comandos Docker Utiles
+
+### Destruir y reconstruir completamente los contenedores
+
+Los datos (base de datos, PDFs, logos) son persistentes y se conservan entre reinicios. Para destruir y reconstruir solo los contenedores e imagenes:
+
+```bash
+# Detener y eliminar contenedores y redes (los datos persisten)
+docker compose down
+
+# Eliminar las imagenes construidas del proyecto
+docker rmi certify-frontend certify-backend
+
+# Reconstruir y levantar todo desde cero
+docker compose up --build
+```
+
+> **Nota:** Los datos se almacenan en carpetas locales del proyecto, no en volumenes de Docker. Ningun comando de Docker puede eliminarlos. Para reiniciar la base de datos desde cero, elimina manualmente la carpeta `database/data/`. Los PDFs y logos se encuentran en `storage/certificates/` y `storage/logos/`.
+
 ## Estructura del Proyecto
 
 Consultar [arquitectura.md](arquitectura.md) para la estructura completa de carpetas, modelo de datos y diagramas de flujo.
