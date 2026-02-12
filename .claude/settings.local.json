@@ -5,7 +5,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nconfig\\(env\\): crear .env.example con variables de entorno del sistema\n\nVariables de BD, JWT, URLs base y frontend Vite documentadas con valores placeholder.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git reset:*)",
       "Bash(docker compose up:*)",
-      "Bash(docker compose down:*)"
+      "Bash(docker compose down:*)",
+      "Bash(npm run backup:db:*)"
     ]
   }
 }

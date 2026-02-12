@@ -1,0 +1,17 @@
+{
+  "name": "certify",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma de Emision y Gestion de Credenciales Digitales",
+  "scripts": {
+    "up": "docker compose up -d",
+    "up:build": "docker compose up --build -d",
+    "down": "docker compose down",
+    "logs": "docker compose logs -f",
+    "ps": "docker compose ps",
+    "backup:db": "tar -czf database/backup.tar.gz -C database data",
+    "restore:db": "tar -xzf database/backup.tar.gz -C database",
+    "backup:storage": "tar -czf storage/backup.tar.gz -C storage certificates logos",
+    "restore:storage": "tar -xzf storage/backup.tar.gz -C storage"
+  }
+}
