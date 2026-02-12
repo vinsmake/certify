@@ -6,7 +6,7 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 1: Infraestructura y Configuracion Inicial
 
-- [ ] 1.01 - Crear archivo .env.example con todas las variables de entorno necesarias (DB, JWT, URLs, Vite)
+- [x] 1.01 - Crear archivo .env.example con todas las variables de entorno necesarias (DB, JWT, URLs, Vite)
 - [ ] 1.02 - Crear archivo .gitignore (node_modules, .env, dist, storage/certificates, pgdata)
 - [ ] 1.03 - Crear docker-compose.yml con los 3 servicios (frontend, backend, database) y volumenes persistentes
 - [ ] 1.04 - Crear Dockerfile del frontend (node:20-alpine, instalar dependencias, exponer puerto 5173)
