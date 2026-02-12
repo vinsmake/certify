@@ -18,7 +18,7 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 - [x] 1.10 - Instalar dependencias del backend (express, pg, knex, cors, helmet, dotenv, jsonwebtoken, bcrypt, express-validator, puppeteer, qrcode, multer, uuid, morgan, nodemon)
 - [x] 1.11 - Crear archivo backend/src/index.js con inicializacion basica de Express
 - [x] 1.12 - Crear archivo backend/src/app.js con configuracion de middlewares globales (cors, helmet, json parser, morgan)
-- [ ] 1.13 - Crear archivo backend/src/config/environment.js para carga de variables de entorno con dotenv
+- [x] 1.13 - Crear archivo backend/src/config/environment.js para carga de variables de entorno con dotenv
 - [ ] 1.14 - Crear archivo backend/src/config/database.js con conexion a PostgreSQL usando pg Pool
 - [ ] 1.15 - Verificar que docker compose up levanta los 3 servicios sin errores
 - [ ] 1.16 - Verificar que el hot reload funciona en frontend (modificar un archivo y ver el cambio reflejado)
