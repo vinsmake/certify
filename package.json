@@ -15,6 +15,8 @@
     "restore:db": "rm -rf database/data && tar -xzf database/backup.tar.gz -C database",
     "restore:storage": "rm -rf storage/certificates storage/logos && tar -xzf storage/backup.tar.gz -C storage",
     "restore": "npm run restore:db && npm run restore:storage",
-    "pull:sync": "npm run down && npm run restore && npm run up:build"
+    "pull:sync": "npm run down && npm run restore && npm run up:build",
+    "snapshot": "tar -czf database/snapshot.tar.gz -C database data && tar -czf storage/snapshot.tar.gz -C storage certificates logos",
+    "reset": "npm run down && npm run snapshot && rm -rf database/data storage/certificates storage/logos && npm run up:build"
   }
 }
