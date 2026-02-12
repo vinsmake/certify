@@ -10,7 +10,7 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 
 ### Paso 2: Entender el contexto
 - Leer arquitectura.md para entender donde encaja la tarea dentro del sistema.
-- Leer config.md si la tarea involucra elementos configurables (logos, colores, fuentes).
+- Leer config.md si la tarea involucra elementos configurables (logos, colores, fuentes, plantillas, dependencias).
 - Revisar el codigo existente relacionado para no duplicar funcionalidad.
 
 ### Paso 3: Implementar la tarea
@@ -56,15 +56,41 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 - Usar archivos de migracion numerados: 02_add_column.sql, 03_create_table.sql, etc.
 - Cada migracion debe ser idempotente cuando sea posible (usar IF NOT EXISTS).
 
-### Sobre el branding
+### Sobre el branding institucional
 - Al emitir un certificado, siempre guardar la referencia a la version de branding activa en ese momento.
 - Nunca eliminar versiones de branding anteriores, solo desactivarlas.
-- Los logos de versiones anteriores deben permanecer en el sistema de archivos.
+- Los logos institucionales de versiones anteriores deben permanecer en el sistema de archivos.
+
+### Sobre las dependencias
+- Cada dependencia tiene su propio logo, almacenado en storage/logos/dependencies/.
+- Al crear un curso, se asigna automaticamente la dependencia del usuario emisor.
+- Se pueden agregar dependencias colaboradoras a un curso via la tabla course_dependencies.
+- Al emitir un certificado, se recopilan los logos de TODAS las dependencias asociadas al curso.
+- Nunca eliminar logos de dependencias; desactivar la dependencia si ya no se usa.
+- Los logos de dependencia se muestran en el certificado en el orden definido por display_order.
+
+### Sobre las plantillas de certificado
+- Las plantillas se almacenan en la tabla certificate_templates con su html_content completo.
+- Los archivos en backend/src/templates/ (default.html, formal.html, modern.html) son los originales que se insertan como seed en la BD.
+- Al emitir un certificado, se guarda la referencia a la plantilla usada (template_id).
+- Las plantillas usan variables con formato {{variable}} que se reemplazan al generar el PDF.
+- Nunca eliminar una plantilla que haya sido usada para emitir certificados; solo desactivarla.
+- Siempre debe existir al menos una plantilla marcada como is_default.
+- Las plantillas deben usar solo HTML y CSS; no incluir JavaScript.
+- Los logos se inyectan como base64 dentro de la plantilla, no como URLs externas.
 
 ### Sobre los certificados
 - Los certificados emitidos son inmutables. Nunca modificar un certificado ya emitido.
 - Para invalidar un certificado, usar el flujo de revocacion (cambiar status + registrar en revocation_log).
 - Los PDFs generados nunca se eliminan, incluso si el certificado es revocado.
+- Cada certificado registra: branding_version_id (branding al momento de emision), template_id (plantilla usada), course_id (incluye las dependencias del curso).
+
+### Sobre los roles y acceso
+- Solo existen dos roles: **admin** y **emisor**.
+- **admin:** Acceso global sin restriccion de dependencia. Puede gestionar dependencias, plantillas, usuarios, branding, y ver/gestionar todos los cursos y certificados del sistema.
+- **emisor:** Vinculado a una dependencia. Solo ve y gestiona cursos y certificados de su dependencia. No accede a configuracion global, plantillas, branding ni gestion de usuarios.
+- El middleware dependencyMiddleware filtra automaticamente los datos segun el rol: admin ve todo, emisor ve solo su dependencia.
+- Al crear un usuario emisor, dependency_id es requerido. Para admin, es nullable.
 
 ### Sobre variables de entorno
 - Toda configuracion sensible va en .env (credenciales, secretos JWT, etc.).
@@ -81,6 +107,7 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 
 1. Seguridad (nunca comprometer datos o accesos).
 2. Integridad de datos (nunca perder certificados o registros).
-3. Funcionalidad correcta.
-4. Documentacion actualizada.
-5. Limpieza de codigo.
+3. Aislamiento por dependencia (emisor nunca debe ver datos de otra dependencia).
+4. Funcionalidad correcta.
+5. Documentacion actualizada.
+6. Limpieza de codigo.

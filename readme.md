@@ -6,6 +6,16 @@ Plataforma de certificacion verificable que transforma el aprendizaje tecnico en
 
 El sistema permite emitir, gestionar y revocar credenciales digitales que acreditan la participacion en cursos, charlas y talleres. Cada certificado emitido genera un PDF con un codigo QR que enlaza a una pagina publica de verificacion donde cualquier persona puede confirmar la autenticidad y vigencia del documento.
 
+### Caracteristicas principales
+
+- **Plantillas de certificado intercambiables:** Multiples modelos de certificado (formal, moderno, personalizado) seleccionables al emitir. Se crean con HTML/CSS sin modificar codigo.
+- **Sistema de dependencias:** Cada unidad organizacional (dependencia) tiene su logo y sus usuarios emisores. Los cursos pueden involucrar multiples dependencias y el certificado mostrara todos los logos.
+- **Multi-logo en certificados:** Los certificados incluyen el logo institucional (branding global) mas los logos de todas las dependencias que participaron en el evento.
+- **Roles diferenciados:** Usuarios admin con acceso global, y usuarios emisores que solo gestionan los cursos y certificados de su dependencia.
+- **Panel de administracion global:** Vista para administradores con lista de todos los eventos, certificados y actividad del sistema.
+- **Branding versionado:** Los cambios de logo/colores institucionales no afectan certificados ya emitidos.
+- **Verificacion publica:** Cualquier persona puede verificar un certificado escaneando su QR, sin necesidad de cuenta.
+
 ## Stack Tecnologico
 
 | Componente | Tecnologia |
@@ -13,7 +23,7 @@ El sistema permite emitir, gestionar y revocar credenciales digitales que acredi
 | Frontend | React (Vite) + React Router + Axios |
 | Backend | Node.js + Express.js |
 | Base de Datos | PostgreSQL 16 |
-| Generacion PDF | Puppeteer |
+| Generacion PDF | Puppeteer (HTML/CSS a PDF con viewport fijo) |
 | Generacion QR | qrcode (npm) |
 | Autenticacion | JWT + bcrypt |
 | Contenedores | Docker + Docker Compose |
@@ -52,13 +62,19 @@ docker compose up --build
 - Email: admin@admin.com
 - Password: (definido en el seed de la base de datos)
 
+6. Configuracion inicial (desde panel admin):
+- Crear dependencias y subir sus logos
+- Crear branding institucional (logo, colores, fuente)
+- Crear usuarios emisores y asignarlos a dependencias
+- (Opcional) Crear nuevas plantillas de certificado
+
 ## Estructura del Proyecto
 
 Consultar [arquitectura.md](arquitectura.md) para la estructura completa de carpetas, modelo de datos y diagramas de flujo.
 
 ## Configuracion y Personalizacion
 
-Consultar [config.md](config.md) para la guia completa de personalizacion (branding, logos, colores, fuentes, plantilla de certificado).
+Consultar [config.md](config.md) para la guia completa de personalizacion (branding, logos, plantillas, dependencias).
 
 ## Flujo de Trabajo de Desarrollo
 
@@ -80,7 +96,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: esquema de tablas, relaciones, indices, migraciones, datos semilla.
+> Se documentara: esquema de tablas (dependencies, users, certificate_templates, courses, course_dependencies, participants, branding_versions, certificates, revocation_log, course_participants), relaciones, indices, migraciones, datos semilla.
 
 ---
 
@@ -88,7 +104,23 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: endpoints de auth, sistema de roles, gestion de usuarios, formato JWT.
+> Se documentara: endpoints de auth, sistema de roles (admin/emisor), gestion de usuarios, asignacion a dependencias, formato JWT (incluye role y dependency_id).
+
+---
+
+### Modulo: Dependencias
+
+**Estado:** Pendiente
+
+> Se documentara: CRUD de dependencias, subida de logos, asignacion de usuarios a dependencias, dependencias colaboradoras en cursos.
+
+---
+
+### Modulo: Plantillas de Certificado
+
+**Estado:** Pendiente
+
+> Se documentara: CRUD de plantillas, variables disponibles, preview de plantillas, plantilla por defecto, creacion de nuevos modelos con HTML/CSS.
 
 ---
 
@@ -96,7 +128,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: endpoints CRUD de cursos, filtros, paginacion, inscripcion de participantes.
+> Se documentara: endpoints CRUD de cursos, filtros por dependencia, paginacion, inscripcion de participantes, asociacion de dependencias colaboradoras.
 
 ---
 
@@ -112,7 +144,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: endpoints de branding, sistema de versiones, subida de logos, activacion.
+> Se documentara: endpoints de branding institucional, sistema de versiones, subida de logos, activacion, independencia de logos de dependencias.
 
 ---
 
@@ -120,7 +152,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: flujo de emision, generacion de QR, generacion de PDF, almacenamiento.
+> Se documentara: flujo de emision (seleccion de curso, plantilla, participantes), generacion de QR, generacion de PDF con Puppeteer (HTML a PDF con viewport fijo), multi-logo (institucional + dependencias), almacenamiento.
 
 ---
 
@@ -128,7 +160,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: flujo de revocacion, log de revocacion, validaciones.
+> Se documentara: flujo de revocacion, log de revocacion, validaciones de permisos por dependencia.
 
 ---
 
@@ -136,7 +168,15 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: endpoint publico de verificacion, pagina de verificacion, estados posibles.
+> Se documentara: endpoint publico de verificacion, pagina de verificacion, estados posibles, logos institucional y de dependencias.
+
+---
+
+### Modulo: Estadisticas y Panel Admin
+
+**Estado:** Pendiente
+
+> Se documentara: endpoints de estadisticas globales y por dependencia, panel admin con lista global de eventos, lista global de certificados, registro de actividad.
 
 ---
 
@@ -144,7 +184,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: pagina de login, contexto de auth, rutas protegidas, manejo de sesion.
+> Se documentara: pagina de login, contexto de auth (incluye dependency_id y role), rutas protegidas, AdminRoute, manejo de sesion.
 
 ---
 
@@ -152,7 +192,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: estructura del layout, sidebar, header, sistema de rutas, control de acceso por rol.
+> Se documentara: estructura del layout, sidebar diferenciado por rol (admin ve todo, emisor ve su dependencia), header con nombre de dependencia, sistema de rutas.
 
 ---
 
@@ -160,7 +200,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: estadisticas mostradas, endpoint de stats, tarjetas de resumen.
+> Se documentara: dashboard admin (estadisticas globales, desglose por dependencia), dashboard emisor (estadisticas de su dependencia).
 
 ---
 
@@ -168,7 +208,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: lista de cursos, formulario CRUD, detalle de curso, inscripcion de participantes, filtros.
+> Se documentara: lista de cursos (filtrada por dependencia), formulario CRUD, detalle de curso con dependencias colaboradoras y sus logos, inscripcion de participantes, filtros.
 
 ---
 
@@ -184,7 +224,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: lista de certificados, detalle, descarga PDF, emision masiva, revocacion.
+> Se documentara: lista de certificados (filtrada por dependencia), detalle con logos de dependencias, descarga PDF, emision con seleccion de plantilla, revocacion.
 
 ---
 
@@ -192,7 +232,15 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: pagina de verificacion, estados visuales, diseno responsive.
+> Se documentara: pagina de verificacion, estados visuales, logos institucional y de dependencias, diseno responsive.
+
+---
+
+### Modulo: Frontend - Panel Admin Global
+
+**Estado:** Pendiente
+
+> Se documentara: gestion de dependencias (CRUD + logos), gestion de plantillas (CRUD + preview + editor HTML), gestion de usuarios (asignacion de roles y dependencias), lista global de eventos, lista global de certificados, registro de actividad.
 
 ---
 
@@ -200,7 +248,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: gestion de usuarios, gestion de branding, preview de certificado.
+> Se documentara: gestion de branding institucional, historial de versiones, preview de certificado.
 
 ---
 
@@ -208,7 +256,7 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 **Estado:** Pendiente
 
-> Se documentara: rate limiting, CORS, helmet, validacion de entrada, control de acceso.
+> Se documentara: rate limiting, CORS, helmet, validacion de entrada, control de acceso por rol, filtrado por dependencia, aislamiento de datos.
 
 ---
 
@@ -227,7 +275,8 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 > **METODO /ruta**
 > - Descripcion
 > - Autenticacion requerida: si/no
-> - Roles permitidos
+> - Roles permitidos: admin / emisor / publico
+> - Filtrado por dependencia: si/no
 > - Body/Params esperados
 > - Respuesta exitosa (ejemplo)
 > - Errores posibles
