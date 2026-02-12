@@ -10,7 +10,7 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 - [x] 1.02 - Crear archivo .gitignore (node_modules, .env, dist, storage/certificates, pgdata)
 - [x] 1.03 - Crear docker-compose.yml con los 3 servicios (frontend, backend, database) y volumenes persistentes
 - [x] 1.04 - Crear Dockerfile del frontend (node:20-alpine, instalar dependencias, exponer puerto 5173)
-- [ ] 1.05 - Crear Dockerfile del backend (node:20-alpine, instalar dependencias incluyendo puppeteer, exponer puerto 3000)
+- [x] 1.05 - Crear Dockerfile del backend (node:20-alpine, instalar dependencias incluyendo puppeteer, exponer puerto 3000)
 - [ ] 1.06 - Inicializar proyecto frontend con Vite + React (npm create vite@latest)
 - [ ] 1.07 - Instalar dependencias del frontend (react-router-dom, axios)
 - [ ] 1.08 - Crear vite.config.js configurado para hot reload dentro de Docker (host: true)
