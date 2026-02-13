@@ -110,20 +110,20 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 8: Backend - Modulo de Cursos
 
-- [ ] 8.01 - Crear backend/src/models/Course.js con metodos: findAll (con paginacion y filtro por dependency_id), findById, create, update, delete
-- [ ] 8.02 - Crear backend/src/models/CourseDependency.js con metodos: findByCourse, addDependency, removeDependency, updateOrder
-- [ ] 8.03 - Crear backend/src/controllers/courseController.js con metodo listCourses (GET, admin ve todos, emisor solo los de su dependencia)
-- [ ] 8.04 - Crear backend/src/controllers/courseController.js con metodo getCourse (GET /:id, incluye dependencias asociadas)
-- [ ] 8.05 - Crear backend/src/controllers/courseController.js con metodo createCourse (POST, asigna dependency_id del usuario creador)
-- [ ] 8.06 - Crear backend/src/controllers/courseController.js con metodo updateCourse (PUT /:id, verificar que el curso pertenece a la dependencia del usuario o es admin)
-- [ ] 8.07 - Crear backend/src/controllers/courseController.js con metodo deleteCourse (DELETE /:id)
-- [ ] 8.08 - Crear backend/src/controllers/courseController.js con metodo addCourseDependency (POST /:id/dependencies, agrega una dependencia colaboradora al curso)
-- [ ] 8.09 - Crear backend/src/controllers/courseController.js con metodo removeCourseDependency (DELETE /:id/dependencies/:depId)
-- [ ] 8.10 - Crear backend/src/routes/courseRoutes.js con todas las rutas CRUD y rutas de dependencias del curso
-- [ ] 8.11 - Aplicar authMiddleware a todas las rutas de cursos
-- [ ] 8.12 - Aplicar dependencyMiddleware para filtrar cursos segun dependencia del usuario (admin ve todo)
-- [ ] 8.13 - Registrar courseRoutes en app.js bajo /api/courses
-- [ ] 8.14 - Agregar validaciones de entrada (nombre requerido, tipo valido, fechas validas, dependency_id valido)
+- [x] 8.01 - Crear backend/src/models/Course.js con metodos: findAll (con paginacion y filtro por dependency_id), findById, create, update, delete
+- [x] 8.02 - Crear backend/src/models/CourseDependency.js con metodos: findByCourse, addDependency, removeDependency, updateOrder
+- [x] 8.03 - Crear backend/src/controllers/courseController.js con metodo listCourses (GET, admin ve todos, emisor solo los de su dependencia)
+- [x] 8.04 - Crear backend/src/controllers/courseController.js con metodo getCourse (GET /:id, incluye dependencias asociadas)
+- [x] 8.05 - Crear backend/src/controllers/courseController.js con metodo createCourse (POST, asigna dependency_id del usuario creador)
+- [x] 8.06 - Crear backend/src/controllers/courseController.js con metodo updateCourse (PUT /:id, verificar que el curso pertenece a la dependencia del usuario o es admin)
+- [x] 8.07 - Crear backend/src/controllers/courseController.js con metodo deleteCourse (DELETE /:id)
+- [x] 8.08 - Crear backend/src/controllers/courseController.js con metodo addCourseDependency (POST /:id/dependencies, agrega una dependencia colaboradora al curso)
+- [x] 8.09 - Crear backend/src/controllers/courseController.js con metodo removeCourseDependency (DELETE /:id/dependencies/:depId)
+- [x] 8.10 - Crear backend/src/routes/courseRoutes.js con todas las rutas CRUD y rutas de dependencias del curso
+- [x] 8.11 - Aplicar authMiddleware a todas las rutas de cursos
+- [x] 8.12 - Aplicar dependencyMiddleware para filtrar cursos segun dependencia del usuario (admin ve todo)
+- [x] 8.13 - Registrar courseRoutes en app.js bajo /api/courses
+- [x] 8.14 - Agregar validaciones de entrada (nombre requerido, tipo valido, fechas validas, dependency_id valido)
 
 ## Bloque 9: Backend - Modulo de Participantes
 
