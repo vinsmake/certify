@@ -27,23 +27,23 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 2: Base de Datos - Esquema Inicial
 
-- [ ] 2.01 - Crear archivo database/init/01_schema.sql con extension uuid-ossp
-- [ ] 2.02 - Crear tabla dependencies en 01_schema.sql (id, name, abbreviation, logo_path, is_active, created_at, updated_at)
-- [ ] 2.03 - Crear tabla users en 01_schema.sql (id, email, password_hash, full_name, role VARCHAR(50) CHECK(role IN ('admin','emisor')), dependency_id REFERENCES dependencies, is_active, timestamps)
-- [ ] 2.04 - Crear tabla certificate_templates en 01_schema.sql (id, name, slug UNIQUE, description, html_content TEXT, orientation, page_size, thumbnail_path, is_default, is_active, created_at, created_by REFERENCES users)
-- [ ] 2.05 - Crear tabla courses en 01_schema.sql (id, name, description, type, duration_hours, instructor, start_date, end_date, dependency_id REFERENCES dependencies, created_by REFERENCES users, timestamps)
-- [ ] 2.06 - Crear tabla course_dependencies en 01_schema.sql (id, course_id REFERENCES courses, dependency_id REFERENCES dependencies, display_order, UNIQUE course_id+dependency_id). Para cursos con multiples dependencias colaboradoras
-- [ ] 2.07 - Crear tabla participants en 01_schema.sql (id, document_id UNIQUE, full_name, email, organization, position, timestamps)
-- [ ] 2.08 - Crear tabla branding_versions en 01_schema.sql (id, version_label, logo_path, primary_color, secondary_color, font_family, organization_name, is_active, created_at, created_by REFERENCES users)
-- [ ] 2.09 - Crear tabla certificates en 01_schema.sql (id, uuid, participant_id, course_id, issued_by, issue_date, branding_version_id, template_id REFERENCES certificate_templates, pdf_path, status, revocation_reason, revoked_at, revoked_by, created_at)
-- [ ] 2.10 - Crear tabla revocation_log en 01_schema.sql (id, certificate_id, revoked_by, reason, revoked_at)
-- [ ] 2.11 - Crear tabla course_participants en 01_schema.sql (id, course_id, participant_id, enrollment_date, attendance_status, UNIQUE course_id+participant_id)
-- [ ] 2.12 - Agregar indices a columnas frecuentemente consultadas (certificates.uuid, participants.document_id, certificates.status, courses.dependency_id, users.dependency_id)
-- [ ] 2.13 - Insertar dependencia por defecto en 01_schema.sql (Dependencia General)
-- [ ] 2.14 - Insertar usuario administrador por defecto en 01_schema.sql (admin@admin.com / password hasheado, role=admin, dependency_id=null)
-- [ ] 2.15 - Insertar version de branding inicial por defecto (colores genericos, fuente Roboto)
-- [ ] 2.16 - Insertar plantilla de certificado por defecto (HTML/CSS basico horizontal, tamano carta, is_default=true)
-- [ ] 2.17 - Verificar que las tablas se crean correctamente al levantar el contenedor de PostgreSQL
+- [x] 2.01 - Crear archivo database/init/01_schema.sql con extension uuid-ossp
+- [x] 2.02 - Crear tabla dependencies en 01_schema.sql (id, name, abbreviation, logo_path, is_active, created_at, updated_at)
+- [x] 2.03 - Crear tabla users en 01_schema.sql (id, email, password_hash, full_name, role VARCHAR(50) CHECK(role IN ('admin','emisor')), dependency_id REFERENCES dependencies, is_active, timestamps)
+- [x] 2.04 - Crear tabla certificate_templates en 01_schema.sql (id, name, slug UNIQUE, description, html_content TEXT, orientation, page_size, thumbnail_path, is_default, is_active, created_at, created_by REFERENCES users)
+- [x] 2.05 - Crear tabla courses en 01_schema.sql (id, name, description, type, duration_hours, instructor, start_date, end_date, dependency_id REFERENCES dependencies, created_by REFERENCES users, timestamps)
+- [x] 2.06 - Crear tabla course_dependencies en 01_schema.sql (id, course_id REFERENCES courses, dependency_id REFERENCES dependencies, display_order, UNIQUE course_id+dependency_id). Para cursos con multiples dependencias colaboradoras
+- [x] 2.07 - Crear tabla participants en 01_schema.sql (id, document_id UNIQUE, full_name, email, organization, position, timestamps)
+- [x] 2.08 - Crear tabla branding_versions en 01_schema.sql (id, version_label, logo_path, primary_color, secondary_color, font_family, organization_name, is_active, created_at, created_by REFERENCES users)
+- [x] 2.09 - Crear tabla certificates en 01_schema.sql (id, uuid, participant_id, course_id, issued_by, issue_date, branding_version_id, template_id REFERENCES certificate_templates, pdf_path, status, revocation_reason, revoked_at, revoked_by, created_at)
+- [x] 2.10 - Crear tabla revocation_log en 01_schema.sql (id, certificate_id, revoked_by, reason, revoked_at)
+- [x] 2.11 - Crear tabla course_participants en 01_schema.sql (id, course_id, participant_id, enrollment_date, attendance_status, UNIQUE course_id+participant_id)
+- [x] 2.12 - Agregar indices a columnas frecuentemente consultadas (certificates.uuid, participants.document_id, certificates.status, courses.dependency_id, users.dependency_id)
+- [x] 2.13 - Insertar dependencia por defecto en 01_schema.sql (Dependencia General)
+- [x] 2.14 - Insertar usuario administrador por defecto en 01_schema.sql (admin@admin.com / password hasheado, role=admin, dependency_id=null)
+- [x] 2.15 - Insertar version de branding inicial por defecto (colores genericos, fuente Roboto)
+- [x] 2.16 - Insertar plantilla de certificado por defecto (HTML/CSS basico horizontal, tamano carta, is_default=true)
+- [x] 2.17 - Verificar que las tablas se crean correctamente al levantar el contenedor de PostgreSQL
 
 ## Bloque 3: Backend - Utilidades y Middlewares
 

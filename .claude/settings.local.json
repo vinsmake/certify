@@ -6,7 +6,10 @@
       "Bash(git reset:*)",
       "Bash(docker compose up:*)",
       "Bash(docker compose down:*)",
-      "Bash(npm run backup:db:*)"
+      "Bash(npm run backup:db:*)",
+      "Bash(node -e:*)",
+      "Bash(docker compose exec:*)",
+      "Bash(timeout:*)"
     ]
   }
 }
