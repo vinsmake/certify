@@ -47,15 +47,15 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 3: Backend - Utilidades y Middlewares
 
-- [ ] 3.01 - Crear backend/src/utils/hashUtils.js con funciones hashPassword y comparePassword (bcrypt)
-- [ ] 3.02 - Crear backend/src/utils/tokenUtils.js con funciones generateToken y verifyToken (JWT)
-- [ ] 3.03 - Crear backend/src/utils/fileUtils.js con funciones para manejo de rutas de archivos y lectura de archivos como base64
-- [ ] 3.04 - Crear backend/src/middlewares/errorHandler.js (middleware global de manejo de errores)
-- [ ] 3.05 - Crear backend/src/middlewares/authMiddleware.js (extraer y verificar JWT del header Authorization)
-- [ ] 3.06 - Crear backend/src/middlewares/roleMiddleware.js (verificar que el usuario tiene el rol requerido)
-- [ ] 3.07 - Crear backend/src/middlewares/dependencyMiddleware.js (filtrar datos segun la dependencia del usuario, admin ve todo, emisor solo su dependencia)
-- [ ] 3.08 - Crear backend/src/middlewares/validateRequest.js (middleware para validar body/params con express-validator)
-- [ ] 3.09 - Registrar el errorHandler como ultimo middleware en app.js
+- [x] 3.01 - Crear backend/src/utils/hashUtils.js con funciones hashPassword y comparePassword (bcrypt)
+- [x] 3.02 - Crear backend/src/utils/tokenUtils.js con funciones generateToken y verifyToken (JWT)
+- [x] 3.03 - Crear backend/src/utils/fileUtils.js con funciones para manejo de rutas de archivos y lectura de archivos como base64
+- [x] 3.04 - Crear backend/src/middlewares/errorHandler.js (middleware global de manejo de errores)
+- [x] 3.05 - Crear backend/src/middlewares/authMiddleware.js (extraer y verificar JWT del header Authorization)
+- [x] 3.06 - Crear backend/src/middlewares/roleMiddleware.js (verificar que el usuario tiene el rol requerido)
+- [x] 3.07 - Crear backend/src/middlewares/dependencyMiddleware.js (filtrar datos segun la dependencia del usuario, admin ve todo, emisor solo su dependencia)
+- [x] 3.08 - Crear backend/src/middlewares/validateRequest.js (middleware para validar body/params con express-validator)
+- [x] 3.09 - Registrar el errorHandler como ultimo middleware en app.js
 
 ## Bloque 4: Backend - Modulo de Autenticacion
 
