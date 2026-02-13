@@ -68,14 +68,14 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 5: Backend - Modulo de Usuarios
 
-- [ ] 5.01 - Crear backend/src/controllers/userController.js con metodo listUsers (GET, admin ve todos, emisor ve solo los de su dependencia)
-- [ ] 5.02 - Crear backend/src/controllers/userController.js con metodo createUser (POST, solo admin, hashear password, asignar dependency_id)
-- [ ] 5.03 - Crear backend/src/controllers/userController.js con metodo updateUser (PUT, solo admin)
-- [ ] 5.04 - Crear backend/src/controllers/userController.js con metodo deactivateUser (DELETE, solo admin)
-- [ ] 5.05 - Crear backend/src/routes/userRoutes.js con GET /, POST /, PUT /:id, DELETE /:id
-- [ ] 5.06 - Aplicar authMiddleware y roleMiddleware(admin) a todas las rutas de usuarios
-- [ ] 5.07 - Registrar userRoutes en app.js bajo /api/users
-- [ ] 5.08 - Agregar validaciones de entrada en las rutas de usuarios (email valido, password minimo 8 caracteres, rol valido solo admin/emisor, dependency_id requerido para emisor)
+- [x] 5.01 - Crear backend/src/controllers/userController.js con metodo listUsers (GET, admin ve todos, emisor ve solo los de su dependencia)
+- [x] 5.02 - Crear backend/src/controllers/userController.js con metodo createUser (POST, solo admin, hashear password, asignar dependency_id)
+- [x] 5.03 - Crear backend/src/controllers/userController.js con metodo updateUser (PUT, solo admin)
+- [x] 5.04 - Crear backend/src/controllers/userController.js con metodo deactivateUser (DELETE, solo admin)
+- [x] 5.05 - Crear backend/src/routes/userRoutes.js con GET /, POST /, PUT /:id, DELETE /:id
+- [x] 5.06 - Aplicar authMiddleware y roleMiddleware(admin) a todas las rutas de usuarios
+- [x] 5.07 - Registrar userRoutes en app.js bajo /api/users
+- [x] 5.08 - Agregar validaciones de entrada en las rutas de usuarios (email valido, password minimo 8 caracteres, rol valido solo admin/emisor, dependency_id requerido para emisor)
 
 ## Bloque 6: Backend - Modulo de Dependencias
 

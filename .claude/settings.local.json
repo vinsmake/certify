@@ -11,7 +11,8 @@
       "Bash(docker compose exec:*)",
       "Bash(timeout:*)",
       "Bash(curl:*)",
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MDk0NjEzMiwiZXhwIjoxNzcwOTc0OTMyfQ.uy1mXczP0ypz_96xB6d4HNUucJy6QiHL-qJ8bpHn0xs\")"
     ]
   }
 }
