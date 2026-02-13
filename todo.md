@@ -79,17 +79,17 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 6: Backend - Modulo de Dependencias
 
-- [ ] 6.01 - Crear backend/src/models/Dependency.js con metodos: findAll, findById, create, update, deactivate
-- [ ] 6.02 - Crear backend/src/controllers/dependencyController.js con metodo listDependencies (GET, todos los usuarios autenticados)
-- [ ] 6.03 - Crear backend/src/controllers/dependencyController.js con metodo getDependency (GET /:id)
-- [ ] 6.04 - Crear backend/src/controllers/dependencyController.js con metodo createDependency (POST, solo admin)
-- [ ] 6.05 - Crear backend/src/controllers/dependencyController.js con metodo updateDependency (PUT /:id, solo admin)
-- [ ] 6.06 - Crear backend/src/controllers/dependencyController.js con metodo deactivateDependency (DELETE /:id, solo admin)
-- [ ] 6.07 - Crear backend/src/controllers/dependencyController.js con metodo uploadLogo (POST /:id/logo, usando multer, solo admin)
-- [ ] 6.08 - Crear backend/src/routes/dependencyRoutes.js con todas las rutas
-- [ ] 6.09 - Aplicar authMiddleware a todas las rutas, roleMiddleware(admin) a POST/PUT/DELETE
-- [ ] 6.10 - Registrar dependencyRoutes en app.js bajo /api/dependencies
-- [ ] 6.11 - Configurar multer para guardar logos de dependencia en storage/logos/dependencies/ con nombre unico
+- [x] 6.01 - Crear backend/src/models/Dependency.js con metodos: findAll, findById, create, update, deactivate
+- [x] 6.02 - Crear backend/src/controllers/dependencyController.js con metodo listDependencies (GET, todos los usuarios autenticados)
+- [x] 6.03 - Crear backend/src/controllers/dependencyController.js con metodo getDependency (GET /:id)
+- [x] 6.04 - Crear backend/src/controllers/dependencyController.js con metodo createDependency (POST, solo admin)
+- [x] 6.05 - Crear backend/src/controllers/dependencyController.js con metodo updateDependency (PUT /:id, solo admin)
+- [x] 6.06 - Crear backend/src/controllers/dependencyController.js con metodo deactivateDependency (DELETE /:id, solo admin)
+- [x] 6.07 - Crear backend/src/controllers/dependencyController.js con metodo uploadLogo (POST /:id/logo, usando multer, solo admin)
+- [x] 6.08 - Crear backend/src/routes/dependencyRoutes.js con todas las rutas
+- [x] 6.09 - Aplicar authMiddleware a todas las rutas, roleMiddleware(admin) a POST/PUT/DELETE
+- [x] 6.10 - Registrar dependencyRoutes en app.js bajo /api/dependencies
+- [x] 6.11 - Configurar multer para guardar logos de dependencia en storage/logos/dependencies/ con nombre unico
 
 ## Bloque 7: Backend - Modulo de Plantillas de Certificado
 
