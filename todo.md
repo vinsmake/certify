@@ -93,20 +93,20 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 7: Backend - Modulo de Plantillas de Certificado
 
-- [ ] 7.01 - Crear backend/src/models/CertificateTemplate.js con metodos: findAll, findById, findBySlug, findDefault, create, update, deactivate
-- [ ] 7.02 - Crear backend/src/templates/default.html con plantilla HTML/CSS por defecto (certificado horizontal, tamano carta, zonas para logos, datos, QR)
-- [ ] 7.03 - Crear backend/src/templates/formal.html con plantilla formal (bordes decorativos, tipografia serif)
-- [ ] 7.04 - Crear backend/src/templates/modern.html con plantilla moderna (minimalista, colores planos)
-- [ ] 7.05 - Crear backend/src/controllers/templateController.js con metodo listTemplates (GET, usuarios autenticados)
-- [ ] 7.06 - Crear backend/src/controllers/templateController.js con metodo getTemplate (GET /:id, incluye html_content)
-- [ ] 7.07 - Crear backend/src/controllers/templateController.js con metodo createTemplate (POST, solo admin, recibe HTML/CSS)
-- [ ] 7.08 - Crear backend/src/controllers/templateController.js con metodo updateTemplate (PUT /:id, solo admin)
-- [ ] 7.09 - Crear backend/src/controllers/templateController.js con metodo deactivateTemplate (DELETE /:id, solo admin)
-- [ ] 7.10 - Crear backend/src/controllers/templateController.js con metodo previewTemplate (POST /:id/preview, genera PDF con datos de ejemplo y lo devuelve)
-- [ ] 7.11 - Crear backend/src/controllers/templateController.js con metodo setDefault (PUT /:id/default, solo admin)
-- [ ] 7.12 - Crear backend/src/routes/templateRoutes.js con todas las rutas
-- [ ] 7.13 - Aplicar authMiddleware a todas las rutas, roleMiddleware(admin) a POST/PUT/DELETE
-- [ ] 7.14 - Registrar templateRoutes en app.js bajo /api/templates
+- [x] 7.01 - Crear backend/src/models/CertificateTemplate.js con metodos: findAll, findById, findBySlug, findDefault, create, update, deactivate
+- [x] 7.02 - Crear backend/src/templates/default.html con plantilla HTML/CSS por defecto (certificado horizontal, tamano carta, zonas para logos, datos, QR)
+- [x] 7.03 - Crear backend/src/templates/formal.html con plantilla formal (bordes decorativos, tipografia serif)
+- [x] 7.04 - Crear backend/src/templates/modern.html con plantilla moderna (minimalista, colores planos)
+- [x] 7.05 - Crear backend/src/controllers/templateController.js con metodo listTemplates (GET, usuarios autenticados)
+- [x] 7.06 - Crear backend/src/controllers/templateController.js con metodo getTemplate (GET /:id, incluye html_content)
+- [x] 7.07 - Crear backend/src/controllers/templateController.js con metodo createTemplate (POST, solo admin, recibe HTML/CSS)
+- [x] 7.08 - Crear backend/src/controllers/templateController.js con metodo updateTemplate (PUT /:id, solo admin)
+- [x] 7.09 - Crear backend/src/controllers/templateController.js con metodo deactivateTemplate (DELETE /:id, solo admin)
+- [x] 7.10 - Crear backend/src/controllers/templateController.js con metodo previewTemplate (POST /:id/preview, genera PDF con datos de ejemplo y lo devuelve)
+- [x] 7.11 - Crear backend/src/controllers/templateController.js con metodo setDefault (PUT /:id/default, solo admin)
+- [x] 7.12 - Crear backend/src/routes/templateRoutes.js con todas las rutas
+- [x] 7.13 - Aplicar authMiddleware a todas las rutas, roleMiddleware(admin) a POST/PUT/DELETE
+- [x] 7.14 - Registrar templateRoutes en app.js bajo /api/templates
 
 ## Bloque 8: Backend - Modulo de Cursos
 

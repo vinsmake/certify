@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1056px;
+    height: 816px;
+    font-family: '{{font_family}}', 'Lora', serif;
+    background: #fffef9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .certificate {
+    width: 1016px;
+    height: 776px;
+    padding: 30px 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Borde decorativo exterior */
+  .certificate::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 4px double {{primary_color}};
+    pointer-events: none;
+  }
+
+  /* Borde interior decorativo */
+  .certificate::after {
+    content: '';
+    position: absolute;
+    top: 12px; left: 12px; right: 12px; bottom: 12px;
+    border: 1px solid {{secondary_color}};
+    pointer-events: none;
+  }
+
+  /* Esquinas decorativas */
+  .corner { position: absolute; width: 40px; height: 40px; }
+  .corner::before, .corner::after {
+    content: '';
+    position: absolute;
+    background: {{primary_color}};
+  }
+  .corner-tl { top: 20px; left: 20px; }
+  .corner-tl::before { width: 20px; height: 2px; top: 0; left: 0; }
+  .corner-tl::after { width: 2px; height: 20px; top: 0; left: 0; }
+  .corner-tr { top: 20px; right: 20px; }
+  .corner-tr::before { width: 20px; height: 2px; top: 0; right: 0; }
+  .corner-tr::after { width: 2px; height: 20px; top: 0; right: 0; }
+  .corner-bl { bottom: 20px; left: 20px; }
+  .corner-bl::before { width: 20px; height: 2px; bottom: 0; left: 0; }
+  .corner-bl::after { width: 2px; height: 20px; bottom: 0; left: 0; }
+  .corner-br { bottom: 20px; right: 20px; }
+  .corner-br::before { width: 20px; height: 2px; bottom: 0; right: 0; }
+  .corner-br::after { width: 2px; height: 20px; bottom: 0; right: 0; }
+
+  .header { text-align: center; width: 100%; z-index: 1; }
+
+  .logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 10px;
+  }
+  .logos img { max-height: 65px; max-width: 140px; object-fit: contain; }
+
+  .org-name {
+    font-size: 13px;
+    color: {{primary_color}};
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 400;
+  }
+
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: {{secondary_color}};
+    margin: 10px auto;
+  }
+
+  .title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: {{primary_color}};
+    letter-spacing: 6px;
+    text-transform: uppercase;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  .body {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .certify-text {
+    font-size: 13px;
+    color: #777;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .participant-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1a1a1a;
+    border-bottom: 1px solid {{primary_color}};
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+  }
+
+  .document { font-size: 11px; color: #999; margin-bottom: 12px; }
+
+  .description {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.7;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .course-name { font-weight: 700; color: {{primary_color}}; }
+
+  .dependency-logos {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  .dependency-logos img { max-height: 35px; max-width: 75px; object-fit: contain; }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .footer-left, .footer-center, .footer-right { text-align: center; }
+
+  .qr-code img { width: 70px; height: 70px; }
+  .qr-label { font-size: 7px; color: #aaa; margin-top: 3px; }
+  .issue-date { font-size: 11px; color: #777; }
+
+  .instructor-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    border-top: 1px solid {{primary_color}};
+    padding-top: 5px;
+    min-width: 200px;
+  }
+  .instructor-label { font-size: 9px; color: #999; letter-spacing: 1px; }
+
+  .uuid {
+    font-size: 7px;
+    color: #ddd;
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="certificate">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <div class="header">
+      <div class="logos">
+        <img src="{{institutional_logo_base64}}" alt="Logo Institucional" />
+      </div>
+      <div class="org-name">{{organization_name}}</div>
+      <div class="divider"></div>
+      <div class="title">Certificado</div>
+      <div class="subtitle">{{course_type}}</div>
+    </div>
+
+    <div class="body">
+      <div class="certify-text">Otorga el presente certificado a</div>
+      <div class="participant-name">{{participant_name}}</div>
+      <div class="document">C.I. {{document_id}}</div>
+      <div class="description">
+        Por haber completado satisfactoriamente el <span class="course-name">{{course_name}}</span>,
+        con una duracion de <strong>{{course_duration}} horas</strong>.
+      </div>
+      <div class="dependency-logos">{{dependency_logos_html}}</div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">
+        <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
+        <div class="qr-label">Verificacion digital</div>
+      </div>
+      <div class="footer-center">
+        <div class="issue-date">{{issue_date}}</div>
+        <br/>
+        <div class="instructor-name">{{instructor}}</div>
+        <div class="instructor-label">Instructor</div>
+      </div>
+      <div class="footer-right">
+        <div class="issue-date">{{dependency_names}}</div>
+      </div>
+    </div>
+
+    <div class="uuid">{{certificate_uuid}}</div>
+  </div>
+</body>
+</html>
