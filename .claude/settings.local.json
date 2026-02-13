@@ -9,7 +9,9 @@
       "Bash(npm run backup:db:*)",
       "Bash(node -e:*)",
       "Bash(docker compose exec:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(docker compose:*)"
     ]
   }
 }

@@ -59,12 +59,12 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 4: Backend - Modulo de Autenticacion
 
-- [ ] 4.01 - Crear backend/src/models/User.js con metodos: findByEmail, findById, create, update, findAll, findByDependency, deactivate
-- [ ] 4.02 - Crear backend/src/controllers/authController.js con metodo login (validar credenciales, generar JWT incluyendo dependency_id en el payload)
-- [ ] 4.03 - Crear backend/src/controllers/authController.js con metodo getMe (devolver datos del usuario autenticado incluyendo dependencia)
-- [ ] 4.04 - Crear backend/src/routes/authRoutes.js con POST /login y GET /me
-- [ ] 4.05 - Registrar authRoutes en app.js bajo /api/auth
-- [ ] 4.06 - Probar login con el usuario admin por defecto y verificar que devuelve JWT valido
+- [x] 4.01 - Crear backend/src/models/User.js con metodos: findByEmail, findById, create, update, findAll, findByDependency, deactivate
+- [x] 4.02 - Crear backend/src/controllers/authController.js con metodo login (validar credenciales, generar JWT incluyendo dependency_id en el payload)
+- [x] 4.03 - Crear backend/src/controllers/authController.js con metodo getMe (devolver datos del usuario autenticado incluyendo dependencia)
+- [x] 4.04 - Crear backend/src/routes/authRoutes.js con POST /login y GET /me
+- [x] 4.05 - Registrar authRoutes en app.js bajo /api/auth
+- [x] 4.06 - Probar login con el usuario admin por defecto y verificar que devuelve JWT valido
 
 ## Bloque 5: Backend - Modulo de Usuarios
 

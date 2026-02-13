@@ -17,6 +17,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Rutas
+app.use('/api/auth', require('./routes/authRoutes'));
+
 // Middleware global de manejo de errores (debe ser el ultimo)
 app.use(errorHandler);
 
