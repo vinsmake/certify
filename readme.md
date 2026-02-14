@@ -183,9 +183,53 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 ### Modulo: Cursos
 
-**Estado:** Pendiente
+**Estado:** Implementado (CRUD + inscripcion de participantes)
 
-> Se documentara: endpoints CRUD de cursos, filtros por dependencia, paginacion, inscripcion de participantes, asociacion de dependencias colaboradoras.
+Gestiona los cursos/eventos del sistema. Los cursos pertenecen a una dependencia y pueden tener dependencias colaboradoras. Admin ve todos los cursos; emisor solo los de su dependencia.
+
+**Archivos:**
+- `backend/src/models/Course.js` — CRUD de cursos
+- `backend/src/models/CourseDependency.js` — Dependencias colaboradoras
+- `backend/src/models/CourseParticipant.js` — Inscripciones de participantes
+- `backend/src/controllers/courseController.js` — Logica de negocio
+- `backend/src/routes/courseRoutes.js` — Definicion de rutas
+
+**Endpoints CRUD:**
+
+| Metodo | Ruta | Descripcion | Roles |
+|---|---|---|---|
+| GET | `/api/courses` | Lista paginada (filtrada por dependencia) | admin, emisor |
+| GET | `/api/courses/:id` | Detalle con dependencias asociadas | admin, emisor |
+| POST | `/api/courses` | Crear curso | admin, emisor |
+| PUT | `/api/courses/:id` | Actualizar curso | admin, emisor (propio) |
+| DELETE | `/api/courses/:id` | Eliminar curso | admin, emisor (propio) |
+
+**Endpoints de dependencias colaboradoras:**
+
+| Metodo | Ruta | Descripcion |
+|---|---|---|
+| POST | `/api/courses/:id/dependencies` | Agregar dependencia colaboradora |
+| DELETE | `/api/courses/:id/dependencies/:depId` | Quitar dependencia colaboradora |
+
+**Endpoints de inscripcion de participantes:**
+
+| Metodo | Ruta | Descripcion |
+|---|---|---|
+| GET | `/api/courses/:id/participants` | Listar participantes inscritos con su estado |
+| POST | `/api/courses/:id/participants` | Inscribir participantes (array de IDs) |
+| PUT | `/api/courses/:id/participants/:participantId` | Cambiar estado de asistencia |
+
+**Estados de asistencia (`attendance_status`):**
+- `enrolled` — Inscrito (default)
+- `attended` — Asistio
+- `completed` — Completó (requerido para emitir certificado)
+- `absent` — Ausente
+
+**Comportamiento de inscripcion masiva:**
+El endpoint POST `/:id/participants` recibe un array de `participant_ids` y devuelve un objeto con tres listas:
+- `enrolled`: ids inscritos exitosamente
+- `already_enrolled`: ids que ya estaban inscritos
+- `not_found`: ids que no existen en el sistema
 
 ---
 

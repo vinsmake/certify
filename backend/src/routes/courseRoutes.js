@@ -8,6 +8,9 @@ const {
   deleteCourse,
   addCourseDependency,
   removeCourseDependency,
+  listCourseParticipants,
+  enrollParticipants,
+  updateParticipantStatus,
 } = require('../controllers/courseController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const dependencyMiddleware = require('../middlewares/dependencyMiddleware');
@@ -88,6 +91,50 @@ router.delete(
   ],
   validateRequest,
   removeCourseDependency
+);
+
+// -------------------------------------------------------
+// Rutas de inscripcion de participantes a cursos (10.05)
+// -------------------------------------------------------
+
+// GET /:id/participants - listar participantes inscritos
+router.get(
+  '/:id/participants',
+  [param('id').isInt().withMessage('ID invalido')],
+  validateRequest,
+  listCourseParticipants
+);
+
+// POST /:id/participants - inscribir participantes
+// 10.06 - Validaciones: participant_ids requerido y es array no vacio
+router.post(
+  '/:id/participants',
+  [
+    param('id').isInt().withMessage('ID invalido'),
+    body('participant_ids')
+      .isArray({ min: 1 })
+      .withMessage('participant_ids debe ser un array con al menos un elemento'),
+    body('participant_ids.*')
+      .isInt({ min: 1 })
+      .withMessage('Cada participant_id debe ser un entero positivo'),
+  ],
+  validateRequest,
+  enrollParticipants
+);
+
+// PUT /:id/participants/:participantId - cambiar estado de asistencia
+// 10.06 - Validacion: attendance_status debe ser valor valido
+router.put(
+  '/:id/participants/:participantId',
+  [
+    param('id').isInt().withMessage('ID de curso invalido'),
+    param('participantId').isInt().withMessage('ID de participante invalido'),
+    body('attendance_status')
+      .isIn(['enrolled', 'attended', 'completed', 'absent'])
+      .withMessage('attendance_status debe ser: enrolled, attended, completed o absent'),
+  ],
+  validateRequest,
+  updateParticipantStatus
 );
 
 module.exports = router;

@@ -1,5 +1,7 @@
 const Course = require('../models/Course');
 const CourseDependency = require('../models/CourseDependency');
+const CourseParticipant = require('../models/CourseParticipant');
+const Participant = require('../models/Participant');
 
 const listCourses = async (req, res, next) => {
   try {
@@ -136,4 +138,98 @@ const removeCourseDependency = async (req, res, next) => {
   }
 };
 
-module.exports = { listCourses, getCourse, createCourse, updateCourse, deleteCourse, addCourseDependency, removeCourseDependency };
+// 10.02 - GET /:id/participants - listar participantes inscritos en un curso
+const listCourseParticipants = async (req, res, next) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: 'Curso no encontrado' });
+    }
+
+    // Emisor solo puede ver participantes de cursos de su dependencia
+    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+      return res.status(403).json({ error: 'No tienes permisos para ver este curso' });
+    }
+
+    const participants = await CourseParticipant.findByCourse(req.params.id);
+    res.json({ course_id: course.id, course_name: course.name, participants });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 10.03 - POST /:id/participants - inscribir participantes (array de participant_ids)
+const enrollParticipants = async (req, res, next) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: 'Curso no encontrado' });
+    }
+
+    // Emisor solo puede inscribir en cursos de su dependencia
+    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+      return res.status(403).json({ error: 'No tienes permisos para gestionar este curso' });
+    }
+
+    const { participant_ids } = req.body;
+    const results = { enrolled: [], already_enrolled: [], not_found: [] };
+
+    for (const participantId of participant_ids) {
+      // 10.06 - Verificar que el participante existe
+      const participant = await Participant.findById(participantId);
+      if (!participant) {
+        results.not_found.push(participantId);
+        continue;
+      }
+
+      // 10.06 - Verificar que no esta ya inscrito
+      const existing = await CourseParticipant.findEnrollment(req.params.id, participantId);
+      if (existing) {
+        results.already_enrolled.push(participantId);
+        continue;
+      }
+
+      await CourseParticipant.enroll(req.params.id, participantId);
+      results.enrolled.push(participantId);
+    }
+
+    res.status(201).json(results);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 10.04 - PUT /:id/participants/:participantId - cambiar attendance_status
+const updateParticipantStatus = async (req, res, next) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: 'Curso no encontrado' });
+    }
+
+    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+      return res.status(403).json({ error: 'No tienes permisos para gestionar este curso' });
+    }
+
+    const { attendance_status } = req.body;
+    const updated = await CourseParticipant.updateStatus(
+      req.params.id,
+      req.params.participantId,
+      attendance_status
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Inscripcion no encontrada' });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  listCourses, getCourse, createCourse, updateCourse, deleteCourse,
+  addCourseDependency, removeCourseDependency,
+  listCourseParticipants, enrollParticipants, updateParticipantStatus,
+};

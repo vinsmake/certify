@@ -24,7 +24,26 @@
       "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 12: GET /:id/certificates ===\")",
       "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 13: DELETE /:id ===\")",
       "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 14: DELETE inexistente \\(debe dar 404\\) ===\")",
-      "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 15: Sin token \\(debe dar 401\\) ===\")"
+      "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 15: Sin token \\(debe dar 401\\) ===\")",
+      "Bash(T=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MTA5Njg0NiwiZXhwIjoxNzcxMTI1NjQ2fQ.6_2rD-Uji8gc2jS3vxu_qreLJAbuYEB1wclCpO4oq1E\")",
+      "Bash(__NEW_LINE_a695f109341ea7f7__ echo \"=== Verificar que ya existe participante id=1 de bloque 9 ===\")",
+      "Bash(__NEW_LINE_367a84c172328fba__ echo \"\")",
+      "Bash(__NEW_LINE_4c36aa9f23ea05c5__ echo \"=== Participante existente ===\")",
+      "Bash(__NEW_LINE_4c36aa9f23ea05c5__ echo \"=== Crear curso de prueba ===\")",
+      "Bash(__NEW_LINE_342d639529d7c980__ echo \"=== Crear segundo participante ===\")",
+      "Bash(__NEW_LINE_342d639529d7c980__ echo \"=== TEST 1: GET /:id/participants \\(curso vacio\\) ===\")",
+      "Bash(docker restart:*)",
+      "Bash(__NEW_LINE_9954ad33818e1e40__ echo \"=== TEST 1: GET /:id/participants \\(curso vacio\\) ===\")",
+      "Bash(__NEW_LINE_9598fc0a22d6d488__ echo \"=== TEST 2: POST inscribir participantes \\(ids 1 y 3\\) ===\")",
+      "Bash(__NEW_LINE_9598fc0a22d6d488__ echo \"=== TEST 3: POST con participante ya inscrito \\(debe reportar already_enrolled\\) ===\")",
+      "Bash(__NEW_LINE_9598fc0a22d6d488__ echo \"=== TEST 4: POST con participante inexistente \\(debe reportar not_found\\) ===\")",
+      "Bash(__NEW_LINE_9362a16c2795d0e3__ echo \"=== TEST 5: GET participantes inscritos \\(debe mostrar 2\\) ===\")",
+      "Bash(__NEW_LINE_9362a16c2795d0e3__ echo \"=== TEST 6: PUT cambiar status a ''completed'' ===\")",
+      "Bash(__NEW_LINE_9362a16c2795d0e3__ echo \"=== TEST 7: PUT status invalido \\(debe dar 422\\) ===\")",
+      "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 8: POST sin participant_ids \\(debe dar 422\\) ===\")",
+      "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 9: POST participant_ids array vacio \\(debe dar 422\\) ===\")",
+      "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 10: GET curso inexistente \\(debe dar 404\\) ===\")",
+      "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 11: PUT inscripcion inexistente \\(debe dar 404\\) ===\")"
     ]
   }
 }

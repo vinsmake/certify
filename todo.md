@@ -141,12 +141,12 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 10: Backend - Inscripcion de Participantes a Cursos
 
-- [ ] 10.01 - Crear backend/src/models/CourseParticipant.js con metodos: findByCourse, enroll, updateStatus, remove
-- [ ] 10.02 - Crear backend/src/controllers/courseController.js con metodo listCourseParticipants (GET /:id/participants)
-- [ ] 10.03 - Crear backend/src/controllers/courseController.js con metodo enrollParticipants (POST /:id/participants, recibe array de participant_ids)
-- [ ] 10.04 - Crear backend/src/controllers/courseController.js con metodo updateParticipantStatus (PUT /:id/participants/:participantId, cambiar attendance_status)
-- [ ] 10.05 - Agregar las rutas de participantes de curso en courseRoutes.js
-- [ ] 10.06 - Agregar validaciones (verificar que el curso existe, que el participante existe, que no esta ya inscrito)
+- [x] 10.01 - Crear backend/src/models/CourseParticipant.js con metodos: findByCourse, enroll, updateStatus, remove
+- [x] 10.02 - Crear backend/src/controllers/courseController.js con metodo listCourseParticipants (GET /:id/participants)
+- [x] 10.03 - Crear backend/src/controllers/courseController.js con metodo enrollParticipants (POST /:id/participants, recibe array de participant_ids)
+- [x] 10.04 - Crear backend/src/controllers/courseController.js con metodo updateParticipantStatus (PUT /:id/participants/:participantId, cambiar attendance_status)
+- [x] 10.05 - Agregar las rutas de participantes de curso en courseRoutes.js
+- [x] 10.06 - Agregar validaciones (verificar que el curso existe, que el participante existe, que no esta ya inscrito)
 
 ## Bloque 11: Backend - Modulo de Branding
 
