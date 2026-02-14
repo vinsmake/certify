@@ -67,7 +67,18 @@
       "Read(//c/Users/Usuario/Desktop/certify/certify/**)",
       "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 8 - activar 999:\")",
       "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 9 - GET /versions sin token:\")",
-      "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 10 - POST sin campos requeridos:\")"
+      "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 10 - POST sin campos requeridos:\")",
+      "Bash(T=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MTA5Nzk4OCwiZXhwIjoxNzcxMTI2Nzg4fQ.ui58NGuOgDX8pO0LazzZsEFUaSp0jo1B8toSSPlsNRc\")",
+      "Bash(__NEW_LINE_17a9b16f855d2af3__ echo \"=== Estado actual: curso 1 y participante 1 ===\")",
+      "Bash(__NEW_LINE_01f175f76a25e249__ echo \"=== TEST 1: Emitir certificado para participante 1 \\(completed\\) con plantilla 1 ===\")",
+      "Bash(__NEW_LINE_e089f00b024b6c11__ echo \"=== TEST 2: Emitir de nuevo para participante 1 \\(ya existe\\) + participante 3 \\(enrolled\\) ===\")",
+      "Bash(__NEW_LINE_e089f00b024b6c11__ echo \"=== TEST 3: GET /certificates - listar ===\")",
+      "Bash(__NEW_LINE_51ef2091bd624f1b__ echo \"=== TEST 4: GET /certificates/1 - detalle ===\")",
+      "Bash(__NEW_LINE_51ef2091bd624f1b__ echo \"=== TEST 5: GET /certificates/999 - no existe ===\")",
+      "Bash(__NEW_LINE_51ef2091bd624f1b__ echo \"=== TEST 6: POST /emit sin campos requeridos ===\")",
+      "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== TEST 7: GET /certificates/1/download - verificar PDF ===\")",
+      "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== TEST 8: Emitir con plantilla formal \\(id=2\\) - segundo certificado no posible \\(mismo participante\\) ===\")",
+      "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== Emitir con plantilla formal para participante 3 ===\")"
     ]
   }
 }

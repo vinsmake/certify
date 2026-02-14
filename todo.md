@@ -186,19 +186,19 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 14: Backend - Modulo de Certificados (Emision)
 
-- [ ] 14.01 - Crear backend/src/models/Certificate.js con metodos: findAll (con paginacion, filtros por curso/participante/estado/dependencia), findById, findByUuid, create, revoke
-- [ ] 14.02 - Crear backend/src/services/certificateService.js con funcion emitCertificate (genera UUID, obtiene branding activo, obtiene logos de dependencias del curso, obtiene plantilla, genera QR, genera PDF, guarda en BD)
-- [ ] 14.03 - Crear backend/src/services/certificateService.js con funcion emitBulkCertificates (emitir para multiples participantes de un curso con la misma plantilla)
-- [ ] 14.04 - Crear backend/src/controllers/certificateController.js con metodo listCertificates (GET, admin ve todos, emisor solo los de su dependencia)
-- [ ] 14.05 - Crear backend/src/controllers/certificateController.js con metodo getCertificate (GET /:id)
-- [ ] 14.06 - Crear backend/src/controllers/certificateController.js con metodo emitCertificates (POST /emit, recibe course_id, participant_ids y template_id)
-- [ ] 14.07 - Crear backend/src/controllers/certificateController.js con metodo downloadCertificate (GET /:id/download, envia el PDF)
-- [ ] 14.08 - Validar que los participantes seleccionados tienen attendance_status = 'completed' antes de emitir
-- [ ] 14.09 - Validar que no exista ya un certificado valido para el mismo participante y curso
-- [ ] 14.10 - Validar que el usuario emisor tiene acceso al curso (es de su dependencia o es admin)
-- [ ] 14.11 - Crear backend/src/routes/certificateRoutes.js con las rutas de emision y consulta
-- [ ] 14.12 - Aplicar authMiddleware, roleMiddleware y dependencyMiddleware a las rutas de certificados
-- [ ] 14.13 - Registrar certificateRoutes en app.js bajo /api/certificates
+- [x] 14.01 - Crear backend/src/models/Certificate.js con metodos: findAll (con paginacion, filtros por curso/participante/estado/dependencia), findById, findByUuid, create, revoke
+- [x] 14.02 - Crear backend/src/services/certificateService.js con funcion emitCertificate (genera UUID, obtiene branding activo, obtiene logos de dependencias del curso, obtiene plantilla, genera QR, genera PDF, guarda en BD)
+- [x] 14.03 - Crear backend/src/services/certificateService.js con funcion emitBulkCertificates (emitir para multiples participantes de un curso con la misma plantilla)
+- [x] 14.04 - Crear backend/src/controllers/certificateController.js con metodo listCertificates (GET, admin ve todos, emisor solo los de su dependencia)
+- [x] 14.05 - Crear backend/src/controllers/certificateController.js con metodo getCertificate (GET /:id)
+- [x] 14.06 - Crear backend/src/controllers/certificateController.js con metodo emitCertificates (POST /emit, recibe course_id, participant_ids y template_id)
+- [x] 14.07 - Crear backend/src/controllers/certificateController.js con metodo downloadCertificate (GET /:id/download, envia el PDF)
+- [x] 14.08 - Validar que los participantes seleccionados tienen attendance_status = 'completed' antes de emitir
+- [x] 14.09 - Validar que no exista ya un certificado valido para el mismo participante y curso
+- [x] 14.10 - Validar que el usuario emisor tiene acceso al curso (es de su dependencia o es admin)
+- [x] 14.11 - Crear backend/src/routes/certificateRoutes.js con las rutas de emision y consulta
+- [x] 14.12 - Aplicar authMiddleware, roleMiddleware y dependencyMiddleware a las rutas de certificados
+- [x] 14.13 - Registrar certificateRoutes en app.js bajo /api/certificates
 
 ## Bloque 15: Backend - Modulo de Certificados (Revocacion)
 
