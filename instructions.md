@@ -27,6 +27,7 @@ Este documento define el proceso a seguir cada vez que se trabaja en una nueva t
 - Asegurarse de que docker compose up levanta sin errores.
 - Probar manualmente la funcionalidad implementada.
 - Verificar que no se rompio funcionalidad existente.
+- Es importante siempre asegurarse de que todos los puntos realizados funcionen como deberian y devuelvan los resultados que deberian.
 
 ### Paso 5: Actualizar documentacion
 - Actualizar readme.md con la documentacion del modulo/funcionalidad implementada.
