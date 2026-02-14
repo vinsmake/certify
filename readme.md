@@ -617,9 +617,36 @@ Configuracion base del frontend: tema visual, estilos globales e instancia de Ax
 
 ### Modulo: Frontend - Autenticacion
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: pagina de login, contexto de auth (incluye dependency_id y role), rutas protegidas, AdminRoute, manejo de sesion.
+Sistema completo de autenticacion en el frontend: contexto global, persistencia de sesion, login, rutas protegidas y control de acceso por rol.
+
+**Archivos:**
+- `frontend/src/services/authService.js` — Llamadas a `/api/auth/login` y `/api/auth/me`
+- `frontend/src/context/AuthContext.jsx` — Contexto global con `user`, `token`, `loading`, `login`, `logout`
+- `frontend/src/hooks/useAuth.js` — Hook `useAuth()` para acceder al contexto
+- `frontend/src/components/auth/LoginForm.jsx` — Formulario de login con manejo de errores
+- `frontend/src/pages/LoginPage.jsx` — Pagina de login centrada
+- `frontend/src/components/auth/ProtectedRoute.jsx` — Redirige a `/login` si no hay sesion
+- `frontend/src/components/auth/AdminRoute.jsx` — Redirige a `/dashboard` si el rol no es admin
+
+**Flujo de sesion:**
+1. Al cargar la app, se verifica si hay `token` en `localStorage`
+2. Si existe, se llama a `GET /api/auth/me` para validarlo y recuperar el usuario
+3. Si el token es invalido o expirado, se limpia `localStorage` y se redirige a `/login`
+4. Al hacer login exitoso, el token y el objeto usuario se guardan en `localStorage`
+5. Al hacer logout, se limpian ambos valores del `localStorage`
+
+**Payload del usuario** (`user` en el contexto):
+```json
+{ "id": 1, "email": "...", "full_name": "...", "role": "admin|emisor", "dependency_id": null }
+```
+
+**Errores manejados en login:**
+- 401 — "Email o contrasena incorrectos"
+- 422 — campos invalidos
+- Sin respuesta del servidor — error de conexion
+- Otros — mensaje generico
 
 ---
 

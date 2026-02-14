@@ -1,6 +1,7 @@
 # Instrucciones de Trabajo - Flujo de Desarrollo
 IMPORTANTE: NO EJECUTAR NI INSTALAR NADA FUERA DE DOCKER, ABSOLUTAMENTE NADA.
 NOTA: En la raiz hay un temporalCredentials.md donde se encuentran las credenciales necesarias para el testing. Si algun dato cambia o es erroneo, actualizalo.
+NOTA: No utilizar Emojis
 Este documento define el proceso a seguir cada vez que se trabaja en una nueva tarea del proyecto. Debe seguirse en orden estricto.
 
 ## Flujo por cada tarea (item del todo.md)

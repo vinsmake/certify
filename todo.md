@@ -244,16 +244,16 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 19: Frontend - Autenticacion
 
-- [ ] 19.01 - Crear frontend/src/context/AuthContext.jsx con estado de usuario (incluyendo dependency_id y role), token y funciones login/logout
-- [ ] 19.02 - Crear frontend/src/hooks/useAuth.js para acceder al contexto de autenticacion
-- [ ] 19.03 - Crear frontend/src/services/authService.js con funciones login(email, password) y getMe()
-- [ ] 19.04 - Almacenar el JWT en localStorage al hacer login
-- [ ] 19.05 - Al cargar la app, verificar si hay token en localStorage y validarlo con GET /api/auth/me
-- [ ] 19.06 - Crear frontend/src/components/auth/LoginForm.jsx (formulario con email y password)
-- [ ] 19.07 - Crear frontend/src/pages/LoginPage.jsx (pagina completa de login con el formulario centrado)
-- [ ] 19.08 - Implementar manejo de errores en login (credenciales incorrectas, error de servidor)
-- [ ] 19.09 - Crear frontend/src/components/auth/ProtectedRoute.jsx (componente que redirige a login si no hay usuario autenticado)
-- [ ] 19.10 - Crear frontend/src/components/auth/AdminRoute.jsx (componente que verifica que el usuario es admin y redirige si no lo es)
+- [x] 19.01 - Crear frontend/src/context/AuthContext.jsx con estado de usuario (incluyendo dependency_id y role), token y funciones login/logout
+- [x] 19.02 - Crear frontend/src/hooks/useAuth.js para acceder al contexto de autenticacion
+- [x] 19.03 - Crear frontend/src/services/authService.js con funciones login(email, password) y getMe()
+- [x] 19.04 - Almacenar el JWT en localStorage al hacer login
+- [x] 19.05 - Al cargar la app, verificar si hay token en localStorage y validarlo con GET /api/auth/me
+- [x] 19.06 - Crear frontend/src/components/auth/LoginForm.jsx (formulario con email y password)
+- [x] 19.07 - Crear frontend/src/pages/LoginPage.jsx (pagina completa de login con el formulario centrado)
+- [x] 19.08 - Implementar manejo de errores en login (credenciales incorrectas, error de servidor)
+- [x] 19.09 - Crear frontend/src/components/auth/ProtectedRoute.jsx (componente que redirige a login si no hay usuario autenticado)
+- [x] 19.10 - Crear frontend/src/components/auth/AdminRoute.jsx (componente que verifica que el usuario es admin y redirige si no lo es)
 
 ## Bloque 20: Frontend - Layout y Navegacion
 
