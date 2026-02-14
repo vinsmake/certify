@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Certificate = require('../models/Certificate');
 const Course = require('../models/Course');
-const { emitBulkCertificates } = require('../services/certificateService');
+const { emitBulkCertificates, revokeCertificate } = require('../services/certificateService');
 
 const STORAGE_ROOT = '/app/storage';
 
@@ -107,4 +107,34 @@ const downloadCertificate = async (req, res, next) => {
   }
 };
 
-module.exports = { listCertificates, getCertificate, emitCertificates, downloadCertificate };
+// 15.03 - POST /:id/revoke - revocar un certificado
+const revokeCertificateHandler = async (req, res, next) => {
+  try {
+    const cert = await Certificate.findById(req.params.id);
+    if (!cert) {
+      return res.status(404).json({ error: 'Certificado no encontrado' });
+    }
+
+    // 15.05 - Solo se pueden revocar certificados con status 'valid'
+    if (cert.status !== 'valid') {
+      return res.status(409).json({ error: 'Solo se pueden revocar certificados con status valid' });
+    }
+
+    // 15.07 - Solo admin o emisor de la misma dependencia
+    if (req.user.role === 'emisor' && cert.dependency_id !== req.user.dependency_id) {
+      return res.status(403).json({ error: 'No tienes permisos para revocar este certificado' });
+    }
+
+    const { reason } = req.body;
+    const revoked = await revokeCertificate(cert.id, {
+      revokedBy: req.user.userId,
+      reason,
+    });
+
+    res.json({ message: 'Certificado revocado', certificate: revoked });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { listCertificates, getCertificate, emitCertificates, downloadCertificate, revokeCertificateHandler };

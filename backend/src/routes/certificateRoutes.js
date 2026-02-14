@@ -5,6 +5,7 @@ const {
   getCertificate,
   emitCertificates,
   downloadCertificate,
+  revokeCertificateHandler,
 } = require('../controllers/certificateController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const dependencyMiddleware = require('../middlewares/dependencyMiddleware');
@@ -54,6 +55,18 @@ router.get(
   [param('id').isInt().withMessage('ID invalido')],
   validateRequest,
   downloadCertificate
+);
+
+// POST /:id/revoke - revocar un certificado
+// 15.06 - reason es requerido
+router.post(
+  '/:id/revoke',
+  [
+    param('id').isInt().withMessage('ID invalido'),
+    body('reason').notEmpty().withMessage('La razon de revocacion es requerida'),
+  ],
+  validateRequest,
+  revokeCertificateHandler
 );
 
 module.exports = router;

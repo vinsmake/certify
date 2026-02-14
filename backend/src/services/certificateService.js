@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const Certificate = require('../models/Certificate');
+const RevocationLog = require('../models/RevocationLog');
 const BrandingVersion = require('../models/BrandingVersion');
 const CourseDependency = require('../models/CourseDependency');
 const CourseParticipant = require('../models/CourseParticipant');
@@ -115,4 +116,31 @@ const emitBulkCertificates = async ({ courseId, participantIds, templateId, issu
   return results;
 };
 
-module.exports = { emitCertificate, emitBulkCertificates };
+/**
+ * 15.02 - Revoca un certificado y registra el evento en el log de revocaciones.
+ * El PDF nunca se elimina (inmutabilidad).
+ *
+ * @param {number} certificateId
+ * @param {Object} opts - { revokedBy, reason }
+ * @returns {Promise<Object>} certificado actualizado
+ */
+const revokeCertificate = async (certificateId, { revokedBy, reason }) => {
+  // Actualizar status en la tabla certificates
+  const revoked = await Certificate.revoke(certificateId, {
+    revoked_by: revokedBy,
+    revocation_reason: reason,
+  });
+
+  if (!revoked) return null;
+
+  // Registrar en el log de revocaciones
+  await RevocationLog.create({
+    certificate_id: certificateId,
+    revoked_by: revokedBy,
+    reason,
+  });
+
+  return revoked;
+};
+
+module.exports = { emitCertificate, emitBulkCertificates, revokeCertificate };

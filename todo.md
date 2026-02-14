@@ -202,13 +202,13 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 15: Backend - Modulo de Certificados (Revocacion)
 
-- [ ] 15.01 - Crear backend/src/models/RevocationLog.js con metodos: create, findByCertificate
-- [ ] 15.02 - Crear backend/src/services/certificateService.js con funcion revokeCertificate (cambiar status, registrar en log)
-- [ ] 15.03 - Crear backend/src/controllers/certificateController.js con metodo revokeCertificate (POST /:id/revoke, requiere reason)
-- [ ] 15.04 - Agregar la ruta de revocacion en certificateRoutes.js
-- [ ] 15.05 - Validar que solo se pueden revocar certificados con status 'valid'
-- [ ] 15.06 - Validar que se proporciona una razon de revocacion
-- [ ] 15.07 - Validar que el usuario tiene permiso para revocar (admin o emisor de la misma dependencia)
+- [x] 15.01 - Crear backend/src/models/RevocationLog.js con metodos: create, findByCertificate
+- [x] 15.02 - Crear backend/src/services/certificateService.js con funcion revokeCertificate (cambiar status, registrar en log)
+- [x] 15.03 - Crear backend/src/controllers/certificateController.js con metodo revokeCertificate (POST /:id/revoke, requiere reason)
+- [x] 15.04 - Agregar la ruta de revocacion en certificateRoutes.js
+- [x] 15.05 - Validar que solo se pueden revocar certificados con status 'valid'
+- [x] 15.06 - Validar que se proporciona una razon de revocacion
+- [x] 15.07 - Validar que el usuario tiene permiso para revocar (admin o emisor de la misma dependencia)
 
 ## Bloque 16: Backend - Modulo de Verificacion Publica
 

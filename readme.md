@@ -404,17 +404,97 @@ Dimensiones de viewport fijo (Puppeteer):
 
 ### Modulo: Emision de Certificados
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: flujo de emision (seleccion de curso, plantilla, participantes), validaciones, almacenamiento en BD, descarga de PDF.
+Emision de certificados digitales con PDF generado desde plantillas HTML/CSS. Soporta emision masiva (multiples participantes a la vez) con validaciones de elegibilidad.
+
+**Archivos:**
+- `backend/src/models/Certificate.js` — Modelo con CRUD y filtros
+- `backend/src/services/certificateService.js` — Logica de emision y revocacion
+- `backend/src/controllers/certificateController.js` — Controladores
+- `backend/src/routes/certificateRoutes.js` — Rutas
+
+**Endpoints:**
+
+| Metodo | Ruta | Descripcion | Roles |
+|---|---|---|---|
+| GET | `/api/certificates` | Lista paginada con filtros | admin, emisor |
+| GET | `/api/certificates/:id` | Detalle de un certificado | admin, emisor |
+| POST | `/api/certificates/emit` | Emitir certificados (masivo) | admin, emisor |
+| GET | `/api/certificates/:id/download` | Descargar PDF del certificado | admin, emisor |
+| POST | `/api/certificates/:id/revoke` | Revocar un certificado | admin, emisor |
+
+**Flujo de emision (POST /emit):**
+1. Verificar que el curso existe y el emisor tiene acceso
+2. Por cada participante: verificar que no tiene certificado valido (14.09) y que tiene `attendance_status = 'completed'` (14.08)
+3. Obtener branding activo, dependencias del curso, generar UUID, QR, renderizar HTML, generar PDF
+4. Guardar PDF en `storage/certificates/` y registrar en BD con `status = 'valid'`
+5. Devolver resultado por participante: `{emitted, already_exists, errors}`
+
+**Filtros disponibles (GET /):**
+- `course_id`, `participant_id`, `status` (`valid`/`revoked`)
+- `page`, `limit`
+- Filtrado automatico por dependencia segun rol (emisor solo ve los de su dependencia)
 
 ---
 
 ### Modulo: Revocacion de Certificados
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: flujo de revocacion, log de revocacion, validaciones de permisos por dependencia.
+Revocacion de certificados con registro de auditoria en log. Los PDFs no se eliminan (inmutabilidad). Solo se pueden revocar certificados con `status = 'valid'`.
+
+**Archivos:**
+- `backend/src/models/RevocationLog.js` — Log de revocaciones
+- `backend/src/services/certificateService.js` — Funcion `revokeCertificate`
+- `backend/src/controllers/certificateController.js` — Handler de revocacion
+- `backend/src/routes/certificateRoutes.js` — Ruta POST /:id/revoke
+
+**Endpoint:**
+
+| Metodo | Ruta | Descripcion | Roles |
+|---|---|---|---|
+| POST | `/api/certificates/:id/revoke` | Revocar certificado (requiere reason) | admin, emisor (propio) |
+
+**Validaciones:**
+- El certificado debe existir (404 si no)
+- El certificado debe tener `status = 'valid'` (409 si ya esta revocado)
+- Se debe proporcionar una razon (`reason` no vacio, 422 si falta)
+- El emisor solo puede revocar certificados de su propia dependencia (403 si no)
+
+**Flujo de revocacion:**
+1. Actualizar `status = 'revoked'` en tabla `certificates` (con `revocation_reason`, `revoked_at`, `revoked_by`)
+2. Insertar registro en tabla `revocation_log` (con `certificate_id`, `revoked_by`, `reason`)
+
+**Ejemplo de uso:**
+
+```bash
+# Revocar un certificado
+POST /api/certificates/5/revoke
+Authorization: Bearer <token>
+{
+  "reason": "Emitido con error en datos del participante"
+}
+
+# Respuesta exitosa (200)
+{
+  "message": "Certificado revocado",
+  "certificate": {
+    "id": 5,
+    "uuid": "...",
+    "status": "revoked",
+    "revocation_reason": "Emitido con error en datos del participante",
+    "revoked_at": "2026-02-14T19:48:01.019Z",
+    "revoked_by": 1
+  }
+}
+
+# Error: certificado ya revocado (409)
+{ "error": "Solo se pueden revocar certificados con status valid" }
+
+# Error: sin razon (422)
+{ "error": "Datos de entrada invalidos", "details": [...] }
+```
 
 ---
 
