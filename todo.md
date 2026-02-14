@@ -272,16 +272,16 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 21: Frontend - Componentes UI Reutilizables
 
-- [ ] 21.01 - Crear frontend/src/components/ui/Button.jsx (botones con variantes: primary, secondary, danger, ghost)
-- [ ] 21.02 - Crear frontend/src/components/ui/Input.jsx (input con label, placeholder, validacion visual de error)
-- [ ] 21.03 - Crear frontend/src/components/ui/Modal.jsx (modal generico con overlay, titulo, contenido y botones)
-- [ ] 21.04 - Crear frontend/src/components/ui/Table.jsx (tabla generica con headers, filas y soporte para acciones)
-- [ ] 21.05 - Crear frontend/src/components/ui/SearchBar.jsx (barra de busqueda con icono y debounce)
-- [ ] 21.06 - Crear frontend/src/components/ui/Pagination.jsx (controles de paginacion: anterior, paginas, siguiente)
-- [ ] 21.07 - Crear frontend/src/components/ui/Alert.jsx (mensajes de exito, error, advertencia e informacion)
-- [ ] 21.08 - Crear frontend/src/components/ui/Select.jsx (selector dropdown reutilizable)
-- [ ] 21.09 - Crear frontend/src/components/ui/Badge.jsx (etiquetas de estado: activo, revocado, pendiente)
-- [ ] 21.10 - Crear frontend/src/hooks/useFetch.js (hook generico para peticiones con estado de loading, data, error)
+- [x] 21.01 - Crear frontend/src/components/ui/Button.jsx (botones con variantes: primary, secondary, danger, ghost)
+- [x] 21.02 - Crear frontend/src/components/ui/Input.jsx (input con label, placeholder, validacion visual de error)
+- [x] 21.03 - Crear frontend/src/components/ui/Modal.jsx (modal generico con overlay, titulo, contenido y botones)
+- [x] 21.04 - Crear frontend/src/components/ui/Table.jsx (tabla generica con headers, filas y soporte para acciones)
+- [x] 21.05 - Crear frontend/src/components/ui/SearchBar.jsx (barra de busqueda con icono y debounce)
+- [x] 21.06 - Crear frontend/src/components/ui/Pagination.jsx (controles de paginacion: anterior, paginas, siguiente)
+- [x] 21.07 - Crear frontend/src/components/ui/Alert.jsx (mensajes de exito, error, advertencia e informacion)
+- [x] 21.08 - Crear frontend/src/components/ui/Select.jsx (selector dropdown reutilizable)
+- [x] 21.09 - Crear frontend/src/components/ui/Badge.jsx (etiquetas de estado: activo, revocado, pendiente)
+- [x] 21.10 - Crear frontend/src/hooks/useFetch.js (hook generico para peticiones con estado de loading, data, error)
 
 ## Bloque 22: Frontend - Dashboard
 

@@ -693,6 +693,34 @@ El header muestra `dependency_name` cuando el usuario tiene dependencia asignada
 
 ---
 
+### Modulo: Frontend - Componentes UI Reutilizables
+
+**Estado:** Implementado
+
+Biblioteca de componentes UI usados en todos los modulos del frontend.
+
+**Componentes (`frontend/src/components/ui/`):**
+
+| Componente | Descripcion |
+|---|---|
+| `Button.jsx` | Variantes: `primary`, `secondary`, `danger`, `ghost`. Props: `size` (sm/md/lg), `loading`, `disabled` |
+| `Input.jsx` | Campo de texto con `label`, `error`, `required`. Borde rojo cuando `error` esta presente |
+| `Modal.jsx` | Overlay con cierre por Escape o click exterior. Props: `isOpen`, `onClose`, `title`, `footer`, `size` (sm/md/lg) |
+| `Table.jsx` | `columns: [{key, label, render?, width?}]`, `data`, `loading`, `emptyText`, `onRowClick` |
+| `SearchBar.jsx` | Input con debounce de 350ms. Prop `onSearch(value)`. Boton X para limpiar |
+| `Pagination.jsx` | Anterior / paginas numeradas (ventana de 5) / Siguiente. Muestra "X-Y de Total" |
+| `Alert.jsx` | Tipos: `success`, `error`, `warning`, `info`. Prop `dismissible` para mostrar boton de cierre |
+| `Select.jsx` | Dropdown con `label`, `options: [{value, label}]`, `error`, `placeholder` |
+| `Badge.jsx` | Estados pre-definidos: `valid`, `revoked`, `enrolled`, `attended`, `completed`, `absent`, `active`, `inactive`, `admin`, `emisor` |
+
+**Hook (`frontend/src/hooks/`):**
+
+| Hook | Descripcion |
+|---|---|
+| `useFetch(url, options)` | Retorna `{data, loading, error, refetch}`. Llama a la API automaticamente al montar. Soporta `params`, `method`, `body`, `skip` |
+
+---
+
 ### Modulo: Frontend - Dashboard
 
 **Estado:** Pendiente
