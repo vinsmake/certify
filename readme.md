@@ -500,9 +500,55 @@ Authorization: Bearer <token>
 
 ### Modulo: Verificacion Publica
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: endpoint publico de verificacion, pagina de verificacion, estados posibles, logos institucional y de dependencias.
+Endpoint publico que permite verificar la autenticidad y vigencia de cualquier certificado a partir de su UUID (escaneando el QR). No requiere autenticacion.
+
+**Archivos:**
+- `backend/src/controllers/verificationController.js` — Controlador
+- `backend/src/routes/verificationRoutes.js` — Ruta publica
+
+**Endpoint:**
+
+| Metodo | Ruta | Descripcion | Auth |
+|---|---|---|---|
+| GET | `/api/verify/:uuid` | Verificar certificado por UUID | Publico |
+
+**Respuesta — Certificado VALIDO:**
+```json
+{
+  "status": "VALIDO",
+  "certificate": {
+    "uuid": "...",
+    "issue_date": "...",
+    "participant": { "full_name": "...", "document_id": "...", "organization": "...", "position": "..." },
+    "course": { "name": "...", "type": "...", "duration_hours": 40, "instructor": "...", "start_date": "...", "end_date": "..." },
+    "branding": { "version_label": "...", "logo_path": "...", "organization_name": "...", "primary_color": "...", "secondary_color": "...", "font_family": "..." },
+    "dependencies": [{ "name": "...", "abbreviation": "...", "logo_path": "...", "display_order": 1 }]
+  }
+}
+```
+
+**Respuesta — Certificado REVOCADO:**
+```json
+{
+  "status": "REVOCADO",
+  "certificate": {
+    "uuid": "...",
+    "issue_date": "...",
+    "revoked_at": "...",
+    "revocation_reason": "...",
+    "participant": { ... },
+    "course": { ... },
+    "branding": { ... },
+    "dependencies": [ ... ]
+  }
+}
+```
+
+**Errores:**
+- `404` — `{ "error": "CERTIFICADO NO ENCONTRADO" }` si el UUID no existe
+- `422` — Validacion fallida si el formato del UUID es invalido
 
 ---
 

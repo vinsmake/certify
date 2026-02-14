@@ -212,15 +212,15 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 16: Backend - Modulo de Verificacion Publica
 
-- [ ] 16.01 - Crear backend/src/controllers/verificationController.js con metodo verifyCertificate (GET /:uuid)
-- [ ] 16.02 - El endpoint debe ser publico (sin authMiddleware)
-- [ ] 16.03 - Si el certificado existe y es valido: devolver datos publicos (nombre participante, curso, fecha, estado "VALIDO", logos de dependencias)
-- [ ] 16.04 - Si el certificado esta revocado: devolver estado "REVOCADO" con fecha de revocacion
-- [ ] 16.05 - Si el UUID no existe: devolver 404 con mensaje "CERTIFICADO NO ENCONTRADO"
-- [ ] 16.06 - Incluir la version de branding con la que fue emitido (para mostrar logo institucional correcto)
-- [ ] 16.07 - Incluir los logos de las dependencias del curso (de la tabla course_dependencies)
-- [ ] 16.08 - Crear backend/src/routes/verificationRoutes.js con GET /:uuid
-- [ ] 16.09 - Registrar verificationRoutes en app.js bajo /api/verify
+- [x] 16.01 - Crear backend/src/controllers/verificationController.js con metodo verifyCertificate (GET /:uuid)
+- [x] 16.02 - El endpoint debe ser publico (sin authMiddleware)
+- [x] 16.03 - Si el certificado existe y es valido: devolver datos publicos (nombre participante, curso, fecha, estado "VALIDO", logos de dependencias)
+- [x] 16.04 - Si el certificado esta revocado: devolver estado "REVOCADO" con fecha de revocacion
+- [x] 16.05 - Si el UUID no existe: devolver 404 con mensaje "CERTIFICADO NO ENCONTRADO"
+- [x] 16.06 - Incluir la version de branding con la que fue emitido (para mostrar logo institucional correcto)
+- [x] 16.07 - Incluir los logos de las dependencias del curso (de la tabla course_dependencies)
+- [x] 16.08 - Crear backend/src/routes/verificationRoutes.js con GET /:uuid
+- [x] 16.09 - Registrar verificationRoutes en app.js bajo /api/verify
 
 ## Bloque 17: Backend - Estadisticas y Panel Admin
 
