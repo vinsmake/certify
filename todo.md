@@ -235,12 +235,12 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 18: Frontend - Configuracion Base
 
-- [ ] 18.01 - Crear frontend/src/config/theme.js con colores, fuentes y titulo de la aplicacion
-- [ ] 18.02 - Crear frontend/src/styles/global.css con reset CSS y estilos base (tipografia, colores desde theme)
-- [ ] 18.03 - Importar global.css en main.jsx
-- [ ] 18.04 - Crear frontend/src/services/api.js con instancia de Axios configurada (baseURL desde env, interceptores para JWT)
-- [ ] 18.05 - Configurar interceptor de Axios para agregar token JWT en header Authorization
-- [ ] 18.06 - Configurar interceptor de Axios para redirigir a login si recibe 401
+- [x] 18.01 - Crear frontend/src/config/theme.js con colores, fuentes y titulo de la aplicacion
+- [x] 18.02 - Crear frontend/src/styles/global.css con reset CSS y estilos base (tipografia, colores desde theme)
+- [x] 18.03 - Importar global.css en main.jsx
+- [x] 18.04 - Crear frontend/src/services/api.js con instancia de Axios configurada (baseURL desde env, interceptores para JWT)
+- [x] 18.05 - Configurar interceptor de Axios para agregar token JWT en header Authorization
+- [x] 18.06 - Configurar interceptor de Axios para redirigir a login si recibe 401
 
 ## Bloque 19: Frontend - Autenticacion
 

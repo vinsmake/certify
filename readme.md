@@ -594,6 +594,27 @@ Los eventos se devuelven ordenados por fecha descendente (mas recientes primero)
 
 ---
 
+### Modulo: Frontend - Configuracion Base
+
+**Estado:** Implementado
+
+Configuracion base del frontend: tema visual, estilos globales e instancia de Axios.
+
+**Archivos:**
+- `frontend/src/config/theme.js` — Paleta de colores, fuentes, radios, sombras y transiciones
+- `frontend/src/styles/global.css` — Reset CSS y variables CSS derivadas del tema
+- `frontend/src/services/api.js` — Instancia Axios con interceptores JWT y manejo de 401
+
+**Variables CSS disponibles** (desde `global.css`):
+`--color-primary`, `--color-danger`, `--color-success`, `--color-background`, `--color-surface`, `--color-border`, `--color-text-primary`, `--color-sidebar-bg`, `--font-sans`, `--radius-md`, `--shadow-md`, etc.
+
+**Instancia Axios (`api.js`):**
+- `baseURL`: `VITE_API_URL` del .env (default `http://localhost:3000/api`)
+- Request interceptor: agrega `Authorization: Bearer <token>` si hay token en `localStorage`
+- Response interceptor: si recibe 401, limpia `localStorage` y redirige a `/login`
+
+---
+
 ### Modulo: Frontend - Autenticacion
 
 **Estado:** Pendiente
