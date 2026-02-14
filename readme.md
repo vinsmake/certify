@@ -293,9 +293,59 @@ Authorization: Bearer <token>
 
 ### Modulo: Branding Versionado
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: endpoints de branding institucional, sistema de versiones, subida de logos, activacion, independencia de logos de dependencias.
+Sistema de versionado del branding institucional. Cada version registra el logo, colores y fuente vigentes al momento de emision. Los certificados ya emitidos nunca se ven afectados por cambios de branding posteriores.
+
+**Reglas:**
+- Solo puede haber una version activa a la vez
+- Al activar una version, todas las demas se desactivan automaticamente
+- Nunca se eliminan versiones anteriores (inmutabilidad historica)
+- Los logos se guardan en `storage/logos/branding/` con nombre unico (UUID)
+
+**Archivos:**
+- `backend/src/models/BrandingVersion.js` — Modelo con acceso a BD
+- `backend/src/config/branding.js` — Helper para obtener branding activo
+- `backend/src/services/brandingService.js` — Logica de creacion, activacion y logo
+- `backend/src/controllers/brandingController.js` — Controladores
+- `backend/src/routes/brandingRoutes.js` — Rutas
+
+**Endpoints:**
+
+| Metodo | Ruta | Descripcion | Auth |
+|---|---|---|---|
+| GET | `/api/branding/active` | Obtener branding activo | Publico |
+| GET | `/api/branding/versions` | Listar todas las versiones | admin |
+| POST | `/api/branding/versions` | Crear nueva version | admin |
+| PUT | `/api/branding/versions/:id/activate` | Activar una version | admin |
+| POST | `/api/branding/versions/:id/logo` | Subir logo institucional | admin |
+
+**Ejemplo de uso:**
+
+```bash
+# Ver branding activo (sin autenticacion)
+GET /api/branding/active
+
+# Crear nueva version de branding
+POST /api/branding/versions
+Authorization: Bearer <token>
+{
+  "version_label": "v2",
+  "primary_color": "#2d3748",
+  "secondary_color": "#4a5568",
+  "font_family": "Open Sans",
+  "organization_name": "Mi Institucion"
+}
+
+# Activar la nueva version
+PUT /api/branding/versions/2/activate
+Authorization: Bearer <token>
+
+# Subir logo institucional (multipart/form-data)
+POST /api/branding/versions/2/logo
+Authorization: Bearer <token>
+Form: logo=<archivo>
+```
 
 ---
 

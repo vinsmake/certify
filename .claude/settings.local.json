@@ -43,7 +43,31 @@
       "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 8: POST sin participant_ids \\(debe dar 422\\) ===\")",
       "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 9: POST participant_ids array vacio \\(debe dar 422\\) ===\")",
       "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 10: GET curso inexistente \\(debe dar 404\\) ===\")",
-      "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 11: PUT inscripcion inexistente \\(debe dar 404\\) ===\")"
+      "Bash(__NEW_LINE_b039e49d2a0295b5__ echo \"=== TEST 11: PUT inscripcion inexistente \\(debe dar 404\\) ===\")",
+      "Bash(docker exec:*)",
+      "Bash(T=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MTA5NzIwOSwiZXhwIjoxNzcxMTI2MDA5fQ.VKhOABBKb2tU1TOJ0dchsgfsbAvTylNdLOkQ0gIg-lQ\")",
+      "Bash(__NEW_LINE_88d134f6e2f4824d__ echo \"=== TEST 1: GET /api/branding/active \\(publico, sin token\\) ===\")",
+      "Bash(__NEW_LINE_88d134f6e2f4824d__ echo \"=== TEST 2: GET /api/branding/versions \\(admin\\) ===\")",
+      "Bash(__NEW_LINE_57364e05a00745ca__ echo \"=== TEST 3: POST /versions crear nueva version ===\")",
+      "Bash(__NEW_LINE_57364e05a00745ca__ echo \"=== TEST 4: POST /versions con color invalido \\(debe dar 422\\) ===\")",
+      "Bash(__NEW_LINE_47d70c187f64503f__ echo \"=== TEST 5: PUT /versions/2/activate - activar v2 ===\")",
+      "Bash(__NEW_LINE_47d70c187f64503f__ echo \"=== TEST 6: GET /active - debe mostrar v2 ahora ===\")",
+      "Bash(__NEW_LINE_47d70c187f64503f__ echo \"=== TEST 7: GET /versions - v1 inactiva, v2 activa ===\")",
+      "Bash(__NEW_LINE_5e7eafd679d0d69f__ echo \"=== TEST 5: activar v2 ===\")",
+      "Bash(__NEW_LINE_5e7eafd679d0d69f__ echo \"=== TEST 6: GET active debe ser v2 ===\")",
+      "Bash(__NEW_LINE_5e7eafd679d0d69f__ echo \"=== TEST 7: versiones \\(v1 inactiva, v2 activa\\) ===\")",
+      "Bash(__NEW_LINE_903f5b28c8fcd469__ echo \"=== TEST 8: activar version inexistente \\(debe dar 404\\) ===\")",
+      "Bash(__NEW_LINE_903f5b28c8fcd469__ echo \"=== TEST 9: GET /active sin token \\(debe funcionar\\) ===\")",
+      "Bash(__NEW_LINE_c8813a491930e34b__ echo \"\")",
+      "Bash(__NEW_LINE_c8813a491930e34b__ echo \"=== TEST 11: POST sin campos requeridos \\(debe dar 422\\) ===\")",
+      "Bash(__NEW_LINE_a3d216b3d788ecfe__ echo \"=== TEST 8: activar version inexistente ===\")",
+      "Bash(__NEW_LINE_a3d216b3d788ecfe__ echo \"=== TEST 9: GET /versions sin token ===\")",
+      "Bash(__NEW_LINE_a3d216b3d788ecfe__ echo \"=== TEST 10: POST sin campos requeridos ===\")",
+      "Bash(__NEW_LINE_a3d216b3d788ecfe__ echo \"=== TEST 11: subir logo con archivo de imagen ===\")",
+      "Read(//c/Users/Usuario/Desktop/certify/certify/**)",
+      "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 8 - activar 999:\")",
+      "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 9 - GET /versions sin token:\")",
+      "Bash(__NEW_LINE_419a2abb98aabe64__ echo \"TEST 10 - POST sin campos requeridos:\")"
     ]
   }
 }

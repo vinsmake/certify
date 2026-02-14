@@ -24,6 +24,7 @@ app.use('/api/dependencies', require('./routes/dependencyRoutes'));
 app.use('/api/templates', require('./routes/templateRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/participants', require('./routes/participantRoutes'));
+app.use('/api/branding', require('./routes/brandingRoutes'));
 
 // Middleware global de manejo de errores (debe ser el ultimo)
 app.use(errorHandler);

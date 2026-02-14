@@ -150,18 +150,18 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 11: Backend - Modulo de Branding
 
-- [ ] 11.01 - Crear backend/src/models/BrandingVersion.js con metodos: findAll, findById, findActive, create, activate, deactivateAll
-- [ ] 11.02 - Crear backend/src/config/branding.js para obtener la configuracion de branding activa
-- [ ] 11.03 - Crear backend/src/services/brandingService.js con logica para crear version, activar version y subir logo institucional
-- [ ] 11.04 - Crear backend/src/controllers/brandingController.js con metodo getActive (GET /active)
-- [ ] 11.05 - Crear backend/src/controllers/brandingController.js con metodo listVersions (GET /versions)
-- [ ] 11.06 - Crear backend/src/controllers/brandingController.js con metodo createVersion (POST /versions)
-- [ ] 11.07 - Crear backend/src/controllers/brandingController.js con metodo activateVersion (PUT /versions/:id/activate)
-- [ ] 11.08 - Crear backend/src/controllers/brandingController.js con metodo uploadLogo (POST /versions/:id/logo, usando multer)
-- [ ] 11.09 - Crear backend/src/routes/brandingRoutes.js con todas las rutas
-- [ ] 11.10 - Aplicar authMiddleware y roleMiddleware(admin) a las rutas de branding (excepto GET /active que es publico)
-- [ ] 11.11 - Registrar brandingRoutes en app.js bajo /api/branding
-- [ ] 11.12 - Configurar multer para guardar logos institucionales en storage/logos/branding/ con nombre unico
+- [x] 11.01 - Crear backend/src/models/BrandingVersion.js con metodos: findAll, findById, findActive, create, activate, deactivateAll
+- [x] 11.02 - Crear backend/src/config/branding.js para obtener la configuracion de branding activa
+- [x] 11.03 - Crear backend/src/services/brandingService.js con logica para crear version, activar version y subir logo institucional
+- [x] 11.04 - Crear backend/src/controllers/brandingController.js con metodo getActive (GET /active)
+- [x] 11.05 - Crear backend/src/controllers/brandingController.js con metodo listVersions (GET /versions)
+- [x] 11.06 - Crear backend/src/controllers/brandingController.js con metodo createVersion (POST /versions)
+- [x] 11.07 - Crear backend/src/controllers/brandingController.js con metodo activateVersion (PUT /versions/:id/activate)
+- [x] 11.08 - Crear backend/src/controllers/brandingController.js con metodo uploadLogo (POST /versions/:id/logo, usando multer)
+- [x] 11.09 - Crear backend/src/routes/brandingRoutes.js con todas las rutas
+- [x] 11.10 - Aplicar authMiddleware y roleMiddleware(admin) a las rutas de branding (excepto GET /active que es publico)
+- [x] 11.11 - Registrar brandingRoutes en app.js bajo /api/branding
+- [x] 11.12 - Configurar multer para guardar logos institucionales en storage/logos/branding/ con nombre unico
 
 ## Bloque 12: Backend - Generacion de QR
 
