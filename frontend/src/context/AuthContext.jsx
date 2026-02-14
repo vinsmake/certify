@@ -32,12 +32,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // 19.04 - Login: guardar token y usuario en localStorage y estado
+  // 19.04 - Login: guardar token, luego obtener datos completos via getMe (incluye dependency_name)
   const login = useCallback(async (email, password) => {
-    const { token: newToken, user: userData } = await authService.login(email, password);
+    const { token: newToken } = await authService.login(email, password);
     localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(userData));
     setToken(newToken);
+    const userData = await authService.getMe();
+    localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     return userData;
   }, []);

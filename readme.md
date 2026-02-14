@@ -652,9 +652,44 @@ Sistema completo de autenticacion en el frontend: contexto global, persistencia 
 
 ### Modulo: Frontend - Layout y Navegacion
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: estructura del layout, sidebar diferenciado por rol (admin ve todo, emisor ve su dependencia), header con nombre de dependencia, sistema de rutas.
+Layout principal de la aplicacion con header fijo, sidebar lateral y area de contenido. La navegacion se adapta al rol del usuario.
+
+**Archivos:**
+- `frontend/src/components/layout/Header.jsx` — Barra superior fija con titulo, usuario, dependencia y logout
+- `frontend/src/components/layout/Sidebar.jsx` — Menu lateral con items por rol y estado activo
+- `frontend/src/components/layout/Footer.jsx` — Pie de pagina simple
+- `frontend/src/components/layout/AppLayout.jsx` — Wrapper que combina Header + Sidebar + Outlet + Footer
+
+**Estructura visual:**
+```
++--------------------------------------------+
+|  Header (fijo, 60px)                       |
++----------+---------------------------------+
+| Sidebar  |  <main>                         |
+| (220px,  |    Outlet (contenido de ruta)   |
+|  fijo)   |                                 |
+|          |  Footer                         |
++----------+---------------------------------+
+```
+
+**Sistema de rutas (App.jsx):**
+- `/login` — Publica
+- `/verificar/:uuid` — Publica (verificacion de certificados)
+- Rutas protegidas (requieren login) con `AppLayout`:
+  - `/dashboard`, `/cursos`, `/participantes`, `/certificados`, `/emitir`
+- Rutas solo admin (requieren `role='admin'`):
+  - `/admin/dependencias`, `/admin/plantillas`, `/admin/usuarios`, `/admin/eventos`
+  - `/admin/certificados-global`, `/admin/actividad`, `/configuracion`
+
+**Menu sidebar por rol:**
+- Admin: todas las rutas comunes + seccion "Administracion" con las rutas de admin
+- Emisor: solo rutas comunes (Dashboard, Cursos, Participantes, Certificados, Emitir)
+
+La navegacion activa usa `NavLink` de react-router-dom: la ruta activa se resalta con borde izquierdo azul y fondo mas claro.
+
+El header muestra `dependency_name` cuando el usuario tiene dependencia asignada, o "Administrador" para admins sin dependencia.
 
 ---
 

@@ -257,18 +257,18 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 20: Frontend - Layout y Navegacion
 
-- [ ] 20.01 - Crear frontend/src/components/layout/Header.jsx (barra superior con titulo de la app, nombre del usuario, nombre de la dependencia, boton de logout)
-- [ ] 20.02 - Crear frontend/src/components/layout/Sidebar.jsx (menu lateral con enlaces segun rol)
-- [ ] 20.03 - Menu admin: Dashboard Global, Dependencias, Plantillas, Usuarios, Cursos, Participantes, Certificados, Emitir, Configuracion
-- [ ] 20.04 - Menu emisor: Dashboard, Cursos (de su dependencia), Participantes, Certificados (de su dependencia), Emitir
-- [ ] 20.06 - Crear frontend/src/components/layout/Footer.jsx (pie de pagina simple)
-- [ ] 20.07 - Crear layout principal que combine Header + Sidebar + contenido principal + Footer
-- [ ] 20.08 - Configurar React Router en App.jsx con todas las rutas protegidas y publicas
-- [ ] 20.09 - Ruta publica: /verificar/:uuid (pagina de verificacion)
-- [ ] 20.10 - Ruta publica: /login (pagina de login)
-- [ ] 20.11 - Rutas protegidas generales: /dashboard, /cursos, /participantes, /certificados, /emitir
-- [ ] 20.12 - Rutas solo admin: /admin/dependencias, /admin/plantillas, /admin/usuarios, /admin/eventos, /admin/certificados-global, /admin/actividad, /configuracion
-- [ ] 20.13 - Implementar navegacion activa en el sidebar (resaltar la opcion actual)
+- [x] 20.01 - Crear frontend/src/components/layout/Header.jsx (barra superior con titulo de la app, nombre del usuario, nombre de la dependencia, boton de logout)
+- [x] 20.02 - Crear frontend/src/components/layout/Sidebar.jsx (menu lateral con enlaces segun rol)
+- [x] 20.03 - Menu admin: Dashboard Global, Dependencias, Plantillas, Usuarios, Cursos, Participantes, Certificados, Emitir, Configuracion
+- [x] 20.04 - Menu emisor: Dashboard, Cursos (de su dependencia), Participantes, Certificados (de su dependencia), Emitir
+- [x] 20.06 - Crear frontend/src/components/layout/Footer.jsx (pie de pagina simple)
+- [x] 20.07 - Crear layout principal que combine Header + Sidebar + contenido principal + Footer
+- [x] 20.08 - Configurar React Router en App.jsx con todas las rutas protegidas y publicas
+- [x] 20.09 - Ruta publica: /verificar/:uuid (pagina de verificacion)
+- [x] 20.10 - Ruta publica: /login (pagina de login)
+- [x] 20.11 - Rutas protegidas generales: /dashboard, /cursos, /participantes, /certificados, /emitir
+- [x] 20.12 - Rutas solo admin: /admin/dependencias, /admin/plantillas, /admin/usuarios, /admin/eventos, /admin/certificados-global, /admin/actividad, /configuracion
+- [x] 20.13 - Implementar navegacion activa en el sidebar (resaltar la opcion actual)
 
 ## Bloque 21: Frontend - Componentes UI Reutilizables
 
