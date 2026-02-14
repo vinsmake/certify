@@ -12,7 +12,19 @@
       "Bash(timeout:*)",
       "Bash(curl:*)",
       "Bash(docker compose:*)",
-      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MDk0NjEzMiwiZXhwIjoxNzcwOTc0OTMyfQ.uy1mXczP0ypz_96xB6d4HNUucJy6QiHL-qJ8bpHn0xs\")"
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MDk0NjEzMiwiZXhwIjoxNzcwOTc0OTMyfQ.uy1mXczP0ypz_96xB6d4HNUucJy6QiHL-qJ8bpHn0xs\")",
+      "Bash(docker ps:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MTA5NjU5NiwiZXhwIjoxNzcxMTI1Mzk2fQ.ldxiEO5i-vLfl3LxhB2AyoGDDa9YM_rxan_OE87sWZc\")",
+      "Bash(__NEW_LINE_83d77915e6eb661a__ echo \"=== TEST 1: GET /api/participants \\(lista vacia\\) ===\")",
+      "Bash(__NEW_LINE_45ac67d2dbe3c3e0__ echo \"=== TEST 2: POST /api/participants \\(crear\\) ===\")",
+      "Bash(__NEW_LINE_63fadacc3c36bd13__ echo \"=== TEST 3: POST duplicado \\(debe dar 409\\) ===\")",
+      "Bash(__NEW_LINE_63fadacc3c36bd13__ echo \"=== TEST 4: POST sin campos requeridos \\(debe dar 422\\) ===\")",
+      "Bash(__NEW_LINE_54d1afa6fce5e8e7__ echo \"=== TEST 10: PUT /:id \\(actualizar\\) ===\")",
+      "Bash(__NEW_LINE_54d1afa6fce5e8e7__ echo \"=== TEST 11: PUT con document_id duplicado \\(debe dar 409\\) ===\")",
+      "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 12: GET /:id/certificates ===\")",
+      "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 13: DELETE /:id ===\")",
+      "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 14: DELETE inexistente \\(debe dar 404\\) ===\")",
+      "Bash(__NEW_LINE_1f1e712865127e8f__ echo \"=== TEST 15: Sin token \\(debe dar 401\\) ===\")"
     ]
   }
 }

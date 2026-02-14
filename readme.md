@@ -191,9 +191,59 @@ Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actua
 
 ### Modulo: Participantes
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: endpoints CRUD de participantes, busqueda, historial de certificados.
+El modulo de participantes gestiona el registro de personas que asisten a cursos y reciben certificados. Los participantes son globales (no pertenecen a una dependencia especifica) y ambos roles (admin y emisor) pueden gestionarlos.
+
+**Archivos:**
+- `backend/src/models/Participant.js` - Modelo con acceso a BD
+- `backend/src/controllers/participantController.js` - Logica de negocio
+- `backend/src/routes/participantRoutes.js` - Definicion de rutas
+
+**Endpoints:**
+
+| Metodo | Ruta | Descripcion | Roles |
+|---|---|---|---|
+| GET | `/api/participants` | Lista paginada con busqueda | admin, emisor |
+| GET | `/api/participants/:id` | Detalle de un participante | admin, emisor |
+| POST | `/api/participants` | Crear participante | admin, emisor |
+| PUT | `/api/participants/:id` | Actualizar participante | admin, emisor |
+| DELETE | `/api/participants/:id` | Eliminar participante | admin, emisor |
+| GET | `/api/participants/:id/certificates` | Historial de certificados | admin, emisor |
+
+**Query params para GET /:**
+- `search`: busca por nombre o cedula (ILIKE, parcial)
+- `page`: pagina (default 1)
+- `limit`: registros por pagina (default 20, max 100)
+
+**Validaciones:**
+- `document_id`: requerido en creacion, debe ser unico en todo el sistema
+- `full_name`: requerido en creacion, no puede quedar vacio en actualizacion
+- `email`: opcional, debe ser un email valido si se proporciona
+- En PUT, si se cambia `document_id` se verifica que no exista en otro registro
+
+**Ejemplo de uso:**
+
+```bash
+# Crear participante
+POST /api/participants
+Authorization: Bearer <token>
+{
+  "document_id": "1234567890",
+  "full_name": "Juan Perez",
+  "email": "juan@correo.com",
+  "organization": "UNAM",
+  "position": "Docente"
+}
+
+# Buscar por nombre o cedula
+GET /api/participants?search=juan&page=1&limit=20
+Authorization: Bearer <token>
+
+# Ver historial de certificados
+GET /api/participants/1/certificates
+Authorization: Bearer <token>
+```
 
 ---
 

@@ -127,17 +127,17 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 9: Backend - Modulo de Participantes
 
-- [ ] 9.01 - Crear backend/src/models/Participant.js con metodos: findAll (con paginacion y busqueda), findById, findByDocumentId, create, update, delete
-- [ ] 9.02 - Crear backend/src/controllers/participantController.js con metodo listParticipants (GET, con paginacion y busqueda por nombre/cedula)
-- [ ] 9.03 - Crear backend/src/controllers/participantController.js con metodo getParticipant (GET /:id)
-- [ ] 9.04 - Crear backend/src/controllers/participantController.js con metodo createParticipant (POST)
-- [ ] 9.05 - Crear backend/src/controllers/participantController.js con metodo updateParticipant (PUT /:id)
-- [ ] 9.06 - Crear backend/src/controllers/participantController.js con metodo deleteParticipant (DELETE /:id)
-- [ ] 9.07 - Crear backend/src/controllers/participantController.js con metodo getParticipantCertificates (GET /:id/certificates)
-- [ ] 9.08 - Crear backend/src/routes/participantRoutes.js con todas las rutas
-- [ ] 9.09 - Aplicar authMiddleware y roleMiddleware a las rutas de participantes
-- [ ] 9.10 - Registrar participantRoutes en app.js bajo /api/participants
-- [ ] 9.11 - Agregar validaciones de entrada (document_id requerido y unico, nombre requerido)
+- [x] 9.01 - Crear backend/src/models/Participant.js con metodos: findAll (con paginacion y busqueda), findById, findByDocumentId, create, update, delete
+- [x] 9.02 - Crear backend/src/controllers/participantController.js con metodo listParticipants (GET, con paginacion y busqueda por nombre/cedula)
+- [x] 9.03 - Crear backend/src/controllers/participantController.js con metodo getParticipant (GET /:id)
+- [x] 9.04 - Crear backend/src/controllers/participantController.js con metodo createParticipant (POST)
+- [x] 9.05 - Crear backend/src/controllers/participantController.js con metodo updateParticipant (PUT /:id)
+- [x] 9.06 - Crear backend/src/controllers/participantController.js con metodo deleteParticipant (DELETE /:id)
+- [x] 9.07 - Crear backend/src/controllers/participantController.js con metodo getParticipantCertificates (GET /:id/certificates)
+- [x] 9.08 - Crear backend/src/routes/participantRoutes.js con todas las rutas
+- [x] 9.09 - Aplicar authMiddleware y roleMiddleware a las rutas de participantes
+- [x] 9.10 - Registrar participantRoutes en app.js bajo /api/participants
+- [x] 9.11 - Agregar validaciones de entrada (document_id requerido y unico, nombre requerido)
 
 ## Bloque 10: Backend - Inscripcion de Participantes a Cursos
 
