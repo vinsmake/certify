@@ -554,9 +554,43 @@ Endpoint publico que permite verificar la autenticidad y vigencia de cualquier c
 
 ### Modulo: Estadisticas y Panel Admin
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: endpoints de estadisticas globales y por dependencia, panel admin con lista global de eventos, lista global de certificados, registro de actividad.
+Endpoints de estadisticas y panel de administracion global. Las estadisticas agregadas permiten al admin monitorear el sistema completo; el emisor solo ve su propia dependencia.
+
+**Archivos:**
+- `backend/src/controllers/statsController.js` — Estadisticas globales y por dependencia
+- `backend/src/controllers/adminController.js` — Listas globales y actividad
+- `backend/src/routes/statsRoutes.js` — Rutas de estadisticas
+- `backend/src/routes/adminRoutes.js` — Rutas del panel admin
+
+**Endpoints de estadisticas:**
+
+| Metodo | Ruta | Descripcion | Roles |
+|---|---|---|---|
+| GET | `/api/stats` | Totales globales + desglose por dependencia | admin |
+| GET | `/api/stats/me` | Estadisticas de la dependencia del usuario actual | admin, emisor |
+| GET | `/api/stats/dependency/:id` | Estadisticas de una dependencia especifica | admin |
+
+**Endpoints del panel admin:**
+
+| Metodo | Ruta | Descripcion | Roles |
+|---|---|---|---|
+| GET | `/api/admin/events` | Lista global de cursos con filtros | admin |
+| GET | `/api/admin/certificates` | Lista global de certificados con filtros | admin |
+| GET | `/api/admin/activity` | Registro de actividad reciente del sistema | admin |
+
+**Filtros de `/api/admin/events`:** `dependency_id`, `type`, `date_from`, `date_to`, `page`, `limit`
+
+**Filtros de `/api/admin/certificates`:** `dependency_id`, `status`, `course_id`, `date_from`, `date_to`, `page`, `limit`
+
+**Tipos de eventos en `/api/admin/activity`:**
+- `certificate_emission` — Emision de un certificado (usuario, participante, curso)
+- `revocation` — Revocacion de un certificado (usuario, participante, curso)
+- `course_creation` — Creacion de un curso (usuario, nombre del curso)
+- `branding_change` — Nueva version de branding institucional (usuario, version_label)
+
+Los eventos se devuelven ordenados por fecha descendente (mas recientes primero). El query param `limit` permite controlar cuantos registros devolver (default 50).
 
 ---
 

@@ -78,7 +78,16 @@
       "Bash(__NEW_LINE_51ef2091bd624f1b__ echo \"=== TEST 6: POST /emit sin campos requeridos ===\")",
       "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== TEST 7: GET /certificates/1/download - verificar PDF ===\")",
       "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== TEST 8: Emitir con plantilla formal \\(id=2\\) - segundo certificado no posible \\(mismo participante\\) ===\")",
-      "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== Emitir con plantilla formal para participante 3 ===\")"
+      "Bash(__NEW_LINE_b5be4272b0638523__ echo \"=== Emitir con plantilla formal para participante 3 ===\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImRlcGVuZGVuY3lfaWQiOm51bGwsImlhdCI6MTc3MTA5OTAyNCwiZXhwIjoxNzcxMTI3ODI0fQ.oLHrCycQ41LXOu2Nzd9v_TpHoRuQ85rVcHer61DUeog\")",
+      "Bash(__NEW_LINE_3d77501ee059779e__ echo \"=== TEST 1: GET /api/stats ===\")",
+      "Bash(__NEW_LINE_167258eea8c3acbb__ echo \"=== TEST 2: GET /api/stats/dependency/1 ===\")",
+      "Bash(__NEW_LINE_167258eea8c3acbb__ echo \"\")",
+      "Bash(__NEW_LINE_cd1cf420f310cf46__ echo \"=== TEST 4: GET /api/admin/events ===\")",
+      "Bash(__NEW_LINE_8b76ac60e1a551bb__ echo \"=== TEST 5: GET /api/admin/certificates ===\")",
+      "Bash(__NEW_LINE_aa421e15d6e4d27c__ echo \"=== TEST 6: GET /api/admin/activity ===\")",
+      "Bash(__NEW_LINE_192871595bbb4934__ echo \"=== TEST 6: GET /api/admin/activity ===\")",
+      "Bash(__NEW_LINE_d91274b05653d9f0__ curl -s \"http://localhost:3000/api/admin/activity\" -H \"Authorization: Bearer $TOKEN\")"
     ]
   }
 }

@@ -224,14 +224,14 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 17: Backend - Estadisticas y Panel Admin
 
-- [ ] 17.01 - Crear backend/src/controllers/statsController.js con metodo getGlobalStats (GET /api/stats, solo admin: totales globales de cursos, participantes, certificados emitidos, certificados revocados, total por dependencia)
-- [ ] 17.02 - Crear backend/src/controllers/statsController.js con metodo getDependencyStats (GET /api/stats/dependency/:id, estadisticas de una dependencia especifica)
-- [ ] 17.03 - Crear backend/src/controllers/statsController.js con metodo getMyStats (GET /api/stats/me, estadisticas de la dependencia del usuario actual)
-- [ ] 17.04 - Crear endpoint GET /api/admin/events (solo admin, lista global de todos los cursos/eventos con filtros por dependencia, fecha, tipo)
-- [ ] 17.05 - Crear endpoint GET /api/admin/certificates (solo admin, lista global de todos los certificados con filtros por dependencia, estado, fecha, curso)
-- [ ] 17.06 - Crear endpoint GET /api/admin/activity (solo admin, registro de actividad reciente: emisiones, revocaciones, creacion de cursos, cambios de branding)
-- [ ] 17.07 - Crear backend/src/routes/statsRoutes.js y backend/src/routes/adminRoutes.js
-- [ ] 17.08 - Registrar statsRoutes en app.js bajo /api/stats y adminRoutes bajo /api/admin
+- [x] 17.01 - Crear backend/src/controllers/statsController.js con metodo getGlobalStats (GET /api/stats, solo admin: totales globales de cursos, participantes, certificados emitidos, certificados revocados, total por dependencia)
+- [x] 17.02 - Crear backend/src/controllers/statsController.js con metodo getDependencyStats (GET /api/stats/dependency/:id, estadisticas de una dependencia especifica)
+- [x] 17.03 - Crear backend/src/controllers/statsController.js con metodo getMyStats (GET /api/stats/me, estadisticas de la dependencia del usuario actual)
+- [x] 17.04 - Crear endpoint GET /api/admin/events (solo admin, lista global de todos los cursos/eventos con filtros por dependencia, fecha, tipo)
+- [x] 17.05 - Crear endpoint GET /api/admin/certificates (solo admin, lista global de todos los certificados con filtros por dependencia, estado, fecha, curso)
+- [x] 17.06 - Crear endpoint GET /api/admin/activity (solo admin, registro de actividad reciente: emisiones, revocaciones, creacion de cursos, cambios de branding)
+- [x] 17.07 - Crear backend/src/routes/statsRoutes.js y backend/src/routes/adminRoutes.js
+- [x] 17.08 - Registrar statsRoutes en app.js bajo /api/stats y adminRoutes bajo /api/admin
 
 ## Bloque 18: Frontend - Configuracion Base
 
