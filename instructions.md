@@ -1,5 +1,5 @@
 # Instrucciones de Trabajo - Flujo de Desarrollo
-
+IMPORTANTE: NO EJECUTAR NI INSTALAR NADA FUERA DE DOCKER, ABSOLUTAMENTE NADA.
 Este documento define el proceso a seguir cada vez que se trabaja en una nueva tarea del proyecto. Debe seguirse en orden estricto.
 
 ## Flujo por cada tarea (item del todo.md)
