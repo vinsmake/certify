@@ -165,9 +165,9 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 12: Backend - Generacion de QR
 
-- [ ] 12.01 - Crear backend/src/services/qrService.js con funcion generateQR que recibe UUID y devuelve imagen QR en base64
-- [ ] 12.02 - La URL del QR debe ser: VERIFICATION_BASE_URL + "/" + uuid
-- [ ] 12.03 - Probar que el QR generado es escaneable y apunta a la URL correcta
+- [x] 12.01 - Crear backend/src/services/qrService.js con funcion generateQR que recibe UUID y devuelve imagen QR en base64
+- [x] 12.02 - La URL del QR debe ser: VERIFICATION_BASE_URL + "/" + uuid
+- [x] 12.03 - Probar que el QR generado es escaneable y apunta a la URL correcta
 
 ## Bloque 13: Backend - Generacion de PDF con Plantillas
 
