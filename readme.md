@@ -349,11 +349,64 @@ Form: logo=<archivo>
 
 ---
 
+### Modulo: Generacion de QR y PDF
+
+**Estado:** Implementado
+
+Servicios internos (no exponen endpoints propios) utilizados durante la emision de certificados.
+
+**Archivos:**
+- `backend/src/services/qrService.js` — Genera QR como data URL base64
+- `backend/src/services/templateService.js` — Carga plantillas, resuelve logos, inyecta variables
+- `backend/src/services/pdfService.js` — Convierte HTML a PDF con Puppeteer, guarda en disco
+
+**qrService:**
+```js
+const { generateQR } = require('./services/qrService');
+const dataUrl = await generateQR(uuid);
+// Retorna: "data:image/png;base64,..." listo para <img src="...">
+// URL del QR: VERIFICATION_BASE_URL + "/" + uuid
+```
+
+**templateService:**
+```js
+const { buildCertificateHtml } = require('./services/templateService');
+const { html, template } = await buildCertificateHtml(templateId, {
+  participant, course, brandingVersion, courseDependencies,
+  issueDate, uuid, qrCodeBase64
+});
+```
+
+Variables soportadas en plantillas:
+`{{participant_name}}`, `{{document_id}}`, `{{course_name}}`, `{{course_type}}`,
+`{{course_duration}}`, `{{instructor}}`, `{{issue_date}}`, `{{certificate_uuid}}`,
+`{{qr_code_base64}}`, `{{institutional_logo_base64}}`, `{{dependency_logos_html}}`,
+`{{primary_color}}`, `{{secondary_color}}`, `{{font_family}}`, `{{organization_name}}`,
+`{{dependency_names}}`, `{{verification_url}}`
+
+**pdfService:**
+```js
+const { generateAndSavePDF } = require('./services/pdfService');
+const { pdfPath, pdfBuffer } = await generateAndSavePDF(html, uuid, {
+  orientation: 'landscape',   // o 'portrait'
+  page_size: 'letter'         // o 'a4'
+});
+// Guarda: storage/certificates/certificate_{uuid}.pdf
+```
+
+Dimensiones de viewport fijo (Puppeteer):
+- Letter landscape: 1056x816px
+- Letter portrait: 816x1056px
+- A4 landscape: 1123x794px
+- A4 portrait: 794x1123px
+
+---
+
 ### Modulo: Emision de Certificados
 
 **Estado:** Pendiente
 
-> Se documentara: flujo de emision (seleccion de curso, plantilla, participantes), generacion de QR, generacion de PDF con Puppeteer (HTML a PDF con viewport fijo), multi-logo (institucional + dependencias), almacenamiento.
+> Se documentara: flujo de emision (seleccion de curso, plantilla, participantes), validaciones, almacenamiento en BD, descarga de PDF.
 
 ---
 

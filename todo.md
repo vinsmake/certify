@@ -171,18 +171,18 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 13: Backend - Generacion de PDF con Plantillas
 
-- [ ] 13.01 - Crear backend/src/services/templateService.js con funcion loadTemplate(templateId) que obtiene el html_content de la plantilla desde BD
-- [ ] 13.02 - Crear backend/src/services/templateService.js con funcion resolveLogos(brandingVersion, courseDependencies) que recopila logo institucional + logos de dependencias y los convierte a base64
-- [ ] 13.03 - Implementar la inyeccion de variables en la plantilla HTML: datos del participante, curso, fecha, QR, logos, branding
-- [ ] 13.04 - Las variables de plantilla incluyen: {{participant_name}}, {{document_id}}, {{course_name}}, {{course_type}}, {{course_duration}}, {{instructor}}, {{issue_date}}, {{certificate_uuid}}, {{qr_code_base64}}, {{institutional_logo_base64}}, {{dependency_logos_html}}, {{primary_color}}, {{secondary_color}}, {{font_family}}, {{organization_name}}, {{dependency_names}}, {{verification_url}}
-- [ ] 13.05 - Implementar {{dependency_logos_html}} como bloque HTML con imgs de todos los logos de dependencias del curso, en orden de display_order
-- [ ] 13.06 - Crear backend/src/services/pdfService.js con funcion generatePDF que recibe html renderizado y opciones (orientacion, tamano pagina) y devuelve PDF como buffer
-- [ ] 13.07 - Implementar la conversion de HTML a PDF con Puppeteer (tamano y orientacion segun la plantilla seleccionada)
-- [ ] 13.08 - Puppeteer debe usar viewport fijo (ej: 1056x816 para carta horizontal) para garantizar renderizado consistente independiente de zoom
-- [ ] 13.09 - Implementar el guardado del PDF en el volumen persistente (storage/certificates/)
-- [ ] 13.10 - Nombrar el archivo PDF con formato: certificate_{uuid}.pdf
-- [ ] 13.11 - Probar generacion de PDF completo con datos de prueba, verificar que logos multiples se renderizan correctamente
-- [ ] 13.12 - Probar generacion con cada plantilla por defecto (default, formal, modern)
+- [x] 13.01 - Crear backend/src/services/templateService.js con funcion loadTemplate(templateId) que obtiene el html_content de la plantilla desde BD
+- [x] 13.02 - Crear backend/src/services/templateService.js con funcion resolveLogos(brandingVersion, courseDependencies) que recopila logo institucional + logos de dependencias y los convierte a base64
+- [x] 13.03 - Implementar la inyeccion de variables en la plantilla HTML: datos del participante, curso, fecha, QR, logos, branding
+- [x] 13.04 - Las variables de plantilla incluyen: {{participant_name}}, {{document_id}}, {{course_name}}, {{course_type}}, {{course_duration}}, {{instructor}}, {{issue_date}}, {{certificate_uuid}}, {{qr_code_base64}}, {{institutional_logo_base64}}, {{dependency_logos_html}}, {{primary_color}}, {{secondary_color}}, {{font_family}}, {{organization_name}}, {{dependency_names}}, {{verification_url}}
+- [x] 13.05 - Implementar {{dependency_logos_html}} como bloque HTML con imgs de todos los logos de dependencias del curso, en orden de display_order
+- [x] 13.06 - Crear backend/src/services/pdfService.js con funcion generatePDF que recibe html renderizado y opciones (orientacion, tamano pagina) y devuelve PDF como buffer
+- [x] 13.07 - Implementar la conversion de HTML a PDF con Puppeteer (tamano y orientacion segun la plantilla seleccionada)
+- [x] 13.08 - Puppeteer debe usar viewport fijo (ej: 1056x816 para carta horizontal) para garantizar renderizado consistente independiente de zoom
+- [x] 13.09 - Implementar el guardado del PDF en el volumen persistente (storage/certificates/)
+- [x] 13.10 - Nombrar el archivo PDF con formato: certificate_{uuid}.pdf
+- [x] 13.11 - Probar generacion de PDF completo con datos de prueba, verificar que logos multiples se renderizan correctamente
+- [x] 13.12 - Probar generacion con cada plantilla por defecto (default, formal, modern)
 
 ## Bloque 14: Backend - Modulo de Certificados (Emision)
 
