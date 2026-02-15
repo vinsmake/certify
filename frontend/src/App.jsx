@@ -6,6 +6,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import CoursesPage from './pages/CoursesPage';
 
 // Placeholder para rutas que se implementaran en bloques posteriores
 const PlaceholderPage = ({ title }) => (
@@ -42,7 +43,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/dashboard"     element={<DashboardPage />} />
-              <Route path="/cursos"        element={<PlaceholderPage title="Cursos" />} />
+              <Route path="/cursos"        element={<CoursesPage />} />
               <Route path="/participantes" element={<PlaceholderPage title="Participantes" />} />
               <Route path="/certificados"  element={<PlaceholderPage title="Certificados" />} />
               <Route path="/emitir"        element={<PlaceholderPage title="Emitir Certificados" />} />

@@ -742,9 +742,26 @@ Pagina de inicio de la aplicacion. El contenido se adapta automaticamente al rol
 
 ### Modulo: Frontend - Gestion de Cursos
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: lista de cursos (filtrada por dependencia), formulario CRUD, detalle de curso con dependencias colaboradoras y sus logos, inscripcion de participantes, filtros.
+CRUD completo de cursos con detalle interactivo para gestionar dependencias colaboradoras y participantes.
+
+**Archivos:**
+- `frontend/src/services/courseService.js` — 10 funciones de API (CRUD + participantes + dependencias)
+- `frontend/src/pages/CoursesPage.jsx` — Pagina principal con lista, filtros, paginacion y modales
+- `frontend/src/components/courses/CourseList.jsx` — Tabla con columnas: nombre, tipo, dependencia, horas, instructor, fechas, acciones
+- `frontend/src/components/courses/CourseForm.jsx` — Formulario con validacion (nombre, tipo requeridos; fechas coherentes)
+- `frontend/src/components/courses/CourseDetail.jsx` — Vista detallada en modal
+
+**Funcionalidades:**
+- Busqueda por nombre (debounce 350ms) y filtro por tipo
+- Crear curso → modal con CourseForm
+- Editar curso → modal con CourseForm pre-cargado
+- Eliminar curso → modal de confirmacion
+- Ver detalle → modal CourseDetail con:
+  - Dependencias colaboradoras (chips con boton de quitar, selector para agregar)
+  - Participantes inscritos con selector de estado de asistencia inline
+  - Inscribir nuevos participantes desde dropdown
 
 ---
 

@@ -292,22 +292,22 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 23: Frontend - Modulo de Cursos
 
-- [ ] 23.01 - Crear frontend/src/services/courseService.js con funciones: getCourses, getCourse, createCourse, updateCourse, deleteCourse, getCourseParticipants, enrollParticipants, updateParticipantStatus, addCourseDependency, removeCourseDependency
-- [ ] 23.02 - Crear frontend/src/pages/CoursesPage.jsx con lista de cursos, busqueda y paginacion (filtrada por dependencia segun rol)
-- [ ] 23.03 - Crear frontend/src/components/courses/CourseList.jsx (tabla de cursos con columnas: nombre, tipo, dependencia, duracion, instructor, fechas, acciones)
-- [ ] 23.04 - Agregar boton "Nuevo Curso" que abre formulario de creacion (solo emisor y admin)
-- [ ] 23.05 - Crear frontend/src/components/courses/CourseForm.jsx (formulario con campos: nombre, descripcion, tipo, duracion, instructor, fecha inicio, fecha fin)
-- [ ] 23.06 - Implementar validacion del formulario de curso (campos requeridos, fechas coherentes)
-- [ ] 23.07 - Implementar creacion de curso (enviar POST y actualizar lista)
-- [ ] 23.08 - Implementar edicion de curso (cargar datos existentes, enviar PUT y actualizar lista)
-- [ ] 23.09 - Implementar eliminacion de curso con modal de confirmacion
-- [ ] 23.10 - Crear frontend/src/components/courses/CourseDetail.jsx (vista detallada con participantes y dependencias asociadas)
-- [ ] 23.11 - Mostrar lista de dependencias colaboradoras en el detalle del curso con sus logos
-- [ ] 23.12 - Agregar funcionalidad para asociar/desasociar dependencias colaboradoras al curso (solo admin o emisor dueno)
-- [ ] 23.13 - Mostrar lista de participantes inscritos con su estado de asistencia
-- [ ] 23.14 - Agregar funcionalidad para inscribir participantes existentes al curso
-- [ ] 23.15 - Agregar funcionalidad para cambiar el estado de asistencia de un participante
-- [ ] 23.16 - Agregar filtros en la lista de cursos (por tipo, por dependencia, por rango de fechas)
+- [x] 23.01 - Crear frontend/src/services/courseService.js con funciones: getCourses, getCourse, createCourse, updateCourse, deleteCourse, getCourseParticipants, enrollParticipants, updateParticipantStatus, addCourseDependency, removeCourseDependency
+- [x] 23.02 - Crear frontend/src/pages/CoursesPage.jsx con lista de cursos, busqueda y paginacion (filtrada por dependencia segun rol)
+- [x] 23.03 - Crear frontend/src/components/courses/CourseList.jsx (tabla de cursos con columnas: nombre, tipo, dependencia, duracion, instructor, fechas, acciones)
+- [x] 23.04 - Agregar boton "Nuevo Curso" que abre formulario de creacion (solo emisor y admin)
+- [x] 23.05 - Crear frontend/src/components/courses/CourseForm.jsx (formulario con campos: nombre, descripcion, tipo, duracion, instructor, fecha inicio, fecha fin)
+- [x] 23.06 - Implementar validacion del formulario de curso (campos requeridos, fechas coherentes)
+- [x] 23.07 - Implementar creacion de curso (enviar POST y actualizar lista)
+- [x] 23.08 - Implementar edicion de curso (cargar datos existentes, enviar PUT y actualizar lista)
+- [x] 23.09 - Implementar eliminacion de curso con modal de confirmacion
+- [x] 23.10 - Crear frontend/src/components/courses/CourseDetail.jsx (vista detallada con participantes y dependencias asociadas)
+- [x] 23.11 - Mostrar lista de dependencias colaboradoras en el detalle del curso con sus logos
+- [x] 23.12 - Agregar funcionalidad para asociar/desasociar dependencias colaboradoras al curso (solo admin o emisor dueno)
+- [x] 23.13 - Mostrar lista de participantes inscritos con su estado de asistencia
+- [x] 23.14 - Agregar funcionalidad para inscribir participantes existentes al curso
+- [x] 23.15 - Agregar funcionalidad para cambiar el estado de asistencia de un participante
+- [x] 23.16 - Agregar filtros en la lista de cursos (por tipo, por dependencia, por rango de fechas)
 
 ## Bloque 24: Frontend - Modulo de Participantes
 
