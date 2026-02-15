@@ -723,9 +723,20 @@ Biblioteca de componentes UI usados en todos los modulos del frontend.
 
 ### Modulo: Frontend - Dashboard
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: dashboard admin (estadisticas globales, desglose por dependencia), dashboard emisor (estadisticas de su dependencia).
+Pagina de inicio de la aplicacion. El contenido se adapta automaticamente al rol del usuario.
+
+**Archivo:** `frontend/src/pages/DashboardPage.jsx`
+
+**Vista admin** — llama a `GET /api/stats`:
+- 5 tarjetas: Cursos, Participantes, Certificados, Validos, Revocados
+- Tabla de desglose por dependencia (cursos, certificados, validos, revocados, usuarios)
+
+**Vista emisor** — llama a `GET /api/stats/me`:
+- 5 tarjetas con las estadisticas de su propia dependencia
+
+**Componentes usados:** `useFetch`, `Alert`
 
 ---
 

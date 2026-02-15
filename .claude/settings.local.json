@@ -87,7 +87,9 @@
       "Bash(__NEW_LINE_8b76ac60e1a551bb__ echo \"=== TEST 5: GET /api/admin/certificates ===\")",
       "Bash(__NEW_LINE_aa421e15d6e4d27c__ echo \"=== TEST 6: GET /api/admin/activity ===\")",
       "Bash(__NEW_LINE_192871595bbb4934__ echo \"=== TEST 6: GET /api/admin/activity ===\")",
-      "Bash(__NEW_LINE_d91274b05653d9f0__ curl -s \"http://localhost:3000/api/admin/activity\" -H \"Authorization: Bearer $TOKEN\")"
+      "Bash(__NEW_LINE_d91274b05653d9f0__ curl -s \"http://localhost:3000/api/admin/activity\" -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(__NEW_LINE_597e0862a0a5a6a3__ echo \"=== TEST: /api/stats \\(admin\\) ===\")",
+      "Bash(__NEW_LINE_597e0862a0a5a6a3__ echo \"\")"
     ]
   }
 }

@@ -285,10 +285,10 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 22: Frontend - Dashboard
 
-- [ ] 22.01 - Crear frontend/src/pages/DashboardPage.jsx con estructura basica
-- [ ] 22.02 - Dashboard admin: tarjetas de resumen global (total cursos, participantes, certificados emitidos, revocados), desglose por dependencia
-- [ ] 22.03 - Dashboard emisor: tarjetas de resumen de su dependencia (cursos, participantes, certificados)
-- [ ] 22.04 - Conectar DashboardPage con los endpoints de stats correspondientes segun rol
+- [x] 22.01 - Crear frontend/src/pages/DashboardPage.jsx con estructura basica
+- [x] 22.02 - Dashboard admin: tarjetas de resumen global (total cursos, participantes, certificados emitidos, revocados), desglose por dependencia
+- [x] 22.03 - Dashboard emisor: tarjetas de resumen de su dependencia (cursos, participantes, certificados)
+- [x] 22.04 - Conectar DashboardPage con los endpoints de stats correspondientes segun rol
 
 ## Bloque 23: Frontend - Modulo de Cursos
 
