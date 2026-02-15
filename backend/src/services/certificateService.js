@@ -19,6 +19,9 @@ const emitCertificate = async ({ courseId, participantId, templateId, issuedBy, 
   if (!brandingVersion) {
     throw new Error('No hay version de branding activa');
   }
+  if (!brandingVersion.logo_path) {
+    throw new Error('La version de branding activa no tiene logo. Sube un logo desde Configuracion antes de emitir.');
+  }
 
   // 2. Obtener dependencias del curso (para logos en el certificado)
   const courseDependencies = await CourseDependency.findByCourse(courseId);

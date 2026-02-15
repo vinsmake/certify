@@ -126,7 +126,7 @@ const buildCertificateHtml = async (templateId, data) => {
     // Curso
     course_name:              course.name || '',
     course_type:              course.type || '',
-    course_duration:          course.duration_hours ? `${course.duration_hours} horas` : '',
+    course_duration:          course.duration_hours ? `${course.duration_hours}` : '',
     instructor:               course.instructor || '',
 
     // Certificado
