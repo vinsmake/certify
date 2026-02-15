@@ -430,11 +430,10 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 - [x] 32.17 - Probar flujo completo: emitir con plantilla "formal" y con plantilla "modern", comparar PDFs
 - [x] 32.18 - Probar flujo completo: detener y reiniciar Docker y verificar que los datos persisten
 
-## Bloque 33: Produccion
 
-- [ ] 33.01 - Crear docker-compose.prod.yml con configuracion de produccion (sin hot reload, build optimizado)
-- [ ] 33.02 - Crear Dockerfile de produccion del frontend (build con Vite + servir con nginx)
-- [ ] 33.03 - Crear Dockerfile de produccion del backend (sin nodemon, con NODE_ENV=production)
-- [ ] 33.04 - Configurar nginx como reverse proxy para servir frontend y proxear /api al backend
-- [ ] 33.05 - Documentar el proceso de despliegue en produccion en el readme.md
-- [ ] 33.06 - Documentar el proceso de respaldo y restauracion en el readme.md
+- [x] 33.01 - Crear docker-compose.prod.yml con configuracion de produccion (sin hot reload, build optimizado)
+- [x] 33.02 - Crear Dockerfile de produccion del frontend (build con Vite + servir con nginx)
+- [x] 33.03 - Crear Dockerfile de produccion del backend (sin nodemon, con NODE_ENV=production)
+- [x] 33.04 - Configurar nginx como reverse proxy para servir frontend y proxear /api al backend
+- [x] 33.05 - Documentar el proceso de despliegue en produccion en el readme.md
+- [x] 33.06 - Documentar el proceso de respaldo y restauracion en el readme.md

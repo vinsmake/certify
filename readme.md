@@ -815,9 +815,104 @@ CRUD completo de cursos con detalle interactivo para gestionar dependencias cola
 
 ### Modulo: Produccion
 
-**Estado:** Pendiente
+**Estado:** Implementado
 
-> Se documentara: docker-compose.prod.yml, nginx, build optimizado, despliegue, respaldo y restauracion.
+Configuracion de produccion con nginx como reverse proxy, build optimizado del frontend y backend sin hot reload.
+
+**Archivos:**
+- `docker-compose.prod.yml` — Orquestacion de produccion (3 servicios, restart automático)
+- `frontend/Dockerfile.prod` — Multi-stage: build Vite + servir con nginx
+- `backend/Dockerfile.prod` — Node.js con `NODE_ENV=production`, sin nodemon
+- `frontend/nginx.conf` — Reverse proxy: SPA fallback + proxy `/api` y `/storage` al backend
+- `.env.prod` — Variables de entorno de produccion (requiere configuracion manual)
+
+#### Despliegue en produccion
+
+1. Configurar variables de entorno:
+```bash
+# Editar .env.prod con valores reales
+nano .env.prod
+# IMPORTANTE: cambiar POSTGRES_PASSWORD, JWT_SECRET y BASE_URL
+```
+
+2. Construir y levantar:
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+3. Verificar que los servicios estan corriendo:
+```bash
+docker compose -f docker-compose.prod.yml ps
+```
+
+4. Acceder via puerto 80 (nginx sirve frontend y proxea API).
+
+#### Diferencias entre desarrollo y produccion
+
+| Aspecto | Desarrollo | Produccion |
+|---|---|---|
+| Frontend | Vite dev server (HMR) en :5173 | Build estatico servido por nginx en :80 |
+| Backend | nodemon con hot reload | `node src/index.js` directo |
+| NODE_ENV | development | production |
+| Volumenes src | Montados (hot reload) | No montados (copiados en imagen) |
+| API URL | `http://localhost:3000/api` | `/api` (proxy nginx) |
+| Puertos expuestos | 5173, 3000, 5432 | Solo 80 |
+| DB | Puerto accesible externamente | Solo accesible internamente |
+
+#### Arquitectura de produccion
+
+```
+        :80
+         |
+      [nginx]
+      /      \
+   SPA      /api/ --> [backend:3000] --> [database:5432]
+   /storage/ --------/
+```
+
+Nginx sirve los archivos estaticos del frontend y redirige `/api/*` y `/storage/*` al backend. Todas las rutas del SPA caen en `index.html` via `try_files`.
+
+#### Respaldo y restauracion
+
+Los datos se almacenan en carpetas locales (no en volumenes Docker):
+- `database/data/` — Datos de PostgreSQL
+- `storage/certificates/` — PDFs generados
+- `storage/logos/` — Logos de dependencias y branding
+
+**Generar respaldo:**
+```bash
+npm run backup
+# Genera database/backup.tar.gz y storage/backup.tar.gz
+```
+
+**Restaurar desde respaldo:**
+```bash
+npm run down
+npm run restore
+npm run up:build   # o: docker compose -f docker-compose.prod.yml up --build -d
+```
+
+**Snapshot rapido (antes de operaciones destructivas):**
+```bash
+npm run snapshot
+# Genera snapshot.tar.gz (separado del backup principal)
+```
+
+**Reset completo (snapshot + limpiar + reconstruir):**
+```bash
+npm run reset
+```
+
+**Migrar datos entre maquinas:**
+```bash
+# Origen: generar backup y subir
+npm run backup && git add . && git commit -m "backup" && git push
+
+# Destino: descargar y sincronizar
+git pull && npm run pull:sync
+```
+
+> **Nota:** Los archivos backup.tar.gz se incluyen en git para facilitar la migracion. En produccion con volumenes grandes, considerar almacenamiento externo (S3, etc.).
 
 ---
 
