@@ -354,17 +354,17 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 27: Frontend - Pagina de Verificacion Publica
 
-- [ ] 27.01 - Crear frontend/src/pages/VerifyPage.jsx con estructura basica (sin layout de admin, pagina publica independiente)
-- [ ] 27.02 - Extraer el UUID de la URL (/verificar/:uuid)
-- [ ] 27.03 - Llamar al endpoint GET /api/verify/:uuid al cargar la pagina
-- [ ] 27.04 - Si el certificado es valido: mostrar datos del certificado con sello visual "CERTIFICADO VALIDO" en verde
-- [ ] 27.05 - Si el certificado esta revocado: mostrar aviso "CERTIFICADO REVOCADO" en rojo con fecha de revocacion
-- [ ] 27.06 - Si no se encuentra: mostrar "CERTIFICADO NO ENCONTRADO"
-- [ ] 27.07 - Mostrar el logo institucional de la version de branding con la que fue emitido el certificado
-- [ ] 27.08 - Mostrar los logos de las dependencias del curso
-- [ ] 27.09 - Mostrar datos: nombre del participante, curso, tipo de curso, duracion, instructor, fecha de emision, dependencias participantes
-- [ ] 27.10 - Disenar la pagina con aspecto profesional y confiable (sin necesidad de login)
-- [ ] 27.11 - Asegurar que la pagina es responsive (se ve bien en movil, ya que el QR se escanea con celular)
+- [x] 27.01 - Crear frontend/src/pages/VerifyPage.jsx con estructura basica (sin layout de admin, pagina publica independiente)
+- [x] 27.02 - Extraer el UUID de la URL (/verificar/:uuid)
+- [x] 27.03 - Llamar al endpoint GET /api/verify/:uuid al cargar la pagina
+- [x] 27.04 - Si el certificado es valido: mostrar datos del certificado con sello visual "CERTIFICADO VALIDO" en verde
+- [x] 27.05 - Si el certificado esta revocado: mostrar aviso "CERTIFICADO REVOCADO" en rojo con fecha de revocacion
+- [x] 27.06 - Si no se encuentra: mostrar "CERTIFICADO NO ENCONTRADO"
+- [x] 27.07 - Mostrar el logo institucional de la version de branding con la que fue emitido el certificado
+- [x] 27.08 - Mostrar los logos de las dependencias del curso
+- [x] 27.09 - Mostrar datos: nombre del participante, curso, tipo de curso, duracion, instructor, fecha de emision, dependencias participantes
+- [x] 27.10 - Disenar la pagina con aspecto profesional y confiable (sin necesidad de login)
+- [x] 27.11 - Asegurar que la pagina es responsive (se ve bien en movil, ya que el QR se escanea con celular)
 
 ## Bloque 28: Frontend - Panel de Administracion Global (Solo Admin)
 

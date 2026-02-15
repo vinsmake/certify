@@ -10,6 +10,7 @@ import CoursesPage from './pages/CoursesPage';
 import ParticipantsPage from './pages/ParticipantsPage';
 import CertificatesPage from './pages/CertificatesPage';
 import EmitCertificatePage from './pages/EmitCertificatePage';
+import VerifyPage from './pages/VerifyPage';
 
 // Placeholder para rutas que se implementaran en bloques posteriores
 const PlaceholderPage = ({ title }) => (
@@ -17,16 +18,6 @@ const PlaceholderPage = ({ title }) => (
     <h2 style={{ marginBottom: '0.5rem' }}>{title}</h2>
     <p style={{ color: 'var(--color-text-muted)' }}>
       Esta seccion se implementara proximamente.
-    </p>
-  </div>
-);
-
-// Placeholder pagina de verificacion publica (Bloque 27)
-const VerifyPlaceholder = () => (
-  <div style={{ padding: '2rem', textAlign: 'center' }}>
-    <h2>Verificacion de Certificado</h2>
-    <p style={{ color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>
-      Esta pagina se implementara en el Bloque 27.
     </p>
   </div>
 );
@@ -40,7 +31,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
 
           {/* 20.09 - Ruta publica: verificacion de certificado */}
-          <Route path="/verificar/:uuid" element={<VerifyPlaceholder />} />
+          <Route path="/verificar/:uuid" element={<VerifyPage />} />
 
           {/* 20.11 - Rutas protegidas con layout */}
           <Route element={<ProtectedRoute />}>

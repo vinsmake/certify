@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -11,6 +12,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+
+// Servir archivos estaticos del volumen de storage (logos, etc.)
+app.use('/storage', express.static(path.join('/app', 'storage')));
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {
