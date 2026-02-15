@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
+import ToastContainer from './components/ui/ToastContainer';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CoursesPage from './pages/CoursesPage';
@@ -11,6 +12,8 @@ import ParticipantsPage from './pages/ParticipantsPage';
 import CertificatesPage from './pages/CertificatesPage';
 import EmitCertificatePage from './pages/EmitCertificatePage';
 import VerifyPage from './pages/VerifyPage';
+import NotFoundPage from './pages/NotFoundPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 import DependenciesPage from './pages/admin/DependenciesPage';
 import TemplatesPage from './pages/admin/TemplatesPage';
 import UsersPage from './pages/admin/UsersPage';
@@ -23,12 +26,18 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        {/* 30.03 - Notificaciones toast globales */}
+        <ToastContainer />
+
         <Routes>
           {/* 20.10 - Ruta publica: login */}
           <Route path="/login" element={<LoginPage />} />
 
           {/* 20.09 - Ruta publica: verificacion de certificado */}
           <Route path="/verificar/:uuid" element={<VerifyPage />} />
+
+          {/* 30.02 - Ruta publica: acceso denegado */}
+          <Route path="/no-autorizado" element={<UnauthorizedPage />} />
 
           {/* 20.11 - Rutas protegidas con layout */}
           <Route element={<ProtectedRoute />}>
@@ -53,7 +62,8 @@ function App() {
           </Route>
 
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          {/* 30.01 - Pagina 404 para rutas no encontradas */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

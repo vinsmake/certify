@@ -391,12 +391,12 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 30: Frontend - Manejo de Errores y UX
 
-- [ ] 30.01 - Crear frontend/src/pages/NotFoundPage.jsx (pagina 404 para rutas no encontradas)
-- [ ] 30.02 - Crear frontend/src/pages/UnauthorizedPage.jsx (pagina 403 para acceso denegado por rol)
-- [ ] 30.03 - Implementar notificaciones toast para acciones exitosas (certificado emitido, curso creado, etc.)
-- [ ] 30.04 - Implementar indicadores de carga (spinners/skeletons) durante peticiones al backend
-- [ ] 30.05 - Implementar manejo de errores de red (mostrar mensaje cuando el backend no responde)
-- [ ] 30.06 - Implementar confirmacion antes de acciones destructivas (eliminar, revocar)
+- [x] 30.01 - Crear frontend/src/pages/NotFoundPage.jsx (pagina 404 para rutas no encontradas)
+- [x] 30.02 - Crear frontend/src/pages/UnauthorizedPage.jsx (pagina 403 para acceso denegado por rol)
+- [x] 30.03 - Implementar notificaciones toast para acciones exitosas (certificado emitido, curso creado, etc.)
+- [x] 30.04 - Implementar indicadores de carga (spinners/skeletons) durante peticiones al backend
+- [x] 30.05 - Implementar manejo de errores de red (mostrar mensaje cuando el backend no responde)
+- [x] 30.06 - Implementar confirmacion antes de acciones destructivas (eliminar, revocar)
 
 ## Bloque 31: Seguridad y Validaciones Finales
 
