@@ -311,18 +311,18 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 24: Frontend - Modulo de Participantes
 
-- [ ] 24.01 - Crear frontend/src/services/participantService.js con funciones: getParticipants, getParticipant, createParticipant, updateParticipant, deleteParticipant, getParticipantCertificates
-- [ ] 24.02 - Crear frontend/src/pages/ParticipantsPage.jsx con lista de participantes, busqueda y paginacion
-- [ ] 24.03 - Crear frontend/src/components/participants/ParticipantList.jsx (tabla con columnas: cedula, nombre, email, organizacion, cargo, acciones)
-- [ ] 24.04 - Agregar boton "Nuevo Participante" que abre formulario de creacion
-- [ ] 24.05 - Crear frontend/src/components/participants/ParticipantForm.jsx (formulario para crear/editar participante)
-- [ ] 24.06 - Implementar validacion del formulario de participante (cedula requerida y unica, nombre requerido)
-- [ ] 24.07 - Implementar creacion de participante
-- [ ] 24.08 - Implementar edicion de participante
-- [ ] 24.09 - Implementar eliminacion de participante con modal de confirmacion
-- [ ] 24.10 - Crear frontend/src/components/participants/ParticipantDetail.jsx (vista detallada con historial de certificados)
-- [ ] 24.11 - Mostrar lista de certificados del participante en la vista de detalle
-- [ ] 24.12 - Agregar busqueda de participantes por nombre o cedula
+- [x] 24.01 - Crear frontend/src/services/participantService.js con funciones: getParticipants, getParticipant, createParticipant, updateParticipant, deleteParticipant, getParticipantCertificates
+- [x] 24.02 - Crear frontend/src/pages/ParticipantsPage.jsx con lista de participantes, busqueda y paginacion
+- [x] 24.03 - Crear frontend/src/components/participants/ParticipantList.jsx (tabla con columnas: cedula, nombre, email, organizacion, cargo, acciones)
+- [x] 24.04 - Agregar boton "Nuevo Participante" que abre formulario de creacion
+- [x] 24.05 - Crear frontend/src/components/participants/ParticipantForm.jsx (formulario para crear/editar participante)
+- [x] 24.06 - Implementar validacion del formulario de participante (cedula requerida y unica, nombre requerido)
+- [x] 24.07 - Implementar creacion de participante
+- [x] 24.08 - Implementar edicion de participante
+- [x] 24.09 - Implementar eliminacion de participante con modal de confirmacion
+- [x] 24.10 - Crear frontend/src/components/participants/ParticipantDetail.jsx (vista detallada con historial de certificados)
+- [x] 24.11 - Mostrar lista de certificados del participante en la vista de detalle
+- [x] 24.12 - Agregar busqueda de participantes por nombre o cedula
 
 ## Bloque 25: Frontend - Modulo de Certificados
 
