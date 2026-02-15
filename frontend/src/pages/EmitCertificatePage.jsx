@@ -72,7 +72,8 @@ const EmitCertificatePage = () => {
         const certifiedDocs = new Set((certs.data || []).map((c) => c.document_id));
 
         // Solo los que tienen completed y no tienen certificado valido aun
-        const eligibleParts = (Array.isArray(parts) ? parts : []).filter(
+        const partsList = Array.isArray(parts) ? parts : (parts.participants || []);
+        const eligibleParts = partsList.filter(
           (p) => p.attendance_status === 'completed' && !certifiedDocs.has(p.document_id)
         );
         setEligible(eligibleParts);
