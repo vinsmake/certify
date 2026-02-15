@@ -383,11 +383,11 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 29: Frontend - Configuracion (Admin)
 
-- [ ] 29.01 - Crear frontend/src/pages/SettingsPage.jsx con estructura basica (solo accesible por admin)
-- [ ] 29.02 - Seccion de gestion de branding institucional: mostrar version activa actual (logo, colores, fuente, nombre organizacion)
-- [ ] 29.03 - Formulario para crear nueva version de branding (subir logo institucional, definir colores, fuente, nombre organizacion)
-- [ ] 29.04 - Historial de versiones de branding con opcion de activar una version anterior
-- [ ] 29.05 - Preview visual de como se vera el branding institucional en un certificado
+- [x] 29.01 - Crear frontend/src/pages/SettingsPage.jsx con estructura basica (solo accesible por admin)
+- [x] 29.02 - Seccion de gestion de branding institucional: mostrar version activa actual (logo, colores, fuente, nombre organizacion)
+- [x] 29.03 - Formulario para crear nueva version de branding (subir logo institucional, definir colores, fuente, nombre organizacion)
+- [x] 29.04 - Historial de versiones de branding con opcion de activar una version anterior
+- [x] 29.05 - Preview visual de como se vera el branding institucional en un certificado
 
 ## Bloque 30: Frontend - Manejo de Errores y UX
 

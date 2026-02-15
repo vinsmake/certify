@@ -17,14 +17,7 @@ import UsersPage from './pages/admin/UsersPage';
 import GlobalEventsPage from './pages/admin/GlobalEventsPage';
 import GlobalCertificatesPage from './pages/admin/GlobalCertificatesPage';
 import ActivityLogPage from './pages/admin/ActivityLogPage';
-
-// Placeholder para rutas pendientes
-const PlaceholderPage = ({ title }) => (
-  <div>
-    <h2 style={{ marginBottom: '0.5rem' }}>{title}</h2>
-    <p style={{ color: 'var(--color-text-muted)' }}>Esta seccion se implementara proximamente.</p>
-  </div>
-);
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   return (
@@ -54,7 +47,7 @@ function App() {
                 <Route path="/admin/eventos"              element={<GlobalEventsPage />} />
                 <Route path="/admin/certificados-global"  element={<GlobalCertificatesPage />} />
                 <Route path="/admin/actividad"            element={<ActivityLogPage />} />
-                <Route path="/configuracion"              element={<PlaceholderPage title="Configuracion" />} />
+                <Route path="/configuracion"              element={<SettingsPage />} />
               </Route>
             </Route>
           </Route>
