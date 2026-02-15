@@ -36,7 +36,7 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
   const loadParticipants = () => {
     setLoadingPart(true);
     courseService.getCourseParticipants(course.id)
-      .then((data) => setParticipants(data))
+      .then((data) => setParticipants(data.participants || []))
       .catch(() => {})
       .finally(() => setLoadingPart(false));
   };
