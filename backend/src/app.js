@@ -9,12 +9,18 @@ const app = express();
 
 // Middlewares globales
 app.use(helmet());
-app.use(cors());
+
+// 31.09 - CORS solo permite el origen del frontend
+app.use(cors({
+  origin: process.env.BASE_URL || 'http://localhost:5173',
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Servir archivos estaticos del volumen de storage (logos, etc.)
-app.use('/storage', express.static(path.join('/app', 'storage')));
+// 31.08 - Solo servir logos como archivos estaticos (PDFs solo via endpoint autenticado)
+app.use('/storage/logos', express.static(path.join('/app', 'storage', 'logos')));
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {

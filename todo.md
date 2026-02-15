@@ -400,14 +400,14 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 31: Seguridad y Validaciones Finales
 
-- [ ] 31.01 - Agregar rate limiting en el endpoint POST /api/auth/login (express-rate-limit)
-- [ ] 31.02 - Verificar que todos los endpoints protegidos requieren autenticacion
-- [ ] 31.03 - Verificar que las rutas de admin solo son accesibles por usuarios con rol admin
-- [ ] 31.04 - Verificar que emisor solo puede acceder a datos de su dependencia
-- [ ] 31.06 - Verificar que la pagina de verificacion es accesible sin autenticacion
-- [ ] 31.07 - Verificar que no se exponen IDs internos en la API publica de verificacion
-- [ ] 31.08 - Verificar que los PDFs no son accesibles directamente por URL (solo via endpoint autenticado)
-- [ ] 31.09 - Verificar que CORS solo permite el origen del frontend
+- [x] 31.01 - Agregar rate limiting en el endpoint POST /api/auth/login (express-rate-limit)
+- [x] 31.02 - Verificar que todos los endpoints protegidos requieren autenticacion
+- [x] 31.03 - Verificar que las rutas de admin solo son accesibles por usuarios con rol admin
+- [x] 31.04 - Verificar que emisor solo puede acceder a datos de su dependencia
+- [x] 31.06 - Verificar que la pagina de verificacion es accesible sin autenticacion
+- [x] 31.07 - Verificar que no se exponen IDs internos en la API publica de verificacion
+- [x] 31.08 - Verificar que los PDFs no son accesibles directamente por URL (solo via endpoint autenticado)
+- [x] 31.09 - Verificar que CORS solo permite el origen del frontend
 
 ## Bloque 32: Pruebas de Integracion Manual
 

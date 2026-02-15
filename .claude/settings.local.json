@@ -91,7 +91,8 @@
       "Bash(__NEW_LINE_597e0862a0a5a6a3__ echo \"=== TEST: /api/stats \\(admin\\) ===\")",
       "Bash(__NEW_LINE_597e0862a0a5a6a3__ echo \"\")",
       "Bash(__NEW_LINE_705349a355efadbd__ curl -s \"http://localhost:3000/api/courses?page=1&limit=5\" -H \"Authorization: Bearer $TOKEN\")",
-      "Bash(__NEW_LINE_83e0443a93757538__ echo \"=== El token expiró, sacando uno nuevo ===\")"
+      "Bash(__NEW_LINE_83e0443a93757538__ echo \"=== El token expiró, sacando uno nuevo ===\")",
+      "Bash(docker cp:*)"
     ]
   }
 }
