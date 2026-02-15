@@ -340,17 +340,17 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 26: Frontend - Pagina de Emision de Certificados
 
-- [ ] 26.01 - Crear frontend/src/pages/EmitCertificatePage.jsx con estructura basica
-- [ ] 26.02 - Paso 1: Selector de curso (dropdown o busqueda, filtrado por dependencia del usuario o todos si es admin)
-- [ ] 26.03 - Paso 2: Al seleccionar curso, mostrar participantes con attendance_status = 'completed' que NO tengan ya certificado para ese curso
-- [ ] 26.04 - Paso 3: Selector de plantilla de certificado (dropdown con preview del thumbnail de cada plantilla)
-- [ ] 26.05 - Paso 4: Checkboxes para seleccionar participantes a certificar (opcion de seleccionar todos)
-- [ ] 26.06 - Paso 5: Vista previa opcional (boton para generar preview con datos del primer participante seleccionado)
-- [ ] 26.07 - Paso 6: Boton "Emitir Certificados" con modal de confirmacion que muestre resumen (curso, plantilla, cantidad de participantes, dependencias)
-- [ ] 26.08 - Implementar llamada al endpoint POST /api/certificates/emit con course_id, participant_ids y template_id
-- [ ] 26.09 - Mostrar estado de progreso durante la emision (loading)
-- [ ] 26.10 - Mostrar resultado de la emision (exito con cantidad emitida o errores)
-- [ ] 26.11 - Agregar enlace a EmitCertificatePage desde el sidebar y desde el detalle de un curso
+- [x] 26.01 - Crear frontend/src/pages/EmitCertificatePage.jsx con estructura basica
+- [x] 26.02 - Paso 1: Selector de curso (dropdown o busqueda, filtrado por dependencia del usuario o todos si es admin)
+- [x] 26.03 - Paso 2: Al seleccionar curso, mostrar participantes con attendance_status = 'completed' que NO tengan ya certificado para ese curso
+- [x] 26.04 - Paso 3: Selector de plantilla de certificado (dropdown con preview del thumbnail de cada plantilla)
+- [x] 26.05 - Paso 4: Checkboxes para seleccionar participantes a certificar (opcion de seleccionar todos)
+- [x] 26.06 - Paso 5: Vista previa opcional (boton para generar preview con datos del primer participante seleccionado)
+- [x] 26.07 - Paso 6: Boton "Emitir Certificados" con modal de confirmacion que muestre resumen (curso, plantilla, cantidad de participantes, dependencias)
+- [x] 26.08 - Implementar llamada al endpoint POST /api/certificates/emit con course_id, participant_ids y template_id
+- [x] 26.09 - Mostrar estado de progreso durante la emision (loading)
+- [x] 26.10 - Mostrar resultado de la emision (exito con cantidad emitida o errores)
+- [x] 26.11 - Agregar enlace a EmitCertificatePage desde el sidebar y desde el detalle de un curso
 
 ## Bloque 27: Frontend - Pagina de Verificacion Publica
 
