@@ -326,17 +326,17 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 25: Frontend - Modulo de Certificados
 
-- [ ] 25.01 - Crear frontend/src/services/certificateService.js con funciones: getCertificates, getCertificate, emitCertificates, revokeCertificate, downloadCertificate
-- [ ] 25.02 - Crear frontend/src/pages/CertificatesPage.jsx con lista de certificados, filtros y paginacion (filtrada por dependencia segun rol)
-- [ ] 25.03 - Crear frontend/src/components/certificates/CertificateList.jsx (tabla con columnas: UUID, participante, curso, dependencia, fecha emision, plantilla usada, estado, acciones)
-- [ ] 25.04 - Agregar filtros en la lista de certificados (por estado, por curso, por participante, por dependencia, por plantilla)
-- [ ] 25.05 - Crear frontend/src/components/certificates/CertificateDetail.jsx (vista detallada de un certificado)
-- [ ] 25.06 - Mostrar informacion completa: participante, curso, fecha, estado, plantilla usada, version de branding, dependencias con sus logos
-- [ ] 25.07 - Agregar boton "Descargar PDF" en la vista de detalle del certificado
-- [ ] 25.08 - Implementar descarga de PDF (abrir en nueva pestana o descargar archivo)
-- [ ] 25.09 - Agregar boton "Revocar" en la vista de detalle (solo si estado es valido y usuario tiene permiso)
-- [ ] 25.10 - Implementar modal de revocacion con campo para escribir la razon
-- [ ] 25.11 - Implementar la revocacion y actualizar la vista
+- [x] 25.01 - Crear frontend/src/services/certificateService.js con funciones: getCertificates, getCertificate, emitCertificates, revokeCertificate, downloadCertificate
+- [x] 25.02 - Crear frontend/src/pages/CertificatesPage.jsx con lista de certificados, filtros y paginacion (filtrada por dependencia segun rol)
+- [x] 25.03 - Crear frontend/src/components/certificates/CertificateList.jsx (tabla con columnas: UUID, participante, curso, dependencia, fecha emision, plantilla usada, estado, acciones)
+- [x] 25.04 - Agregar filtros en la lista de certificados (por estado, por curso, por participante, por dependencia, por plantilla)
+- [x] 25.05 - Crear frontend/src/components/certificates/CertificateDetail.jsx (vista detallada de un certificado)
+- [x] 25.06 - Mostrar informacion completa: participante, curso, fecha, estado, plantilla usada, version de branding, dependencias con sus logos
+- [x] 25.07 - Agregar boton "Descargar PDF" en la vista de detalle del certificado
+- [x] 25.08 - Implementar descarga de PDF (abrir en nueva pestana o descargar archivo)
+- [x] 25.09 - Agregar boton "Revocar" en la vista de detalle (solo si estado es valido y usuario tiene permiso)
+- [x] 25.10 - Implementar modal de revocacion con campo para escribir la razon
+- [x] 25.11 - Implementar la revocacion y actualizar la vista
 
 ## Bloque 26: Frontend - Pagina de Emision de Certificados
 

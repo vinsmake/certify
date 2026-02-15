@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CoursesPage from './pages/CoursesPage';
 import ParticipantsPage from './pages/ParticipantsPage';
+import CertificatesPage from './pages/CertificatesPage';
 
 // Placeholder para rutas que se implementaran en bloques posteriores
 const PlaceholderPage = ({ title }) => (
@@ -46,7 +47,7 @@ function App() {
               <Route path="/dashboard"     element={<DashboardPage />} />
               <Route path="/cursos"        element={<CoursesPage />} />
               <Route path="/participantes" element={<ParticipantsPage />} />
-              <Route path="/certificados"  element={<PlaceholderPage title="Certificados" />} />
+              <Route path="/certificados"  element={<CertificatesPage />} />
               <Route path="/emitir"        element={<PlaceholderPage title="Emitir Certificados" />} />
 
               {/* 20.12 - Rutas solo admin */}
