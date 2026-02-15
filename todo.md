@@ -411,24 +411,24 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 32: Pruebas de Integracion Manual
 
-- [ ] 32.01 - Probar flujo completo: login como admin
-- [ ] 32.02 - Probar flujo completo: crear dependencias y asignar logos
-- [ ] 32.03 - Probar flujo completo: crear usuarios con diferentes roles y asignar dependencias
-- [ ] 32.04 - Probar flujo completo: crear un curso asociado a una dependencia
-- [ ] 32.05 - Probar flujo completo: asociar una segunda dependencia colaboradora al curso
-- [ ] 32.06 - Probar flujo completo: crear participantes
-- [ ] 32.07 - Probar flujo completo: inscribir participantes al curso
-- [ ] 32.08 - Probar flujo completo: marcar participantes como 'completed'
-- [ ] 32.09 - Probar flujo completo: seleccionar plantilla y emitir certificados
-- [ ] 32.10 - Probar flujo completo: verificar que el PDF se genero con los logos de ambas dependencias, logo institucional y QR
-- [ ] 32.11 - Probar flujo completo: escanear el QR y verificar que la pagina de verificacion funciona y muestra todos los logos
-- [ ] 32.12 - Probar flujo completo: revocar un certificado y verificar que la pagina de verificacion muestra "REVOCADO"
-- [ ] 32.13 - Probar flujo completo: cambiar version de branding y emitir nuevos certificados (verificar que los anteriores conservan el branding viejo)
-- [ ] 32.14 - Probar flujo completo: login como emisor y verificar que solo ve datos de su dependencia
-- [ ] 32.15 - Probar flujo completo: verificar que emisor no puede acceder a datos de otra dependencia
-- [ ] 32.16 - Probar flujo completo: admin ve panel global de eventos, certificados y actividad
-- [ ] 32.17 - Probar flujo completo: emitir con plantilla "formal" y con plantilla "modern", comparar PDFs
-- [ ] 32.18 - Probar flujo completo: detener y reiniciar Docker y verificar que los datos persisten
+- [x] 32.01 - Probar flujo completo: login como admin
+- [x] 32.02 - Probar flujo completo: crear dependencias y asignar logos
+- [x] 32.03 - Probar flujo completo: crear usuarios con diferentes roles y asignar dependencias
+- [x] 32.04 - Probar flujo completo: crear un curso asociado a una dependencia
+- [x] 32.05 - Probar flujo completo: asociar una segunda dependencia colaboradora al curso
+- [x] 32.06 - Probar flujo completo: crear participantes
+- [x] 32.07 - Probar flujo completo: inscribir participantes al curso
+- [x] 32.08 - Probar flujo completo: marcar participantes como 'completed'
+- [x] 32.09 - Probar flujo completo: seleccionar plantilla y emitir certificados
+- [x] 32.10 - Probar flujo completo: verificar que el PDF se genero con los logos de ambas dependencias, logo institucional y QR
+- [x] 32.11 - Probar flujo completo: escanear el QR y verificar que la pagina de verificacion funciona y muestra todos los logos
+- [x] 32.12 - Probar flujo completo: revocar un certificado y verificar que la pagina de verificacion muestra "REVOCADO"
+- [x] 32.13 - Probar flujo completo: cambiar version de branding y emitir nuevos certificados (verificar que los anteriores conservan el branding viejo)
+- [x] 32.14 - Probar flujo completo: login como emisor y verificar que solo ve datos de su dependencia
+- [x] 32.15 - Probar flujo completo: verificar que emisor no puede acceder a datos de otra dependencia
+- [x] 32.16 - Probar flujo completo: admin ve panel global de eventos, certificados y actividad
+- [x] 32.17 - Probar flujo completo: emitir con plantilla "formal" y con plantilla "modern", comparar PDFs
+- [x] 32.18 - Probar flujo completo: detener y reiniciar Docker y verificar que los datos persisten
 
 ## Bloque 33: Produccion
 
