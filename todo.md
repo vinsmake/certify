@@ -368,18 +368,18 @@ Cada tarea es una unidad de trabajo que amerita un commit individual. Se deben c
 
 ## Bloque 28: Frontend - Panel de Administracion Global (Solo Admin)
 
-- [ ] 28.01 - Crear frontend/src/pages/admin/DependenciesPage.jsx con CRUD de dependencias (crear, editar, desactivar, subir logo)
-- [ ] 28.02 - Crear frontend/src/components/admin/DependencyForm.jsx (formulario con nombre, abreviatura, logo)
-- [ ] 28.03 - Crear frontend/src/components/admin/DependencyList.jsx (tabla con nombre, abreviatura, logo, estado, cantidad de usuarios, cantidad de cursos)
-- [ ] 28.04 - Crear frontend/src/pages/admin/TemplatesPage.jsx con gestion de plantillas de certificado
-- [ ] 28.05 - Crear frontend/src/components/admin/TemplateList.jsx (tabla con nombre, orientacion, tamano, preview thumbnail, estado, es_default)
-- [ ] 28.06 - Crear frontend/src/components/admin/TemplateForm.jsx (formulario con nombre, slug, descripcion, editor HTML/CSS, orientacion, tamano)
-- [ ] 28.07 - Agregar boton "Preview" en el formulario de plantilla que genera un PDF de ejemplo con datos ficticios
-- [ ] 28.08 - Crear frontend/src/pages/admin/GlobalEventsPage.jsx (lista global de todos los cursos/eventos de todas las dependencias con filtros)
-- [ ] 28.09 - Crear frontend/src/pages/admin/GlobalCertificatesPage.jsx (lista global de todos los certificados de todas las dependencias con filtros)
-- [ ] 28.10 - Crear frontend/src/pages/admin/ActivityLogPage.jsx (registro de actividad reciente del sistema: emisiones, revocaciones, etc.)
-- [ ] 28.11 - Crear frontend/src/pages/admin/UsersPage.jsx (gestion de usuarios: crear, editar, asignar dependencia, cambiar rol, desactivar)
-- [ ] 28.12 - Crear frontend/src/components/admin/UserForm.jsx (formulario con email, nombre, password, rol, dependencia)
+- [x] 28.01 - Crear frontend/src/pages/admin/DependenciesPage.jsx con CRUD de dependencias (crear, editar, desactivar, subir logo)
+- [x] 28.02 - Crear frontend/src/components/admin/DependencyForm.jsx (formulario con nombre, abreviatura, logo)
+- [x] 28.03 - Crear frontend/src/components/admin/DependencyList.jsx (tabla con nombre, abreviatura, logo, estado, cantidad de usuarios, cantidad de cursos)
+- [x] 28.04 - Crear frontend/src/pages/admin/TemplatesPage.jsx con gestion de plantillas de certificado
+- [x] 28.05 - Crear frontend/src/components/admin/TemplateList.jsx (tabla con nombre, orientacion, tamano, preview thumbnail, estado, es_default)
+- [x] 28.06 - Crear frontend/src/components/admin/TemplateForm.jsx (formulario con nombre, slug, descripcion, editor HTML/CSS, orientacion, tamano)
+- [x] 28.07 - Agregar boton "Preview" en el formulario de plantilla que genera un PDF de ejemplo con datos ficticios
+- [x] 28.08 - Crear frontend/src/pages/admin/GlobalEventsPage.jsx (lista global de todos los cursos/eventos de todas las dependencias con filtros)
+- [x] 28.09 - Crear frontend/src/pages/admin/GlobalCertificatesPage.jsx (lista global de todos los certificados de todas las dependencias con filtros)
+- [x] 28.10 - Crear frontend/src/pages/admin/ActivityLogPage.jsx (registro de actividad reciente del sistema: emisiones, revocaciones, etc.)
+- [x] 28.11 - Crear frontend/src/pages/admin/UsersPage.jsx (gestion de usuarios: crear, editar, asignar dependencia, cambiar rol, desactivar)
+- [x] 28.12 - Crear frontend/src/components/admin/UserForm.jsx (formulario con email, nombre, password, rol, dependencia)
 
 ## Bloque 29: Frontend - Configuracion (Admin)
 

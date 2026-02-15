@@ -11,14 +11,18 @@ import ParticipantsPage from './pages/ParticipantsPage';
 import CertificatesPage from './pages/CertificatesPage';
 import EmitCertificatePage from './pages/EmitCertificatePage';
 import VerifyPage from './pages/VerifyPage';
+import DependenciesPage from './pages/admin/DependenciesPage';
+import TemplatesPage from './pages/admin/TemplatesPage';
+import UsersPage from './pages/admin/UsersPage';
+import GlobalEventsPage from './pages/admin/GlobalEventsPage';
+import GlobalCertificatesPage from './pages/admin/GlobalCertificatesPage';
+import ActivityLogPage from './pages/admin/ActivityLogPage';
 
-// Placeholder para rutas que se implementaran en bloques posteriores
+// Placeholder para rutas pendientes
 const PlaceholderPage = ({ title }) => (
   <div>
     <h2 style={{ marginBottom: '0.5rem' }}>{title}</h2>
-    <p style={{ color: 'var(--color-text-muted)' }}>
-      Esta seccion se implementara proximamente.
-    </p>
+    <p style={{ color: 'var(--color-text-muted)' }}>Esta seccion se implementara proximamente.</p>
   </div>
 );
 
@@ -44,12 +48,12 @@ function App() {
 
               {/* 20.12 - Rutas solo admin */}
               <Route element={<AdminRoute />}>
-                <Route path="/admin/dependencias"         element={<PlaceholderPage title="Dependencias" />} />
-                <Route path="/admin/plantillas"           element={<PlaceholderPage title="Plantillas" />} />
-                <Route path="/admin/usuarios"             element={<PlaceholderPage title="Usuarios" />} />
-                <Route path="/admin/eventos"              element={<PlaceholderPage title="Eventos Globales" />} />
-                <Route path="/admin/certificados-global"  element={<PlaceholderPage title="Certificados Global" />} />
-                <Route path="/admin/actividad"            element={<PlaceholderPage title="Actividad" />} />
+                <Route path="/admin/dependencias"         element={<DependenciesPage />} />
+                <Route path="/admin/plantillas"           element={<TemplatesPage />} />
+                <Route path="/admin/usuarios"             element={<UsersPage />} />
+                <Route path="/admin/eventos"              element={<GlobalEventsPage />} />
+                <Route path="/admin/certificados-global"  element={<GlobalCertificatesPage />} />
+                <Route path="/admin/actividad"            element={<ActivityLogPage />} />
                 <Route path="/configuracion"              element={<PlaceholderPage title="Configuracion" />} />
               </Route>
             </Route>
