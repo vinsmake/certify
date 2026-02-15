@@ -187,6 +187,8 @@ const CoursesPage = () => {
           onCancel={() => setShowForm(false)}
           loading={formLoading}
           error={formError}
+          dependencies={allDeps}
+          userRole={user?.role}
         />
       </Modal>
 
@@ -204,6 +206,8 @@ const CoursesPage = () => {
             onCancel={() => setEditCourse(null)}
             loading={formLoading}
             error={formError}
+            dependencies={allDeps}
+            userRole={user?.role}
           />
         )}
       </Modal>

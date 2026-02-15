@@ -242,8 +242,8 @@ VALUES (
   }
 
   .logos img {
-    max-height: 70px;
-    max-width: 150px;
+    max-height: 100px;
+    max-width: 200px;
     object-fit: contain;
   }
 
@@ -425,7 +425,6 @@ VALUES (
       </div>
 
       <div class="footer-right">
-        <div class="issue-date">{{dependency_names}}</div>
       </div>
     </div>
 
@@ -436,6 +435,521 @@ VALUES (
     'landscape',
     'letter',
     true,
+    true,
+    1
+);
+
+-- 2.17 - Plantilla formal
+INSERT INTO certificate_templates (name, slug, description, html_content, orientation, page_size, is_default, is_active, created_by)
+VALUES (
+    'Plantilla Formal',
+    'formal',
+    'Diseno formal con bordes decorativos y tipografia serif',
+    '<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url(''https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&display=swap'');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1056px;
+    height: 816px;
+    font-family: ''{{font_family}}'', ''Lora'', serif;
+    background: #fffef9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .certificate {
+    width: 1016px;
+    height: 776px;
+    padding: 30px 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .certificate::before {
+    content: '''';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 4px double {{primary_color}};
+    pointer-events: none;
+  }
+
+  .certificate::after {
+    content: '''';
+    position: absolute;
+    top: 12px; left: 12px; right: 12px; bottom: 12px;
+    border: 1px solid {{secondary_color}};
+    pointer-events: none;
+  }
+
+  .corner { position: absolute; width: 40px; height: 40px; }
+  .corner::before, .corner::after {
+    content: '''';
+    position: absolute;
+    background: {{primary_color}};
+  }
+  .corner-tl { top: 20px; left: 20px; }
+  .corner-tl::before { width: 20px; height: 2px; top: 0; left: 0; }
+  .corner-tl::after { width: 2px; height: 20px; top: 0; left: 0; }
+  .corner-tr { top: 20px; right: 20px; }
+  .corner-tr::before { width: 20px; height: 2px; top: 0; right: 0; }
+  .corner-tr::after { width: 2px; height: 20px; top: 0; right: 0; }
+  .corner-bl { bottom: 20px; left: 20px; }
+  .corner-bl::before { width: 20px; height: 2px; bottom: 0; left: 0; }
+  .corner-bl::after { width: 2px; height: 20px; bottom: 0; left: 0; }
+  .corner-br { bottom: 20px; right: 20px; }
+  .corner-br::before { width: 20px; height: 2px; bottom: 0; right: 0; }
+  .corner-br::after { width: 2px; height: 20px; bottom: 0; right: 0; }
+
+  .header { text-align: center; width: 100%; z-index: 1; }
+
+  .logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 10px;
+  }
+  .logos img { max-height: 100px; max-width: 200px; object-fit: contain; }
+
+  .org-name {
+    font-size: 13px;
+    color: {{primary_color}};
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 400;
+  }
+
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: {{secondary_color}};
+    margin: 10px auto;
+  }
+
+  .title {
+    font-family: ''Playfair Display'', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: {{primary_color}};
+    letter-spacing: 6px;
+    text-transform: uppercase;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  .body {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .certify-text {
+    font-size: 13px;
+    color: #777;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .participant-name {
+    font-family: ''Playfair Display'', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1a1a1a;
+    border-bottom: 1px solid {{primary_color}};
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+  }
+
+  .document { font-size: 11px; color: #999; margin-bottom: 12px; }
+
+  .description {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.7;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .course-name { font-weight: 700; color: {{primary_color}}; }
+
+  .dependency-logos {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  .dependency-logos img { max-height: 35px; max-width: 75px; object-fit: contain; }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .footer-left, .footer-center, .footer-right { text-align: center; }
+
+  .qr-code img { width: 70px; height: 70px; }
+  .qr-label { font-size: 7px; color: #aaa; margin-top: 3px; }
+  .issue-date { font-size: 11px; color: #777; }
+
+  .instructor-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    border-top: 1px solid {{primary_color}};
+    padding-top: 5px;
+    min-width: 200px;
+  }
+  .instructor-label { font-size: 9px; color: #999; letter-spacing: 1px; }
+
+  .uuid {
+    font-size: 7px;
+    color: #ddd;
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="certificate">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <div class="header">
+      <div class="logos">
+        <img src="{{institutional_logo_base64}}" alt="Logo Institucional" />
+      </div>
+      <div class="org-name">{{organization_name}}</div>
+      <div class="divider"></div>
+      <div class="title">Certificado</div>
+      <div class="subtitle">{{course_type}}</div>
+    </div>
+
+    <div class="body">
+      <div class="certify-text">Otorga el presente certificado a</div>
+      <div class="participant-name">{{participant_name}}</div>
+      <div class="document">C.I. {{document_id}}</div>
+      <div class="description">
+        Por haber completado satisfactoriamente el <span class="course-name">{{course_name}}</span>,
+        con una duracion de <strong>{{course_duration}} horas</strong>.
+      </div>
+      <div class="dependency-logos">{{dependency_logos_html}}</div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">
+        <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
+        <div class="qr-label">Verificacion digital</div>
+      </div>
+      <div class="footer-center">
+        <div class="issue-date">{{issue_date}}</div>
+        <br/>
+        <div class="instructor-name">{{instructor}}</div>
+        <div class="instructor-label">Instructor</div>
+      </div>
+      <div class="footer-right">
+      </div>
+    </div>
+
+    <div class="uuid">{{certificate_uuid}}</div>
+  </div>
+</body>
+</html>',
+    'landscape',
+    'letter',
+    false,
+    true,
+    1
+);
+
+-- 2.18 - Plantilla moderna
+INSERT INTO certificate_templates (name, slug, description, html_content, orientation, page_size, is_default, is_active, created_by)
+VALUES (
+    'Plantilla Moderna',
+    'modern',
+    'Diseno moderno minimalista con colores planos',
+    '<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url(''https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap'');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1056px;
+    height: 816px;
+    font-family: ''{{font_family}}'', ''Inter'', sans-serif;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .certificate {
+    width: 1056px;
+    height: 816px;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .sidebar {
+    width: 60px;
+    background: {{primary_color}};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 0;
+  }
+  .sidebar .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+  }
+  .sidebar .dot.active { background: #fff; width: 8px; height: 8px; }
+
+  .main {
+    flex: 1;
+    padding: 45px 55px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .accent {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: {{secondary_color}};
+    opacity: 0.08;
+    border-radius: 0 0 0 100%;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 15px; }
+  .header-left img { max-height: 100px; max-width: 200px; object-fit: contain; }
+
+  .org-name {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 300;
+  }
+
+  .header-right { text-align: right; }
+  .tag {
+    display: inline-block;
+    background: {{primary_color}};
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 12px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: {{secondary_color}};
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .main-title {
+    font-size: 38px;
+    font-weight: 700;
+    color: {{primary_color}};
+    margin-bottom: 25px;
+    line-height: 1.1;
+  }
+
+  .participant-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+  }
+
+  .document {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.7;
+    max-width: 600px;
+    font-weight: 300;
+  }
+  .course-name { font-weight: 600; color: #1a1a1a; }
+
+  .dependency-logos {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  .dependency-logos img { max-height: 35px; max-width: 70px; object-fit: contain; }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    z-index: 1;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+  }
+
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .qr-code img { width: 60px; height: 60px; }
+  .qr-info { text-align: left; }
+  .qr-info .label { font-size: 8px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
+  .qr-info .value { font-size: 10px; color: #666; margin-top: 2px; }
+
+  .footer-center { text-align: center; }
+  .instructor-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    border-top: 2px solid {{primary_color}};
+    padding-top: 5px;
+    min-width: 180px;
+  }
+  .instructor-label {
+    font-size: 9px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .footer-right { text-align: right; }
+  .date-label { font-size: 8px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
+  .date-value { font-size: 13px; color: #444; font-weight: 600; }
+
+  .uuid {
+    font-size: 7px;
+    color: #ddd;
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="certificate">
+    <div class="sidebar">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="main">
+      <div class="accent"></div>
+
+      <div class="header">
+        <div class="header-left">
+          <img src="{{institutional_logo_base64}}" alt="Logo" />
+          <div class="org-name">{{organization_name}}</div>
+        </div>
+        <div class="header-right">
+          <div class="tag">{{course_type}}</div>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="title">Certificado de completitud</div>
+        <div class="main-title">Certificado</div>
+        <div class="participant-name">{{participant_name}}</div>
+        <div class="document">C.I. {{document_id}}</div>
+        <div class="description">
+          Ha completado satisfactoriamente el <span class="course-name">{{course_name}}</span>,
+          con una duracion de <strong>{{course_duration}} horas</strong>.
+        </div>
+        <div class="dependency-logos">{{dependency_logos_html}}</div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-left">
+          <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
+          <div class="qr-info">
+            <div class="label">Verificacion</div>
+            <div class="value">{{certificate_uuid}}</div>
+          </div>
+        </div>
+        <div class="footer-center">
+          <div class="instructor-name">{{instructor}}</div>
+          <div class="instructor-label">Instructor</div>
+        </div>
+        <div class="footer-right">
+          <div class="date-label">Fecha de emision</div>
+          <div class="date-value">{{issue_date}}</div>
+        </div>
+      </div>
+
+      <div class="uuid">{{certificate_uuid}}</div>
+    </div>
+  </div>
+</body>
+</html>',
+    'landscape',
+    'letter',
+    false,
     true,
     1
 );

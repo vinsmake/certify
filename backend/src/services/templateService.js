@@ -59,6 +59,7 @@ const resolveLogos = (brandingVersion, courseDependencies) => {
 
 /**
  * 13.05 - Construye el bloque HTML de logos de dependencias.
+ * Cada dependencia se muestra como una columna: logo arriba, nombre debajo.
  * Se inyecta como {{dependency_logos_html}} en la plantilla.
  */
 const buildDependencyLogosHtml = (dependencyLogos) => {
@@ -68,12 +69,15 @@ const buildDependencyLogosHtml = (dependencyLogos) => {
 
   const items = dependencyLogos.map((dep) => {
     const imgTag = dep.logoBase64
-      ? `<img src="${dep.logoBase64}" alt="${dep.name}" style="height:50px;max-width:120px;object-fit:contain;">`
-      : `<span style="font-size:12px;">${dep.name}</span>`;
-    return `<div style="display:inline-block;margin:0 8px;text-align:center;">${imgTag}</div>`;
+      ? `<img src="${dep.logoBase64}" alt="${dep.name}" style="object-fit:contain;">`
+      : '';
+    const nameTag = dep.name
+      ? `<div style="font-size:10px;color:#666;margin-top:4px;white-space:nowrap;">${dep.name}</div>`
+      : '';
+    return `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;">${imgTag}${nameTag}</div>`;
   });
 
-  return `<div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;">${items.join('')}</div>`;
+  return `<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;">${items.join('')}</div>`;
 };
 
 /**

@@ -16,10 +16,10 @@ const TYPE_OPTIONS = [
 
 const EMPTY = {
   name: '', description: '', type: '', duration_hours: '',
-  instructor: '', start_date: '', end_date: '',
+  instructor: '', start_date: '', end_date: '', dependency_id: '',
 };
 
-const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error = '' }) => {
+const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error = '', dependencies = [], userRole = '' }) => {
   const [form,   setForm]   = useState(initial ? {
     name:           initial.name         || '',
     description:    initial.description  || '',
@@ -28,6 +28,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
     instructor:     initial.instructor   || '',
     start_date:     initial.start_date   ? initial.start_date.slice(0, 10) : '',
     end_date:       initial.end_date     ? initial.end_date.slice(0, 10)   : '',
+    dependency_id:  initial.dependency_id ? String(initial.dependency_id)  : '',
   } : { ...EMPTY });
 
   const [errors, setErrors] = useState({});
@@ -60,6 +61,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
       instructor:     form.instructor.trim()  || null,
       start_date:     form.start_date  || null,
       end_date:       form.end_date    || null,
+      dependency_id:  form.dependency_id ? Number(form.dependency_id) : null,
     });
   };
 
@@ -85,6 +87,16 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
         error={errors.type}
         placeholder="Selecciona el tipo"
       />
+
+      {userRole === 'admin' && dependencies.length > 0 && (
+        <Select
+          label="Dependencia"
+          value={form.dependency_id}
+          onChange={set('dependency_id')}
+          options={dependencies.map((d) => ({ value: String(d.id), label: d.name }))}
+          placeholder="Selecciona una dependencia"
+        />
+      )}
 
       <Input
         label="Descripcion"

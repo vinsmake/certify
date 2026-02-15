@@ -144,8 +144,7 @@ Las siguientes variables se inyectan dinamicamente al generar el PDF:
 
 **Logos e identidad visual:**
 - `{{institutional_logo_base64}}` - Logo institucional (del branding activo) en base64
-- `{{dependency_logos_html}}` - Bloque HTML con todos los logos de dependencias del curso (imgs en base64, en orden de display_order)
-- `{{dependency_names}}` - Nombres de todas las dependencias del curso, separados por coma
+- `{{dependency_logos_html}}` - Bloque HTML con los logos de dependencias del curso y sus nombres debajo, cada dependencia como una columna (generado automaticamente, imgs en base64, en orden de display_order)
 
 **Branding institucional:**
 - `{{primary_color}}` - Color primario de la version de branding
@@ -183,7 +182,7 @@ Al crear o editar una plantilla desde el panel admin, el formulario incluye un *
 
 - Usar CSS inline o en un bloque `<style>` dentro del mismo HTML. No usar archivos CSS externos.
 - Los logos se inyectan como base64, no como URLs. Usar `<img src="{{institutional_logo_base64}}">`.
-- Para el bloque de logos de dependencias, usar `{{dependency_logos_html}}` que genera automaticamente las etiquetas `<img>` con los logos.
+- Para el bloque de logos de dependencias, usar `{{dependency_logos_html}}` que genera automaticamente columnas con logo + nombre para cada dependencia.
 - El tamano del viewport de Puppeteer es fijo (ej: 1056x816 para carta horizontal), por lo que el diseno debe considerar esas dimensiones.
 - La plantilla soporta cualquier estructura HTML/CSS compatible con Chromium.
 - **No usar JavaScript** en las plantillas; solo HTML y CSS.
@@ -228,7 +227,7 @@ Al crear o editar una plantilla desde el panel admin, el formulario incluye un *
       Ha completado el {{course_type}}: <strong>{{course_name}}</strong><br>
       Duracion: {{course_duration}} horas | Instructor: {{instructor}}
     </p>
-    <p>{{dependency_names}}</p>
+    {{dependency_logos_html}}
   </div>
   <div class="footer">
     <div>Fecha de emision: {{issue_date}}</div>

@@ -11,27 +11,38 @@ const SAMPLE_DATA = {
   font_family: 'Georgia',
   org_logo_url: '',
   dep_logo_url: '',
+  organization_name: 'Universidad Ejemplo',
+  institutional_logo_base64: '',
 
   // Participante
   participant_name: 'Juan Carlos Perez Lopez',
   participant_document: 'CI-12345678',
+  document_id: '12345678',
 
   // Curso
   course_name: 'Diplomado en Gestion de Proyectos',
   course_description: 'Por haber completado satisfactoriamente el programa de formacion con una duracion de 120 horas academicas.',
   course_hours: '120',
+  course_duration: '120',
+  course_type: 'Diplomado',
   course_start_date: '15 de enero de 2026',
   course_end_date: '15 de febrero de 2026',
+  instructor: 'Dr. Maria Rodriguez',
 
   // Certificado
   certificate_code: 'CERT-2026-00001',
+  certificate_uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   certificate_date: '15 de febrero de 2026',
+  issue_date: '15 de febrero de 2026',
   verification_url: 'https://certificados.ejemplo.com/verify/CERT-2026-00001',
   qr_code_url: '',
+  qr_code_base64: '',
 
   // Organizacion / Dependencia
   org_name: 'Universidad Ejemplo',
   dependency_name: 'Direccion de Educacion Continua',
+  dependency_names: '',
+  dependency_logos_html: '<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;"><div style="width:50px;height:50px;background:#ddd;border-radius:6px;"></div><div style="font-size:10px;color:#666;margin-top:4px;">Dependencia A</div></div><div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;"><div style="width:50px;height:50px;background:#ddd;border-radius:6px;"></div><div style="font-size:10px;color:#666;margin-top:4px;">Dependencia B</div></div></div>',
 
   // Firmas
   signer_name: 'Dr. Maria Rodriguez',
