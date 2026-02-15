@@ -169,7 +169,17 @@ Las siguientes variables se inyectan dinamicamente al generar el PDF:
 3. Usar POST /api/templates/:id/preview para generar un PDF de prueba con datos ficticios.
 4. (Opcional) Establecer como plantilla por defecto con PUT /api/templates/:id/default.
 
-### 4.5 Consideraciones tecnicas de las plantillas
+### 4.5 Preview en tiempo real
+
+Al crear o editar una plantilla desde el panel admin, el formulario incluye un **modulo de preview en tiempo real** que muestra como se vera el certificado mientras se escribe el HTML/CSS.
+
+- El preview reemplaza los placeholders `{{variable}}` con datos de ejemplo (nombre ficticio, colores, fechas, etc.)
+- Se renderiza en un iframe aislado con las dimensiones reales del documento (segun orientacion y tamano de pagina)
+- Se escala automaticamente al tamano disponible del contenedor
+- Se puede ocultar/mostrar con un boton toggle para disponer de mas espacio de edicion
+- Cambia automaticamente al modificar la orientacion o tamano de pagina en el formulario
+
+### 4.6 Consideraciones tecnicas de las plantillas
 
 - Usar CSS inline o en un bloque `<style>` dentro del mismo HTML. No usar archivos CSS externos.
 - Los logos se inyectan como base64, no como URLs. Usar `<img src="{{institutional_logo_base64}}">`.
@@ -178,7 +188,7 @@ Las siguientes variables se inyectan dinamicamente al generar el PDF:
 - La plantilla soporta cualquier estructura HTML/CSS compatible con Chromium.
 - **No usar JavaScript** en las plantillas; solo HTML y CSS.
 
-### 4.6 Ejemplo de estructura basica de plantilla
+### 4.7 Ejemplo de estructura basica de plantilla
 
 ```html
 <!DOCTYPE html>

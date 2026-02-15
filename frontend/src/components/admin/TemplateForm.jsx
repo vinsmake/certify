@@ -1,4 +1,4 @@
-// 28.06 - Formulario de plantilla con editor HTML/CSS y preview
+// 28.06 - Formulario de plantilla con editor HTML/CSS y preview en tiempo real
 
 import React, { useState, useEffect } from 'react';
 import Input from '../ui/Input';
@@ -6,6 +6,7 @@ import Select from '../ui/Select';
 import Button from '../ui/Button';
 import Alert from '../ui/Alert';
 import templateService from '../../services/templateService';
+import TemplatePreviewPanel from './TemplatePreviewPanel';
 
 const ORIENTATION_OPTIONS = [
   { value: 'landscape', label: 'Horizontal (landscape)' },
@@ -25,6 +26,7 @@ const TemplateForm = ({ initial, onSubmit, onCancel, loading, error }) => {
   const [pageSize,     setPageSize]     = useState('letter');
   const [errors,       setErrors]       = useState({});
   const [previewing,   setPreviewing]   = useState(false);
+  const [showLivePreview, setShowLivePreview] = useState(true);
 
   useEffect(() => {
     if (initial) {
@@ -109,19 +111,71 @@ const TemplateForm = ({ initial, onSubmit, onCancel, loading, error }) => {
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Descripcion breve (opcional)" />
 
-      <div style={{ marginBottom: '1rem' }}>
+      {/* Barra de herramientas del editor */}
+      <div style={styles.editorToolbar}>
         <label style={styles.label}>
           Contenido HTML/CSS <span style={styles.required}>*</span>
         </label>
-        <textarea
-          value={htmlContent}
-          onChange={(e) => { setHtmlContent(e.target.value); setErrors((p) => ({ ...p, html: '' })); }}
-          rows={16}
-          placeholder="<!DOCTYPE html>..."
-          style={{ ...styles.textarea, borderColor: errors.html ? 'var(--color-danger, #ef4444)' : 'var(--color-border)' }}
-          spellCheck={false}
-        />
-        {errors.html && <p style={styles.fieldError}>{errors.html}</p>}
+        <button
+          type="button"
+          onClick={() => setShowLivePreview((p) => !p)}
+          style={{
+            ...styles.togglePreviewBtn,
+            backgroundColor: showLivePreview ? 'var(--color-primary, #2563eb)' : 'transparent',
+            color: showLivePreview ? '#fff' : 'var(--color-text-secondary)',
+          }}
+          title={showLivePreview ? 'Ocultar preview' : 'Mostrar preview'}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {showLivePreview ? (
+              <>
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <line x1="1" y1="1" x2="23" y2="23" />
+              </>
+            ) : (
+              <>
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </>
+            )}
+          </svg>
+          {showLivePreview ? 'Ocultar preview' : 'Preview en vivo'}
+        </button>
+      </div>
+
+      {/* Layout editor + preview */}
+      <div style={{
+        ...styles.editorLayout,
+        gridTemplateColumns: showLivePreview ? '1fr 1fr' : '1fr',
+      }}>
+        {/* Panel del editor */}
+        <div style={styles.editorPanel}>
+          <textarea
+            value={htmlContent}
+            onChange={(e) => { setHtmlContent(e.target.value); setErrors((p) => ({ ...p, html: '' })); }}
+            rows={showLivePreview ? 22 : 16}
+            placeholder="<!DOCTYPE html>..."
+            style={{
+              ...styles.textarea,
+              height: showLivePreview ? '100%' : undefined,
+              borderColor: errors.html ? 'var(--color-danger, #ef4444)' : 'var(--color-border)',
+            }}
+            spellCheck={false}
+          />
+          {errors.html && <p style={styles.fieldError}>{errors.html}</p>}
+        </div>
+
+        {/* Panel de preview en tiempo real */}
+        {showLivePreview && (
+          <div style={styles.previewPanel}>
+            <TemplatePreviewPanel
+              htmlContent={htmlContent}
+              orientation={orientation}
+              pageSize={pageSize}
+            />
+          </div>
+        )}
       </div>
 
       <div style={styles.footer}>
@@ -142,14 +196,37 @@ const TemplateForm = ({ initial, onSubmit, onCancel, loading, error }) => {
 const styles = {
   row:        { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' },
   col:        {},
-  label:      { display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--color-text-secondary)', marginBottom: '0.375rem' },
+  label:      { display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--color-text-secondary)', marginBottom: 0 },
   required:   { color: 'var(--color-danger, #ef4444)' },
+  editorToolbar: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem',
+  },
+  togglePreviewBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+    padding: '0.3rem 0.75rem', border: '1px solid var(--color-border)',
+    borderRadius: 'var(--radius-md)', fontSize: '0.8125rem', fontWeight: '500',
+    cursor: 'pointer', transition: 'var(--transition, all 0.15s ease)',
+    whiteSpace: 'nowrap',
+  },
+  editorLayout: {
+    display: 'grid', gap: '0.75rem', marginBottom: '1rem',
+    alignItems: 'stretch',
+  },
+  editorPanel: {
+    display: 'flex', flexDirection: 'column', minWidth: 0,
+  },
+  previewPanel: {
+    display: 'flex', flexDirection: 'column', minWidth: 0,
+    minHeight: '400px',
+  },
   textarea:   {
     width: '100%', padding: '0.5rem 0.75rem',
     border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
     fontSize: '0.8125rem', fontFamily: 'monospace',
     color: 'var(--color-text-primary)', backgroundColor: 'var(--color-surface)',
     resize: 'vertical', boxSizing: 'border-box', lineHeight: '1.5',
+    flex: 1,
   },
   fieldError: { fontSize: '0.8125rem', color: 'var(--color-danger, #ef4444)', marginTop: '0.25rem' },
   footer:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' },

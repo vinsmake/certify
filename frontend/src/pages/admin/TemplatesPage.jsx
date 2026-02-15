@@ -108,12 +108,12 @@ const TemplatesPage = () => {
         onSetDefault={handleSetDefault} onPreview={handlePreview}
       />
 
-      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Nueva Plantilla" size="lg">
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Nueva Plantilla" size="xl">
         <TemplateForm onSubmit={handleCreate} onCancel={() => setShowForm(false)}
           loading={formLoading} error={formError} />
       </Modal>
 
-      <Modal isOpen={!!editTmpl} onClose={() => setEditTmpl(null)} title="Editar Plantilla" size="lg">
+      <Modal isOpen={!!editTmpl} onClose={() => setEditTmpl(null)} title="Editar Plantilla" size="xl">
         {editTmpl && (
           <TemplateForm initial={editTmpl} onSubmit={handleUpdate} onCancel={() => setEditTmpl(null)}
             loading={formLoading} error={formError} />

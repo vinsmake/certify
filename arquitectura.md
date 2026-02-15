@@ -144,8 +144,7 @@ Los datos se almacenan en carpetas locales del proyecto, no en volumenes de Dock
 │       │   │   ├── DependencyList.jsx
 │       │   │   ├── DependencyForm.jsx
 │       │   │   ├── TemplateList.jsx
-│       │   │   ├── TemplateForm.jsx
-│       │   │   └── UserForm.jsx
+│       │   │   ├── TemplateForm.jsx│       │   │   ├── TemplatePreviewPanel.jsx│       │   │   └── UserForm.jsx
 │       │   ├── auth/
 │       │   │   ├── LoginForm.jsx
 │       │   │   ├── ProtectedRoute.jsx

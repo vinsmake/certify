@@ -19,7 +19,7 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
 
   if (!isOpen) return null;
 
-  const widths = { sm: '400px', md: '540px', lg: '720px' };
+  const widths = { sm: '400px', md: '540px', lg: '720px', xl: '95vw' };
 
   return (
     <div style={styles.overlay} onClick={onClose}>

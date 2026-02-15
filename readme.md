@@ -705,7 +705,7 @@ Biblioteca de componentes UI usados en todos los modulos del frontend.
 |---|---|
 | `Button.jsx` | Variantes: `primary`, `secondary`, `danger`, `ghost`. Props: `size` (sm/md/lg), `loading`, `disabled` |
 | `Input.jsx` | Campo de texto con `label`, `error`, `required`. Borde rojo cuando `error` esta presente |
-| `Modal.jsx` | Overlay con cierre por Escape o click exterior. Props: `isOpen`, `onClose`, `title`, `footer`, `size` (sm/md/lg) |
+| `Modal.jsx` | Overlay con cierre por Escape o click exterior. Props: `isOpen`, `onClose`, `title`, `footer`, `size` (sm/md/lg/xl). El tamano `xl` ocupa 95vw y se usa para formularios con preview en tiempo real |
 | `Table.jsx` | `columns: [{key, label, render?, width?}]`, `data`, `loading`, `emptyText`, `onRowClick` |
 | `SearchBar.jsx` | Input con debounce de 350ms. Prop `onSearch(value)`. Boton X para limpiar |
 | `Pagination.jsx` | Anterior / paginas numeradas (ventana de 5) / Siguiente. Muestra "X-Y de Total" |
@@ -793,7 +793,43 @@ CRUD completo de cursos con detalle interactivo para gestionar dependencias cola
 
 **Estado:** Pendiente
 
-> Se documentara: gestion de dependencias (CRUD + logos), gestion de plantillas (CRUD + preview + editor HTML), gestion de usuarios (asignacion de roles y dependencias), lista global de eventos, lista global de certificados, registro de actividad.
+> Se documentara: gestion de dependencias (CRUD + logos), gestion de usuarios (asignacion de roles y dependencias), lista global de eventos, lista global de certificados, registro de actividad.
+
+#### Gestion de Plantillas con Preview en Tiempo Real
+
+**Estado:** Implementado
+
+El formulario de creacion/edicion de plantillas (`TemplateForm.jsx`) incluye un modulo de preview en tiempo real que permite visualizar los cambios al HTML/CSS mientras se editan.
+
+**Archivos:**
+- `frontend/src/components/admin/TemplateForm.jsx` — Formulario con layout split-pane (editor + preview)
+- `frontend/src/components/admin/TemplatePreviewPanel.jsx` — Componente de preview con iframe aislado
+- `frontend/src/pages/admin/TemplatesPage.jsx` — Pagina que usa modal xl para acomodar el editor
+
+**Caracteristicas del preview en tiempo real:**
+- **Split-pane:** El editor y el preview se muestran lado a lado en un grid 50/50
+- **Iframe aislado:** El HTML se renderiza en un iframe con sandbox para seguridad
+- **Reemplazo de placeholders:** Los placeholders `{{variable}}` se reemplazan con datos de ejemplo (nombre ficticio, colores, fechas) para simular un certificado real
+- **Escalado automatico:** El iframe se escala proporcionalmente segun el tamano del contenedor, respetando las dimensiones reales del documento (ej: 1056x816 para carta horizontal)
+- **Responsive a orientacion/tamano:** Al cambiar la orientacion o tamano de pagina en el formulario, el preview se ajusta automaticamente a las nuevas dimensiones
+- **Toggle show/hide:** Boton para mostrar u ocultar el panel de preview. Al ocultar, el editor ocupa todo el ancho
+- **Indicadores visuales:** Muestra las dimensiones del documento y el porcentaje de zoom actual
+- **Barra de placeholders:** Lista de placeholders disponibles como referencia rapida
+
+**Datos de ejemplo usados en el preview:**
+- `participant_name`: "Juan Carlos Perez Lopez"
+- `course_name`: "Diplomado en Gestion de Proyectos"
+- `org_name`: "Universidad Ejemplo"
+- `primary_color`: "#1e3a5f"
+- `secondary_color`: "#c9a84c"
+- Y otros datos representativos para todas las variables soportadas
+
+**Flujo de uso:**
+1. El usuario abre el modal de nueva plantilla o edicion (se usa modal tamano `xl`)
+2. El preview se muestra activo por defecto junto al editor de HTML/CSS
+3. Al escribir o modificar el HTML, el preview se actualiza instantaneamente
+4. Al cambiar orientacion o tamano de pagina, el preview refleja las nuevas dimensiones
+5. El boton "Preview en vivo" permite ocultar/mostrar el panel segun necesidad
 
 ---
 
