@@ -15,8 +15,8 @@
 
 | Campo | Valor |
 |---|---|
-| Email | admin@admin.com |
-| Password | Admin123! |
+| Email | vinsmakedev@gmail.com |
+| Password | @0G00G0000000000 |
 | Rol | admin |
 | dependency_id | null (ve todo) |
 
