@@ -88,13 +88,18 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.5);
   const [containerWidth, setContainerWidth] = useState(0);
-  const [logoUrl, setLogoUrl] = useState('');
+  const [logoBase64, setLogoBase64] = useState('');
 
-  // Obtener logo institucional del branding activo
+  // Obtener logo institucional del branding activo y convertir a base64
   useEffect(() => {
-    api.get('/branding/active').then((r) => {
+    api.get('/branding/active').then(async (r) => {
       if (r.data?.logo_path) {
-        setLogoUrl(`${BACKEND}${r.data.logo_path}`);
+        const url = `${BACKEND}${r.data.logo_path}`;
+        const resp = await fetch(url);
+        const blob = await resp.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => setLogoBase64(reader.result);
+        reader.readAsDataURL(blob);
       }
     }).catch(() => {});
   }, []);
@@ -122,7 +127,7 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
   }, [pageDims.width]);
 
   // Actualizar contenido del iframe
-  const processedHtml = useMemo(() => replacePlaceholders(htmlContent, logoUrl), [htmlContent, logoUrl]);
+  const processedHtml = useMemo(() => replacePlaceholders(htmlContent, logoBase64), [htmlContent, logoBase64]);
 
   useEffect(() => {
     const iframe = iframeRef.current;
