@@ -14,13 +14,12 @@ const SAMPLE_DATA = {
   font_family: 'Georgia',
   org_logo_url: '',
   dep_logo_url: '',
-  organization_name: 'Universidad Ejemplo',
+  organization_name: 'Vinsmake University',
   institutional_logo_base64: '',
 
   // Participante
-  participant_name: 'Juan Carlos Perez Lopez',
-  participant_document: 'CI-12345678',
-  document_id: '12345678',
+  participant_name: 'Enrique Emmanuel Plascencia Soltero',
+  document_id: '4815162342',
 
   // Curso
   course_name: 'Diplomado en Gestion de Proyectos',
@@ -30,7 +29,7 @@ const SAMPLE_DATA = {
   course_type: 'Diplomado',
   course_start_date: '15 de enero de 2026',
   course_end_date: '15 de febrero de 2026',
-  instructor: 'Dr. Maria Rodriguez',
+  instructor: 'Lic. Amanda Isbosseth',
 
   // Certificado
   certificate_code: 'CERT-2026-00001',
