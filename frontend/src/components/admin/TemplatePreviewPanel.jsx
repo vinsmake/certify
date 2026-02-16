@@ -2,6 +2,9 @@
 // Renderiza el HTML dentro de un iframe aislado, reemplazando placeholders con datos de ejemplo
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
+import api from '../../services/api';
+
+const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
 
 // Datos de ejemplo para reemplazar los placeholders de la plantilla
 const SAMPLE_DATA = {
@@ -54,10 +57,14 @@ const SAMPLE_DATA = {
 /**
  * Reemplaza placeholders {{key}} con valores de ejemplo
  */
-const replacePlaceholders = (html) => {
+const replacePlaceholders = (html, logoUrl) => {
   if (!html) return '';
+  const data = { ...SAMPLE_DATA };
+  if (logoUrl) {
+    data.institutional_logo_base64 = logoUrl;
+  }
   return html.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-    return SAMPLE_DATA[key] !== undefined ? SAMPLE_DATA[key] : match;
+    return data[key] !== undefined ? data[key] : match;
   });
 };
 
@@ -81,6 +88,16 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.5);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [logoUrl, setLogoUrl] = useState('');
+
+  // Obtener logo institucional del branding activo
+  useEffect(() => {
+    api.get('/branding/active').then((r) => {
+      if (r.data?.logo_path) {
+        setLogoUrl(`${BACKEND}${r.data.logo_path}`);
+      }
+    }).catch(() => {});
+  }, []);
 
   const pageDims = useMemo(() => getPageDimensions(orientation, pageSize), [orientation, pageSize]);
 
@@ -105,7 +122,7 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
   }, [pageDims.width]);
 
   // Actualizar contenido del iframe
-  const processedHtml = useMemo(() => replacePlaceholders(htmlContent), [htmlContent]);
+  const processedHtml = useMemo(() => replacePlaceholders(htmlContent, logoUrl), [htmlContent, logoUrl]);
 
   useEffect(() => {
     const iframe = iframeRef.current;

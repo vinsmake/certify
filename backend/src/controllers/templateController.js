@@ -1,4 +1,6 @@
 const CertificateTemplate = require('../models/CertificateTemplate');
+const BrandingVersion = require('../models/BrandingVersion');
+const { resolveLogos } = require('../services/templateService');
 const puppeteer = require('puppeteer');
 
 const listTemplates = async (req, res, next) => {
@@ -91,6 +93,10 @@ const previewTemplate = async (req, res, next) => {
       return res.status(404).json({ error: 'Plantilla no encontrada' });
     }
 
+    // Obtener logo institucional real del branding activo
+    const brandingVersion = await BrandingVersion.findActive();
+    const { institutionalLogoBase64 } = resolveLogos(brandingVersion, []);
+
     // Datos de ejemplo para preview
     const sampleData = {
       participant_name: 'Juan Carlos Perez',
@@ -103,7 +109,7 @@ const previewTemplate = async (req, res, next) => {
       certificate_uuid: '550e8400-e29b-41d4-a716-446655440000',
       verification_url: 'http://localhost:5173/verificar/550e8400-e29b-41d4-a716-446655440000',
       qr_code_base64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-      institutional_logo_base64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      institutional_logo_base64: institutionalLogoBase64,
       dependency_logos_html: '',
       dependency_names: 'Dependencia General',
       primary_color: '#1a365d',
