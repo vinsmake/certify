@@ -16,6 +16,16 @@ Nginx del servidor (host) ──► :443 SSL / :80 redirect
 
 El Nginx **del host** actúa como reverse proxy con SSL. Los contenedores Docker no exponen puertos al mundo exterior, solo al host vía `127.0.0.1`.
 
+### ¿Qué se sube al servidor?
+
+| Componente | Se sube código fuente? | Lo que se sube                                  |
+| ---------- | ---------------------- | ----------------------------------------------- |
+| Frontend   | ❌ No                  | Solo `dist/`, `nginx.conf`, `Dockerfile.prod`   |
+| Backend    | ✅ Sí                  | Todo `backend/` (Node.js necesita el código)     |
+| Database   | —                      | `database/init/` (schema) + volumen de datos     |
+
+La **build del frontend se hace en tu máquina local** con `npm run build`. Solo el resultado compilado (`dist/`) se sube al servidor.
+
 ---
 
 ## 1. Prerrequisitos en el servidor
@@ -30,20 +40,116 @@ sudo usermod -aG docker $USER
 
 ---
 
-## 2. Clonar el proyecto
+## 2. Estructura en el servidor
+
+En el servidor, el proyecto se organiza así en `/opt/certify`:
+
+```
+/opt/certify/
+├── docker-compose.prod.yml
+├── .env.prod
+├── frontend/
+│   ├── Dockerfile.prod          # Solo copia dist/ a nginx:alpine
+│   ├── nginx.conf               # Config de SPA (sin proxy rules)
+│   └── dist/                    # ← Build pre-compilada desde tu máquina
+├── backend/
+│   ├── Dockerfile.prod
+│   ├── package.json
+│   ├── package-lock.json
+│   └── src/                     # Código fuente completo del backend
+├── database/
+│   └── init/
+│       └── 01_schema.sql
+└── storage/
+    ├── certificates/
+    └── logos/
+```
+
+> **No se sube:** `node_modules/`, código fuente del frontend, ni archivos de desarrollo.
+
+---
+
+## 3. Build del frontend (en tu máquina local)
+
+Antes de subir al servidor, genera la build de producción localmente:
 
 ```bash
-cd /opt
-sudo git clone <REPO_URL> certify
-sudo chown -R $USER:$USER /opt/certify
-cd /opt/certify
+cd frontend
+
+# Configurar variables de entorno para la build
+# Crear .env.production en frontend/ (o exportar las variables)
+echo "VITE_API_URL=/api" > .env.production
+echo "VITE_APP_TITLE=Plataforma de Credenciales Digitales" >> .env.production
+
+# Instalar dependencias y compilar
+npm install
+npm run build
+```
+
+Esto genera la carpeta `frontend/dist/` con los archivos estáticos optimizados.
+
+---
+
+## 4. Subir archivos al servidor
+
+### Primera vez (setup inicial)
+
+```bash
+# Desde la raíz del proyecto en tu máquina local
+# Subir la estructura necesaria (sin node_modules ni código fuente del frontend)
+
+# Opción A: rsync (recomendado)
+rsync -avz --progress \
+  --exclude 'node_modules' \
+  --exclude 'frontend/src' \
+  --exclude 'frontend/public' \
+  --exclude 'frontend/index.html' \
+  --exclude 'frontend/package.json' \
+  --exclude 'frontend/package-lock.json' \
+  --exclude 'frontend/vite.config.js' \
+  --exclude 'frontend/Dockerfile' \
+  --exclude 'database/data' \
+  --exclude '.env' \
+  --exclude '.git' \
+  ./ usuario@certify.jalisco.gob.mx:/opt/certify/
+
+# Opción B: scp selectivo
+scp docker-compose.prod.yml .env.prod usuario@servidor:/opt/certify/
+scp -r frontend/dist frontend/nginx.conf frontend/Dockerfile.prod usuario@servidor:/opt/certify/frontend/
+scp -r backend/ usuario@servidor:/opt/certify/backend/
+scp -r database/init/ usuario@servidor:/opt/certify/database/init/
+```
+
+### Actualizaciones posteriores (solo frontend)
+
+Cuando solo cambie el frontend:
+
+```bash
+# 1. Rebuild local
+cd frontend && npm run build
+
+# 2. Subir solo la build
+rsync -avz --delete frontend/dist/ usuario@servidor:/opt/certify/frontend/dist/
+
+# 3. Rebuild del contenedor en el servidor
+ssh usuario@servidor "cd /opt/certify && docker compose -f docker-compose.prod.yml up --build -d frontend"
+```
+
+### Actualizaciones posteriores (backend)
+
+```bash
+# 1. Subir código del backend
+rsync -avz --delete --exclude 'node_modules' backend/ usuario@servidor:/opt/certify/backend/
+
+# 2. Rebuild del contenedor
+ssh usuario@servidor "cd /opt/certify && docker compose -f docker-compose.prod.yml up --build -d backend"
 ```
 
 ---
 
-## 3. Archivo de entorno `.env.prod`
+## 5. Archivo de entorno `.env.prod`
 
-Crear `/opt/certify/.env.prod` con las variables de producción:
+Crear `/opt/certify/.env.prod` en el servidor:
 
 ```env
 NODE_ENV=production
@@ -68,60 +174,9 @@ VERIFICATION_BASE_URL=https://certify.jalisco.gob.mx/verificar
 
 ---
 
-## 4. Ajustar `docker-compose.prod.yml`
+## 6. Configurar Nginx del host
 
-Modificar los puertos para que solo escuchen en `127.0.0.1` (localhost) y no estén expuestos al exterior. El Nginx del host será quien reciba el tráfico.
-
-```yaml
-# docker-compose.prod.yml
-services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
-      args:
-        VITE_API_URL: /api
-        VITE_APP_TITLE: Plataforma de Credenciales Digitales
-    ports:
-      - "127.0.0.1:8080:80"   # Solo accesible desde localhost
-    depends_on:
-      - backend
-    restart: unless-stopped
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
-    ports:
-      - "127.0.0.1:3000:3000"  # Solo accesible desde localhost
-    volumes:
-      - ./storage/certificates:/app/storage/certificates
-      - ./storage/logos:/app/storage/logos
-    env_file:
-      - .env.prod
-    depends_on:
-      - database
-    restart: unless-stopped
-
-  database:
-    image: postgres:16-alpine
-    volumes:
-      - ./database/data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    restart: unless-stopped
-```
-
-> **Nota:** El frontend se mapea al puerto `8080` del host para no colisionar con el Nginx del host que usa el `80`. La base de datos no expone puertos al host.
-
----
-
-## 5. Configurar Nginx del host
-
-### 5.1. Crear el archivo de configuración
+### 6.1. Crear el archivo de configuración
 
 ```bash
 sudo nano /etc/nginx/sites-available/certify.jalisco.gob.mx
@@ -187,7 +242,7 @@ server {
 }
 ```
 
-### 5.2. Habilitar el sitio
+### 6.2. Habilitar el sitio
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/certify.jalisco.gob.mx /etc/nginx/sites-enabled/
@@ -198,12 +253,11 @@ sudo systemctl reload nginx
 
 ---
 
-## 6. Certificado SSL con Let's Encrypt
+## 7. Certificado SSL con Let's Encrypt
 
 Antes de tener el certificado, usar temporalmente una config solo HTTP para que Certbot pueda validar:
 
 ```bash
-# Configuración temporal (solo HTTP, sin redirect)
 sudo nano /etc/nginx/sites-available/certify.jalisco.gob.mx
 ```
 
@@ -240,13 +294,13 @@ Obtener el certificado:
 sudo certbot --nginx -d certify.jalisco.gob.mx
 ```
 
-Certbot modificará el archivo automáticamente para incluir SSL. Después, reemplazar con la configuración completa del paso 5.1 y recargar:
+Certbot modificará el archivo automáticamente para incluir SSL. Después, reemplazar con la configuración completa del paso 6.1 y recargar:
 
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-Renovación automática (ya viene configurada con el paquete, pero verificar):
+Renovación automática (verificar que funcione):
 
 ```bash
 sudo certbot renew --dry-run
@@ -254,7 +308,7 @@ sudo certbot renew --dry-run
 
 ---
 
-## 7. Build y levantar contenedores
+## 8. Build y levantar contenedores
 
 ```bash
 cd /opt/certify
@@ -271,7 +325,7 @@ docker compose -f docker-compose.prod.yml logs -f
 
 ---
 
-## 8. Verificar el despliegue
+## 9. Verificar el despliegue
 
 ```bash
 # Desde el servidor
@@ -283,9 +337,7 @@ curl https://certify.jalisco.gob.mx/api/health # API a través de Nginx + SSL
 
 ---
 
-## 9. Firewall
-
-Asegurarse de que solo los puertos 80 y 443 estén abiertos al exterior:
+## 10. Firewall
 
 ```bash
 sudo ufw allow 22/tcp     # SSH
@@ -299,19 +351,41 @@ sudo ufw status
 
 ---
 
-## 10. Actualizar el proyecto
+## 11. Flujo completo de despliegue (resumen)
 
-Cuando haya cambios en el código:
-
-```bash
-cd /opt/certify
-git pull origin main
-docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
+```
+┌─────────────────────────────────────────────────────────┐
+│  TU MÁQUINA LOCAL                                       │
+│                                                         │
+│  1. cd frontend && npm run build     → genera dist/     │
+│  2. rsync dist/ al servidor                             │
+│  3. rsync backend/ al servidor (si hubo cambios)        │
+└───────────────────────┬─────────────────────────────────┘
+                        │ rsync / scp
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│  SERVIDOR (certify.jalisco.gob.mx)                      │
+│                                                         │
+│  4. docker compose up --build -d                        │
+│                                                         │
+│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
+│  │  frontend    │  │   backend    │  │   database    │  │
+│  │  nginx:alpine│  │  node:20     │  │  postgres:16  │  │
+│  │  (dist/)     │  │  (src/)      │  │  (data/)      │  │
+│  │  :8080       │  │  :3000       │  │  :5432        │  │
+│  └──────┬───────┘  └──────┬───────┘  └───────────────┘  │
+│         │                 │    red interna de Docker     │
+│  ───────┴─────────────────┴──────────────────────────── │
+│                        │                                 │
+│  Nginx del host ◄──────┘                                │
+│  :80 → redirect :443                                     │
+│  :443 → proxy a contenedores                             │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 11. Comandos útiles
+## 12. Comandos útiles
 
 | Acción                  | Comando                                                                |
 | ----------------------- | ---------------------------------------------------------------------- |
@@ -319,7 +393,8 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
 | Ver logs                | `docker compose -f docker-compose.prod.yml logs -f`                   |
 | Reiniciar todo          | `docker compose -f docker-compose.prod.yml restart`                   |
 | Detener todo            | `docker compose -f docker-compose.prod.yml down`                      |
-| Rebuild un servicio     | `docker compose -f docker-compose.prod.yml up --build -d backend`     |
+| Rebuild frontend        | `docker compose -f docker-compose.prod.yml up --build -d frontend`    |
+| Rebuild backend         | `docker compose -f docker-compose.prod.yml up --build -d backend`     |
 | Backup base de datos    | `tar -czf backup-db-$(date +%F).tar.gz -C database data`             |
 | Backup storage          | `tar -czf backup-storage-$(date +%F).tar.gz -C storage certificates logos` |
 | Logs del Nginx del host | `sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log`     |
