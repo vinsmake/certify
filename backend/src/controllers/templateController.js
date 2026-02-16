@@ -99,28 +99,28 @@ const previewTemplate = async (req, res, next) => {
     const { institutionalLogoBase64 } = resolveLogos(brandingVersion, []);
 
     // Generar QR de ejemplo apuntando a vinsmake.dev
-    const sampleUuid = '550e8400-e29b-41d4-a716-446655440000';
+    const sampleUuid = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     const sampleQrBase64 = await generateQR(sampleUuid);
 
-    // Datos de ejemplo para preview
+    // Datos de ejemplo para preview (sincronizados con TemplatePreviewPanel.jsx)
     const sampleData = {
-      participant_name: 'Juan Carlos Perez',
-      document_id: 'V-12345678',
-      course_name: 'Curso de Ejemplo',
-      course_type: 'Taller',
-      course_duration: '40',
-      instructor: 'Maria Garcia',
-      issue_date: new Date().toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' }),
+      participant_name: 'Enrique Emmanuel Plascencia Soltero',
+      document_id: '4815162342',
+      course_name: 'Diplomado en Gestion de Proyectos',
+      course_type: 'Diplomado',
+      course_duration: '120',
+      instructor: 'Lic. Amanda Isbosseth',
+      issue_date: '15 de febrero de 2026',
       certificate_uuid: sampleUuid,
       verification_url: 'https://vinsmake.dev/verificar/' + sampleUuid,
       qr_code_base64: sampleQrBase64,
       institutional_logo_base64: institutionalLogoBase64,
       dependency_logos_html: '',
       dependency_names: 'Dependencia General',
-      primary_color: '#1a365d',
-      secondary_color: '#2b6cb0',
-      font_family: 'Roboto',
-      organization_name: 'Organizacion de Ejemplo',
+      primary_color: '#1e3a5f',
+      secondary_color: '#c9a84c',
+      font_family: 'Georgia',
+      organization_name: 'Vinsmake University',
     };
 
     // Reemplazar variables en la plantilla
