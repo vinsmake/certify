@@ -156,11 +156,10 @@ INSERT INTO dependencies (name, abbreviation, is_active)
 VALUES ('Dependencia General', 'DG', true);
 
 -- 2.14 - Usuario administrador por defecto
--- Password: Admin123! (bcrypt 12 rounds)
 INSERT INTO users (email, password_hash, full_name, role, dependency_id, is_active)
 VALUES (
-    'admin@admin.com',
-    '$2b$12$4yca6glTs1ZzPgErXu4ij.K670FgPX8INt86pFO9vZQRCfeSy98FS',
+    'vinsmakedev@gmail.com',
+    '$2b$12$0RxGVnMPWZcMYC8RjJYr/OgMjgpy13v9rOT40vcxtrmuo6y88RzTO',
     'Administrador',
     'admin',
     NULL,
