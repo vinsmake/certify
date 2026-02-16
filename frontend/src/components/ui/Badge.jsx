@@ -8,9 +8,7 @@ const VARIANTS = {
   revoked:  { bg: 'var(--color-danger-light)',  color: 'var(--color-danger)',    label: 'Revocado'  },
   // Asistencia
   enrolled:  { bg: '#eff6ff', color: '#1d4ed8', label: 'Inscrito'   },
-  attended:  { bg: '#f0fdf4', color: '#15803d', label: 'Asistio'    },
   completed: { bg: 'var(--color-success-light)', color: 'var(--color-success)', label: 'Completado' },
-  absent:    { bg: '#f8fafc', color: 'var(--color-text-muted)', label: 'Ausente' },
   // Usuarios / dependencias
   active:   { bg: 'var(--color-success-light)', color: 'var(--color-success)',   label: 'Activo'    },
   inactive: { bg: '#f8fafc',                    color: 'var(--color-text-muted)', label: 'Inactivo' },

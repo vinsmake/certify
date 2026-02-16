@@ -9,9 +9,7 @@ import Alert from '../ui/Alert';
 
 const STATUS_OPTIONS = [
   { value: 'enrolled',  label: 'Inscrito'    },
-  { value: 'attended',  label: 'Asistio'     },
   { value: 'completed', label: 'Completado'  },
-  { value: 'absent',    label: 'Ausente'     },
 ];
 
 const formatDate = (d) =>

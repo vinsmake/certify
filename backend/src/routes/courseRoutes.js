@@ -130,8 +130,8 @@ router.put(
     param('id').isInt().withMessage('ID de curso invalido'),
     param('participantId').isInt().withMessage('ID de participante invalido'),
     body('attendance_status')
-      .isIn(['enrolled', 'attended', 'completed', 'absent'])
-      .withMessage('attendance_status debe ser: enrolled, attended, completed o absent'),
+      .isIn(['enrolled', 'completed'])
+      .withMessage('attendance_status debe ser: enrolled o completed'),
   ],
   validateRequest,
   updateParticipantStatus
