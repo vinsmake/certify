@@ -8,21 +8,22 @@ Internet
    ▼
 Nginx del servidor (host) ──► :443 SSL / :80 redirect
    │
-   ├── /api/*       → proxy a contenedor backend   (puerto 3000)
-   ├── /storage/*   → proxy a contenedor backend   (puerto 3000)
-   └── /*           → proxy a contenedor frontend  (puerto 8080)
-                       (Nginx interno sirve el SPA)
+   ├── /api/*       → proxy a contenedor backend (puerto 3000)
+   ├── /storage/*   → proxy a contenedor backend (puerto 3000)
+   └── /*           → archivos estáticos de /var/www/certify (dist/)
+                       con SPA fallback a index.html
 ```
 
-El Nginx **del host** actúa como reverse proxy con SSL. Los contenedores Docker no exponen puertos al mundo exterior, solo al host vía `127.0.0.1`.
+- **Frontend**: se hace `npm run build` en local, se sube solo la carpeta `dist/` al servidor. Nginx sirve los archivos estáticos directamente. **No necesita Docker**.
+- **Backend + BD**: corren en Docker Compose.
 
 ---
 
 ## 1. Prerrequisitos en el servidor
 
 ```bash
-# Nginx, Docker y Certbot
 sudo apt update && sudo apt install -y nginx certbot python3-certbot-nginx
+
 # Docker (si no está instalado)
 curl -fsSL https://get.docker.com | sudo sh
 sudo usermod -aG docker $USER
@@ -30,20 +31,31 @@ sudo usermod -aG docker $USER
 
 ---
 
-## 2. Clonar el proyecto
+## 2. Estructura en el servidor
 
-```bash
-cd /opt
-sudo git clone <REPO_URL> certify
-sudo chown -R $USER:$USER /opt/certify
-cd /opt/certify
 ```
+/opt/certify/
+├── backend/          ← código fuente del backend
+├── database/         ← datos de PostgreSQL
+├── storage/          ← certificados y logos
+├── docker-compose.prod.yml
+└── .env.prod
+
+/var/www/certify/     ← build del frontend (solo archivos estáticos)
+├── index.html
+├── assets/
+└── ...
+```
+
+Solo se suben al servidor:
+- `backend/`, `database/init/`, `storage/`, `docker-compose.prod.yml`, `.env.prod`
+- La carpeta `dist/` generada del frontend → se copia a `/var/www/certify/`
 
 ---
 
 ## 3. Archivo de entorno `.env.prod`
 
-Crear `/opt/certify/.env.prod` con las variables de producción:
+Crear `/opt/certify/.env.prod`:
 
 ```env
 NODE_ENV=production
@@ -68,66 +80,100 @@ VERIFICATION_BASE_URL=https://certify.jalisco.gob.mx/verificar
 
 ---
 
-## 4. Ajustar `docker-compose.prod.yml`
+## 4. Build del frontend (en tu máquina local)
 
-Modificar los puertos para que solo escuchen en `127.0.0.1` (localhost) y no estén expuestos al exterior. El Nginx del host será quien reciba el tráfico.
+```bash
+cd frontend
 
-```yaml
-# docker-compose.prod.yml
-services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
-      args:
-        VITE_API_URL: /api
-        VITE_APP_TITLE: Plataforma de Credenciales Digitales
-    ports:
-      - "127.0.0.1:8080:80"   # Solo accesible desde localhost
-    depends_on:
-      - backend
-    restart: unless-stopped
+# Instalar dependencias
+npm ci
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
-    ports:
-      - "127.0.0.1:3000:3000"  # Solo accesible desde localhost
-    volumes:
-      - ./storage/certificates:/app/storage/certificates
-      - ./storage/logos:/app/storage/logos
-    env_file:
-      - .env.prod
-    depends_on:
-      - database
-    restart: unless-stopped
-
-  database:
-    image: postgres:16-alpine
-    volumes:
-      - ./database/data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    restart: unless-stopped
+# Build con las variables de producción
+VITE_API_URL=/api VITE_APP_TITLE="Plataforma de Credenciales Digitales" npm run build
 ```
 
-> **Nota:** El frontend se mapea al puerto `8080` del host para no colisionar con el Nginx del host que usa el `80`. La base de datos no expone puertos al host.
+En Windows (PowerShell):
+
+```powershell
+cd frontend
+npm ci
+$env:VITE_API_URL="/api"; $env:VITE_APP_TITLE="Plataforma de Credenciales Digitales"; npm run build
+```
+
+Esto genera la carpeta `frontend/dist/` con los archivos estáticos listos.
 
 ---
 
-## 5. Configurar Nginx del host
+## 5. Subir archivos al servidor
 
-### 5.1. Crear el archivo de configuración
+### 5.1. Primera vez — subir todo el proyecto (sin frontend/src)
+
+```bash
+# Desde la raíz del proyecto en tu máquina local
+
+# Backend, database init, storage, compose y env
+rsync -avz --progress \
+  backend/ \
+  database/init/ \
+  storage/ \
+  docker-compose.prod.yml \
+  .env.prod \
+  usuario@certify.jalisco.gob.mx:/opt/certify/
+
+# Frontend build
+rsync -avz --progress --delete \
+  frontend/dist/ \
+  usuario@certify.jalisco.gob.mx:/var/www/certify/
+```
+
+O con `scp`:
+
+```bash
+# Build del frontend
+scp -r frontend/dist/* usuario@certify.jalisco.gob.mx:/var/www/certify/
+
+# Backend y configs
+scp -r backend docker-compose.prod.yml .env.prod usuario@certify.jalisco.gob.mx:/opt/certify/
+```
+
+### 5.2. Actualizaciones posteriores
+
+Solo del **frontend** (cuando cambias la UI):
+```bash
+# En local: rebuild
+cd frontend && VITE_API_URL=/api VITE_APP_TITLE="Plataforma de Credenciales Digitales" npm run build
+
+# Subir solo el dist
+rsync -avz --progress --delete frontend/dist/ usuario@certify.jalisco.gob.mx:/var/www/certify/
+```
+
+Solo del **backend** (cuando cambias la API):
+```bash
+rsync -avz --progress backend/ usuario@certify.jalisco.gob.mx:/opt/certify/backend/
+
+# En el servidor: rebuild del contenedor
+ssh usuario@certify.jalisco.gob.mx "cd /opt/certify && docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d backend"
+```
+
+---
+
+## 6. Crear directorio del frontend en el servidor
+
+```bash
+# En el servidor
+sudo mkdir -p /var/www/certify
+sudo chown -R $USER:$USER /var/www/certify
+```
+
+---
+
+## 7. Configurar Nginx del host
+
+### 7.1. Crear el archivo de configuración
 
 ```bash
 sudo nano /etc/nginx/sites-available/certify.jalisco.gob.mx
 ```
-
-Pegar el siguiente contenido:
 
 ```nginx
 # Redirect HTTP → HTTPS
@@ -141,16 +187,16 @@ server {
     listen 443 ssl http2;
     server_name certify.jalisco.gob.mx;
 
-    # ─── SSL (Certbot los genera automáticamente) ───
+    # ─── SSL (Certbot los configura automáticamente) ───
     ssl_certificate     /etc/letsencrypt/live/certify.jalisco.gob.mx/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/certify.jalisco.gob.mx/privkey.pem;
     include             /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
 
     # ─── Seguridad ───
-    add_header X-Frame-Options        "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header Referrer-Policy        "strict-origin-when-cross-origin" always;
+    add_header X-Frame-Options          "SAMEORIGIN" always;
+    add_header X-Content-Type-Options   "nosniff" always;
+    add_header Referrer-Policy          "strict-origin-when-cross-origin" always;
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
 
     # ─── Límites ───
@@ -175,35 +221,39 @@ server {
         proxy_set_header Host $host;
     }
 
-    # ─── Frontend (SPA en Nginx/Docker) ───
+    # ─── Frontend (archivos estáticos del build) ───
+    root /var/www/certify;
+    index index.html;
+
     location / {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Host              $host;
-        proxy_set_header X-Real-IP         $remote_addr;
-        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # ─── Cache para assets estáticos ───
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        root /var/www/certify;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
     }
 }
 ```
 
-### 5.2. Habilitar el sitio
+### 7.2. Habilitar el sitio
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/certify.jalisco.gob.mx /etc/nginx/sites-enabled/
-sudo rm -f /etc/nginx/sites-enabled/default   # Eliminar el default si existe
-sudo nginx -t                                  # Verificar sintaxis
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
 sudo systemctl reload nginx
 ```
 
 ---
 
-## 6. Certificado SSL con Let's Encrypt
+## 8. Certificado SSL con Let's Encrypt
 
-Antes de tener el certificado, usar temporalmente una config solo HTTP para que Certbot pueda validar:
+Primero, configurar una versión temporal solo HTTP para que Certbot pueda validar:
 
 ```bash
-# Configuración temporal (solo HTTP, sin redirect)
 sudo nano /etc/nginx/sites-available/certify.jalisco.gob.mx
 ```
 
@@ -212,10 +262,11 @@ server {
     listen 80;
     server_name certify.jalisco.gob.mx;
 
+    root /var/www/certify;
+    index index.html;
+
     location / {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+        try_files $uri $uri/ /index.html;
     }
 
     location /api/ {
@@ -240,13 +291,13 @@ Obtener el certificado:
 sudo certbot --nginx -d certify.jalisco.gob.mx
 ```
 
-Certbot modificará el archivo automáticamente para incluir SSL. Después, reemplazar con la configuración completa del paso 5.1 y recargar:
+Certbot modifica el archivo automáticamente. Después, reemplazar con la configuración completa del paso 7.1 y recargar:
 
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-Renovación automática (ya viene configurada con el paquete, pero verificar):
+Verificar renovación automática:
 
 ```bash
 sudo certbot renew --dry-run
@@ -254,7 +305,7 @@ sudo certbot renew --dry-run
 
 ---
 
-## 7. Build y levantar contenedores
+## 9. Levantar backend y base de datos
 
 ```bash
 cd /opt/certify
@@ -262,7 +313,7 @@ cd /opt/certify
 # Build e iniciar
 docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
 
-# Verificar que todo esté corriendo
+# Verificar
 docker compose -f docker-compose.prod.yml ps
 
 # Ver logs
@@ -271,21 +322,23 @@ docker compose -f docker-compose.prod.yml logs -f
 
 ---
 
-## 8. Verificar el despliegue
+## 10. Verificar el despliegue
 
 ```bash
-# Desde el servidor
-curl -I http://127.0.0.1:3000/api/health     # Backend directo
-curl -I http://127.0.0.1:8080                  # Frontend directo
-curl -I https://certify.jalisco.gob.mx         # A través de Nginx + SSL
-curl https://certify.jalisco.gob.mx/api/health # API a través de Nginx + SSL
+# Backend directo
+curl -s http://127.0.0.1:3000/api/health
+
+# Frontend (archivo estático)
+curl -I http://127.0.0.1/
+
+# A través de HTTPS
+curl -I https://certify.jalisco.gob.mx
+curl -s https://certify.jalisco.gob.mx/api/health
 ```
 
 ---
 
-## 9. Firewall
-
-Asegurarse de que solo los puertos 80 y 443 estén abiertos al exterior:
+## 11. Firewall
 
 ```bash
 sudo ufw allow 22/tcp     # SSH
@@ -295,43 +348,55 @@ sudo ufw enable
 sudo ufw status
 ```
 
-> Los puertos 3000 y 8080 no deben estar abiertos al exterior. Al bindear a `127.0.0.1`, Docker ya se encarga de esto.
+> El puerto 3000 no debe estar abierto al exterior. Al bindear a `127.0.0.1` en Docker, ya se encarga de esto.
 
 ---
 
-## 10. Actualizar el proyecto
-
-Cuando haya cambios en el código:
+## 12. Flujo de actualización completo
 
 ```bash
-cd /opt/certify
+# ── En tu máquina local ──
+
+# 1. Pull cambios
 git pull origin main
-docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
+
+# 2. Si hay cambios en el frontend:
+cd frontend
+VITE_API_URL=/api VITE_APP_TITLE="Plataforma de Credenciales Digitales" npm run build
+rsync -avz --progress --delete dist/ usuario@certify.jalisco.gob.mx:/var/www/certify/
+cd ..
+
+# 3. Si hay cambios en el backend:
+rsync -avz --progress backend/ usuario@certify.jalisco.gob.mx:/opt/certify/backend/
+ssh usuario@certify.jalisco.gob.mx "cd /opt/certify && docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d backend"
 ```
 
----
-
-## 11. Comandos útiles
-
-| Acción                  | Comando                                                                |
-| ----------------------- | ---------------------------------------------------------------------- |
-| Ver contenedores        | `docker compose -f docker-compose.prod.yml ps`                        |
-| Ver logs                | `docker compose -f docker-compose.prod.yml logs -f`                   |
-| Reiniciar todo          | `docker compose -f docker-compose.prod.yml restart`                   |
-| Detener todo            | `docker compose -f docker-compose.prod.yml down`                      |
-| Rebuild un servicio     | `docker compose -f docker-compose.prod.yml up --build -d backend`     |
-| Backup base de datos    | `tar -czf backup-db-$(date +%F).tar.gz -C database data`             |
-| Backup storage          | `tar -czf backup-storage-$(date +%F).tar.gz -C storage certificates logos` |
-| Logs del Nginx del host | `sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log`     |
-| Renovar SSL             | `sudo certbot renew`                                                  |
+> **El frontend no requiere reiniciar nada**: al subir los nuevos archivos, Nginx los sirve automáticamente.
 
 ---
 
-## Resumen de puertos
+## 13. Comandos útiles
 
-| Servicio          | Puerto interno | Puerto en host      | Acceso externo |
-| ----------------- | -------------- | ------------------- | -------------- |
-| Nginx del host    | —              | 80, 443             | ✅ Sí          |
-| Frontend (Docker) | 80             | 127.0.0.1:8080      | ❌ No          |
-| Backend (Docker)  | 3000           | 127.0.0.1:3000      | ❌ No          |
-| PostgreSQL        | 5432           | No expuesto         | ❌ No          |
+| Acción                  | Comando                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------- |
+| Ver contenedores        | `docker compose -f docker-compose.prod.yml ps`                                  |
+| Ver logs backend        | `docker compose -f docker-compose.prod.yml logs -f backend`                     |
+| Reiniciar backend       | `docker compose -f docker-compose.prod.yml restart backend`                     |
+| Rebuild backend         | `docker compose -f docker-compose.prod.yml up --build -d backend`               |
+| Detener todo            | `docker compose -f docker-compose.prod.yml down`                                |
+| Backup base de datos    | `tar -czf backup-db-$(date +%F).tar.gz -C database data`                       |
+| Backup storage          | `tar -czf backup-storage-$(date +%F).tar.gz -C storage certificates logos`      |
+| Backup frontend         | `tar -czf backup-frontend-$(date +%F).tar.gz -C /var/www certify`              |
+| Logs de Nginx           | `sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log`               |
+| Renovar SSL             | `sudo certbot renew`                                                             |
+
+---
+
+## Resumen
+
+| Componente     | Ubicación en servidor    | Cómo se sirve              | Docker |
+| -------------- | ------------------------ | -------------------------- | ------ |
+| Frontend (SPA) | `/var/www/certify/`      | Nginx del host (estático)  | ❌ No  |
+| Backend (API)  | `/opt/certify/backend/`  | Docker → `127.0.0.1:3000` | ✅ Sí  |
+| PostgreSQL     | `/opt/certify/database/` | Docker (sin puerto host)   | ✅ Sí  |
+| Nginx (host)   | Sistema                  | Puertos 80/443 públicos    | ❌ No  |
