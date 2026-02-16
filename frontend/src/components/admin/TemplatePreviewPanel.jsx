@@ -7,13 +7,12 @@ import api from '../../services/api';
 const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
 
 // Datos de ejemplo para reemplazar los placeholders de la plantilla
+// Solo incluye las variables que realmente soporta el backend (templateService.js)
 const SAMPLE_DATA = {
   // Branding
   primary_color: '#1e3a5f',
   secondary_color: '#c9a84c',
   font_family: 'Georgia',
-  org_logo_url: '',
-  dep_logo_url: '',
   organization_name: 'Vinsmake University',
   institutional_logo_base64: '',
 
@@ -23,45 +22,27 @@ const SAMPLE_DATA = {
 
   // Curso
   course_name: 'Diplomado en Gestion de Proyectos',
-  course_description: 'Por haber completado satisfactoriamente el programa de formacion con una duracion de 120 horas academicas.',
-  course_hours: '120',
   course_duration: '120',
   course_type: 'Diplomado',
-  course_start_date: '15 de enero de 2026',
-  course_end_date: '15 de febrero de 2026',
   instructor: 'Lic. Amanda Isbosseth',
 
   // Certificado
-  certificate_code: 'CERT-2026-00001',
   certificate_uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  certificate_date: '15 de febrero de 2026',
   issue_date: '15 de febrero de 2026',
-  verification_url: 'https://certificados.ejemplo.com/verify/CERT-2026-00001',
-  qr_code_url: '',
+  verification_url: 'https://vinsmake.dev/verificar/a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   qr_code_base64: '',
 
-  // Organizacion / Dependencia
-  org_name: 'Universidad Ejemplo',
-  dependency_name: 'Direccion de Educacion Continua',
-  dependency_names: '',
+  // Dependencias
+  dependency_names: 'Dependencia General',
   dependency_logos_html: '<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;"><div style="width:50px;height:50px;background:#ddd;border-radius:6px;"></div><div style="font-size:10px;color:#666;margin-top:4px;">Dependencia A</div></div><div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;"><div style="width:50px;height:50px;background:#ddd;border-radius:6px;"></div><div style="font-size:10px;color:#666;margin-top:4px;">Dependencia B</div></div></div>',
-
-  // Firmas
-  signer_name: 'Dr. Maria Rodriguez',
-  signer_title: 'Directora Academica',
-  signer_name_2: 'Ing. Carlos Mendoza',
-  signer_title_2: 'Coordinador de Programas',
 };
 
 /**
  * Reemplaza placeholders {{key}} con valores de ejemplo
  */
-const replacePlaceholders = (html, logoUrl) => {
+const replacePlaceholders = (html, overrides) => {
   if (!html) return '';
-  const data = { ...SAMPLE_DATA };
-  if (logoUrl) {
-    data.institutional_logo_base64 = logoUrl;
-  }
+  const data = { ...SAMPLE_DATA, ...overrides };
   return html.replace(/\{\{(\w+)\}\}/g, (match, key) => {
     return data[key] !== undefined ? data[key] : match;
   });
@@ -87,20 +68,27 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
   const containerRef = useRef(null);
   const [scale, setScale] = useState(0.5);
   const [containerWidth, setContainerWidth] = useState(0);
-  const [logoBase64, setLogoBase64] = useState('');
+  const [dynamicData, setDynamicData] = useState({});
 
-  // Obtener logo institucional del branding activo y convertir a base64
+  // Obtener logo institucional y QR de ejemplo al montar
   useEffect(() => {
-    api.get('/branding/active').then(async (r) => {
+    const updates = {};
+    const logoPromise = api.get('/branding/active').then(async (r) => {
       if (r.data?.logo_path) {
         const url = `${BACKEND}${r.data.logo_path}`;
         const resp = await fetch(url);
         const blob = await resp.blob();
-        const reader = new FileReader();
-        reader.onloadend = () => setLogoBase64(reader.result);
-        reader.readAsDataURL(blob);
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => { updates.institutional_logo_base64 = reader.result; resolve(); };
+          reader.readAsDataURL(blob);
+        });
       }
     }).catch(() => {});
+    const qrPromise = api.get('/templates/sample-qr').then((r) => {
+      if (r.data?.qr_code_base64) updates.qr_code_base64 = r.data.qr_code_base64;
+    }).catch(() => {});
+    Promise.all([logoPromise, qrPromise]).then(() => setDynamicData(updates));
   }, []);
 
   const pageDims = useMemo(() => getPageDimensions(orientation, pageSize), [orientation, pageSize]);
@@ -126,7 +114,7 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
   }, [pageDims.width]);
 
   // Actualizar contenido del iframe
-  const processedHtml = useMemo(() => replacePlaceholders(htmlContent, logoBase64), [htmlContent, logoBase64]);
+  const processedHtml = useMemo(() => replacePlaceholders(htmlContent, dynamicData), [htmlContent, dynamicData]);
 
   useEffect(() => {
     const iframe = iframeRef.current;

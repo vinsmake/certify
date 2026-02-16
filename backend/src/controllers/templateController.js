@@ -1,6 +1,7 @@
 const CertificateTemplate = require('../models/CertificateTemplate');
 const BrandingVersion = require('../models/BrandingVersion');
 const { resolveLogos } = require('../services/templateService');
+const { generateQR } = require('../services/qrService');
 const puppeteer = require('puppeteer');
 
 const listTemplates = async (req, res, next) => {
@@ -97,6 +98,10 @@ const previewTemplate = async (req, res, next) => {
     const brandingVersion = await BrandingVersion.findActive();
     const { institutionalLogoBase64 } = resolveLogos(brandingVersion, []);
 
+    // Generar QR de ejemplo apuntando a vinsmake.dev
+    const sampleUuid = '550e8400-e29b-41d4-a716-446655440000';
+    const sampleQrBase64 = await generateQR(sampleUuid);
+
     // Datos de ejemplo para preview
     const sampleData = {
       participant_name: 'Juan Carlos Perez',
@@ -106,9 +111,9 @@ const previewTemplate = async (req, res, next) => {
       course_duration: '40',
       instructor: 'Maria Garcia',
       issue_date: new Date().toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' }),
-      certificate_uuid: '550e8400-e29b-41d4-a716-446655440000',
-      verification_url: 'http://localhost:5173/verificar/550e8400-e29b-41d4-a716-446655440000',
-      qr_code_base64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      certificate_uuid: sampleUuid,
+      verification_url: 'https://vinsmake.dev/verificar/' + sampleUuid,
+      qr_code_base64: sampleQrBase64,
       institutional_logo_base64: institutionalLogoBase64,
       dependency_logos_html: '',
       dependency_names: 'Dependencia General',
@@ -174,4 +179,14 @@ const setDefault = async (req, res, next) => {
   }
 };
 
-module.exports = { listTemplates, getTemplate, createTemplate, updateTemplate, deactivateTemplate, previewTemplate, setDefault };
+// GET /sample-qr - QR de ejemplo para preview en tiempo real del frontend
+const sampleQr = async (req, res, next) => {
+  try {
+    const qrBase64 = await generateQR('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
+    res.json({ qr_code_base64: qrBase64 });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { listTemplates, getTemplate, createTemplate, updateTemplate, deactivateTemplate, previewTemplate, setDefault, sampleQr };

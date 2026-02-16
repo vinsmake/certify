@@ -8,6 +8,7 @@ const {
   deactivateTemplate,
   previewTemplate,
   setDefault,
+  sampleQr,
 } = require('../controllers/templateController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
@@ -20,6 +21,9 @@ router.use(authMiddleware);
 
 // GET / - listar plantillas activas
 router.get('/', listTemplates);
+
+// GET /sample-qr - QR de ejemplo para preview en tiempo real
+router.get('/sample-qr', sampleQr);
 
 // GET /:id - detalle con html_content
 router.get(
