@@ -92,10 +92,13 @@ const CoursesPage = () => {
   };
 
   // 23.07 - Crear
-  const handleCreate = async (data) => {
+  const handleCreate = async (data, { signatureFile } = {}) => {
     setFormLoading(true); setFormError('');
     try {
-      await courseService.createCourse(data);
+      const created = await courseService.createCourse(data);
+      if (signatureFile) {
+        await courseService.uploadSignature(created.id, signatureFile);
+      }
       setShowForm(false);
       setSuccessMsg('Curso creado correctamente.');
       loadCourses();
@@ -108,10 +111,15 @@ const CoursesPage = () => {
 
   // 23.08 - Editar
   const handleEdit = (course) => { setEditCourse(course); setFormError(''); };
-  const handleUpdate = async (data) => {
+  const handleUpdate = async (data, { signatureFile, signatureRemoved } = {}) => {
     setFormLoading(true); setFormError('');
     try {
       await courseService.updateCourse(editCourse.id, data);
+      if (signatureFile) {
+        await courseService.uploadSignature(editCourse.id, signatureFile);
+      } else if (signatureRemoved) {
+        await courseService.deleteSignature(editCourse.id);
+      }
       setEditCourse(null);
       setSuccessMsg('Curso actualizado correctamente.');
       loadCourses();

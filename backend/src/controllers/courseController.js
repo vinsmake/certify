@@ -2,6 +2,7 @@ const Course = require('../models/Course');
 const CourseDependency = require('../models/CourseDependency');
 const CourseParticipant = require('../models/CourseParticipant');
 const Participant = require('../models/Participant');
+const { ensureDirectoryExists } = require('../utils/fileUtils');
 
 const listCourses = async (req, res, next) => {
   try {
@@ -228,8 +229,50 @@ const updateParticipantStatus = async (req, res, next) => {
   }
 };
 
+const uploadSignature = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Archivo de firma requerido' });
+    }
+
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: 'Curso no encontrado' });
+    }
+
+    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+      return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
+    }
+
+    const signaturePath = '/storage/signatures/' + req.file.filename;
+    const updated = await Course.updateSignature(req.params.id, signaturePath);
+    res.json({ message: 'Firma actualizada', signature_path: signaturePath, course: updated });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteSignature = async (req, res, next) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: 'Curso no encontrado' });
+    }
+
+    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+      return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
+    }
+
+    const updated = await Course.updateSignature(req.params.id, null);
+    res.json({ message: 'Firma eliminada', course: updated });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   listCourses, getCourse, createCourse, updateCourse, deleteCourse,
   addCourseDependency, removeCourseDependency,
   listCourseParticipants, enrollParticipants, updateParticipantStatus,
+  uploadSignature, deleteSignature,
 };

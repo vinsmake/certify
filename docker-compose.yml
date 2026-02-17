@@ -20,6 +20,7 @@ services:
       - ./backend/src:/app/src
       - ./storage/certificates:/app/storage/certificates
       - ./storage/logos:/app/storage/logos
+      - ./storage/signatures:/app/storage/signatures
     env_file:
       - .env
     depends_on:

@@ -57,6 +57,7 @@ CREATE TABLE courses (
     type VARCHAR(50) NOT NULL,
     duration_hours INTEGER,
     instructor VARCHAR(255),
+    signature_path VARCHAR(500),
     start_date DATE,
     end_date DATE,
     dependency_id INTEGER REFERENCES dependencies(id),
@@ -348,6 +349,13 @@ VALUES (
     color: #666;
   }
 
+  .instructor-signature {
+    max-height: 60px;
+    max-width: 180px;
+    object-fit: contain;
+    margin-bottom: 5px;
+  }
+
   .instructor-name {
     font-size: 14px;
     font-weight: 700;
@@ -419,6 +427,7 @@ VALUES (
       <div class="footer-center">
         <div class="issue-date">Fecha de emision: {{issue_date}}</div>
         <br/>
+        {{instructor_signature_html}}
         <div class="instructor-name">{{instructor}}</div>
         <div class="instructor-label">Instructor</div>
       </div>
@@ -613,6 +622,13 @@ VALUES (
   .qr-label { font-size: 7px; color: #aaa; margin-top: 3px; }
   .issue-date { font-size: 11px; color: #777; }
 
+  .instructor-signature {
+    max-height: 60px;
+    max-width: 180px;
+    object-fit: contain;
+    margin-bottom: 5px;
+  }
+
   .instructor-name {
     font-size: 14px;
     font-weight: 700;
@@ -669,6 +685,7 @@ VALUES (
       <div class="footer-center">
         <div class="issue-date">{{issue_date}}</div>
         <br/>
+        {{instructor_signature_html}}
         <div class="instructor-name">{{instructor}}</div>
         <div class="instructor-label">Instructor</div>
       </div>
@@ -847,6 +864,12 @@ VALUES (
   }
 
   .footer-left { text-align: left; }
+  .instructor-signature {
+    max-height: 60px;
+    max-width: 180px;
+    object-fit: contain;
+    margin-bottom: 5px;
+  }
   .instructor-name {
     margin-top: 30px;
     font-size: 14px;
@@ -914,6 +937,7 @@ VALUES (
 
       <div class="footer">
         <div class="footer-left">
+          {{instructor_signature_html}}
           <div class="instructor-name">{{instructor}}</div>
           <div class="instructor-label">Instructor</div>
         </div>

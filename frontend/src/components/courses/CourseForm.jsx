@@ -32,6 +32,21 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
   } : { ...EMPTY });
 
   const [errors, setErrors] = useState({});
+  const [signatureFile, setSignatureFile] = useState(null);
+  const [signaturePreview, setSignaturePreview] = useState(initial?.signature_path || null);
+
+  const handleSignatureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSignatureFile(file);
+      setSignaturePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveSignature = () => {
+    setSignatureFile(null);
+    setSignaturePreview(null);
+  };
 
   const set = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -62,7 +77,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
       start_date:     form.start_date  || null,
       end_date:       form.end_date    || null,
       dependency_id:  form.dependency_id ? Number(form.dependency_id) : null,
-    });
+    }, { signatureFile, signatureRemoved: !signaturePreview && !!initial?.signature_path });
   };
 
   return (
@@ -124,6 +139,28 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
         />
       </div>
 
+      <div style={styles.signatureSection}>
+        <label style={styles.label}>Firma del instructor (imagen)</label>
+        {signaturePreview && (
+          <div style={styles.signaturePreview}>
+            <img
+              src={signaturePreview.startsWith('blob:') ? signaturePreview : `${(import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace('/api', '')}${signaturePreview}`}
+              alt="Firma"
+              style={styles.signatureImg}
+            />
+            <button type="button" onClick={handleRemoveSignature} style={styles.removeBtn}>
+              Eliminar firma
+            </button>
+          </div>
+        )}
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,image/webp"
+          onChange={handleSignatureChange}
+          style={styles.fileInput}
+        />
+      </div>
+
       <div style={styles.row}>
         <Input
           label="Fecha de inicio"
@@ -158,6 +195,12 @@ const styles = {
   form:    { display: 'flex', flexDirection: 'column', gap: '1rem' },
   row:     { display: 'flex', gap: '1rem', flexWrap: 'wrap' },
   actions: { display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' },
+  signatureSection: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  label: { fontSize: '0.875rem', fontWeight: '500', color: 'var(--color-text-primary)' },
+  signaturePreview: { display: 'flex', alignItems: 'center', gap: '1rem' },
+  signatureImg: { maxHeight: '60px', maxWidth: '180px', objectFit: 'contain', border: '1px solid #ddd', borderRadius: '4px', padding: '4px' },
+  removeBtn: { background: 'none', border: '1px solid #e53e3e', color: '#e53e3e', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' },
+  fileInput: { fontSize: '0.875rem' },
 };
 
 export default CourseForm;

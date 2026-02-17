@@ -1,4 +1,8 @@
 const { Router } = require('express');
+const multer = require('multer');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const { ensureDirectoryExists } = require('../utils/fileUtils');
 const { body, param, query } = require('express-validator');
 const {
   listCourses,
@@ -11,12 +15,40 @@ const {
   listCourseParticipants,
   enrollParticipants,
   updateParticipantStatus,
+  uploadSignature,
+  deleteSignature,
 } = require('../controllers/courseController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const dependencyMiddleware = require('../middlewares/dependencyMiddleware');
 const validateRequest = require('../middlewares/validateRequest');
 
 const router = Router();
+
+// Multer para firmas de instructor en storage/signatures/
+const SIGNATURES_DIR = '/app/storage/signatures/';
+ensureDirectoryExists(SIGNATURES_DIR);
+
+const signatureStorage = multer.diskStorage({
+  destination: SIGNATURES_DIR,
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, uuidv4() + ext);
+  },
+});
+
+const signatureUpload = multer({
+  storage: signatureStorage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowed.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Formato de imagen no permitido'));
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
 
 // Todas las rutas requieren autenticacion
 router.use(authMiddleware);
@@ -135,6 +167,27 @@ router.put(
   ],
   validateRequest,
   updateParticipantStatus
+);
+
+// -------------------------------------------------------
+// Rutas de firma del instructor
+// -------------------------------------------------------
+
+// POST /:id/signature - subir firma del instructor
+router.post(
+  '/:id/signature',
+  [param('id').isInt().withMessage('ID invalido')],
+  validateRequest,
+  signatureUpload.single('signature'),
+  uploadSignature
+);
+
+// DELETE /:id/signature - eliminar firma del instructor
+router.delete(
+  '/:id/signature',
+  [param('id').isInt().withMessage('ID invalido')],
+  validateRequest,
+  deleteSignature
 );
 
 module.exports = router;

@@ -19,8 +19,9 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
-// 31.08 - Solo servir logos como archivos estaticos (PDFs solo via endpoint autenticado)
+// 31.08 - Solo servir logos y firmas como archivos estaticos (PDFs solo via endpoint autenticado)
 app.use('/storage/logos', express.static(path.join('/app', 'storage', 'logos')));
+app.use('/storage/signatures', express.static(path.join('/app', 'storage', 'signatures')));
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {

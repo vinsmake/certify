@@ -88,7 +88,7 @@ const buildDependencyLogosHtml = (dependencyLogos) => {
  *   {{course_duration}}, {{instructor}}, {{issue_date}}, {{certificate_uuid}},
  *   {{qr_code_base64}}, {{institutional_logo_base64}}, {{dependency_logos_html}},
  *   {{primary_color}}, {{secondary_color}}, {{font_family}}, {{organization_name}},
- *   {{dependency_names}}, {{verification_url}}
+ *   {{dependency_names}}, {{verification_url}}, {{instructor_signature_html}}
  */
 const renderTemplate = (htmlContent, variables) => {
   let rendered = htmlContent;
@@ -122,6 +122,16 @@ const buildCertificateHtml = async (templateId, data) => {
   const dependencyLogosHtml = buildDependencyLogosHtml(dependencyLogos);
   const dependencyNames = (courseDependencies || []).map(d => d.dependency_name || d.name).join(', ');
 
+  // Resolver firma del instructor
+  let instructorSignatureHtml = '';
+  if (course.signature_path) {
+    const absPath = path.join(STORAGE_ROOT, course.signature_path.replace('/storage/', ''));
+    if (fs.existsSync(absPath)) {
+      const signatureBase64 = readFileAsBase64(absPath);
+      instructorSignatureHtml = `<img src="${signatureBase64}" alt="Firma" class="instructor-signature" />`;
+    }
+  }
+
   const variables = {
     // Participante
     participant_name:         participant.full_name || '',
@@ -148,6 +158,9 @@ const buildCertificateHtml = async (templateId, data) => {
     secondary_color:          brandingVersion?.secondary_color || '#2b6cb0',
     font_family:              brandingVersion?.font_family     || 'Roboto',
     organization_name:        brandingVersion?.organization_name || '',
+
+    // Firma del instructor
+    instructor_signature_html: instructorSignatureHtml,
 
     // Extra
     dependency_names:         dependencyNames,

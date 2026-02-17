@@ -63,6 +63,14 @@ const Course = {
     return rows[0];
   },
 
+  async updateSignature(id, signaturePath) {
+    const { rows } = await pool.query(
+      `UPDATE courses SET signature_path = $2, updated_at = NOW() WHERE id = $1 RETURNING *`,
+      [id, signaturePath]
+    );
+    return rows[0] || null;
+  },
+
   async update(id, { name, description, type, duration_hours, instructor, start_date, end_date }) {
     const { rows } = await pool.query(
       `UPDATE courses

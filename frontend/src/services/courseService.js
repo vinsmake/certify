@@ -34,6 +34,17 @@ const courseService = {
 
   removeCourseDependency: (courseId, dependencyId) =>
     api.delete(`/courses/${courseId}/dependencies/${dependencyId}`).then((r) => r.data),
+
+  uploadSignature: (courseId, file) => {
+    const formData = new FormData();
+    formData.append('signature', file);
+    return api.post(`/courses/${courseId}/signature`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((r) => r.data);
+  },
+
+  deleteSignature: (courseId) =>
+    api.delete(`/courses/${courseId}/signature`).then((r) => r.data),
 };
 
 export default courseService;
