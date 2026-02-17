@@ -710,7 +710,7 @@ VALUES (
     1
 );
 
--- 2.18 - Plantilla moderna
+-- 2.18 - Plantilla moderna (id=3)
 INSERT INTO certificate_templates (name, slug, description, html_content, orientation, page_size, is_default, is_active, created_by)
 VALUES (
     'Plantilla Moderna',
@@ -965,6 +965,378 @@ VALUES (
 
       <div class="uuid">{{certificate_uuid}}</div>
     </div>
+  </div>
+</body>
+</html>',
+    'landscape',
+    'letter',
+    false,
+    true,
+    1
+);
+
+-- 2.19 - Plantilla circuitos tecnologicos (id=4)
+INSERT INTO certificate_templates (name, slug, description, html_content, orientation, page_size, is_default, is_active, created_by)
+VALUES (
+    'Plantilla Circuitos',
+    'circuits',
+    'Diseno tecnologico con patron de circuitos en las esquinas, fondo crema',
+    '<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url(''https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Open+Sans:wght@300;400;600&display=swap'');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1056px;
+    height: 816px;
+    font-family: ''{{font_family}}'', ''Open Sans'', sans-serif;
+    background: #fdf6ec;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .certificate {
+    width: 1056px;
+    height: 816px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* === SVG Circuit Patterns === */
+  .circuit-tl, .circuit-tr, .circuit-bl, .circuit-br {
+    position: absolute;
+    width: 320px;
+    height: 280px;
+    z-index: 1;
+  }
+  .circuit-tl { top: 0; left: 0; }
+  .circuit-tr { top: 0; right: 0; transform: scaleX(-1); }
+  .circuit-bl { bottom: 0; left: 0; transform: scaleY(-1); }
+  .circuit-br { bottom: 0; right: 0; transform: scale(-1, -1); }
+
+  .circuit-tl svg, .circuit-tr svg, .circuit-bl svg, .circuit-br svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* === Content === */
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding: 40px 100px;
+  }
+
+  .org-header {
+    position: absolute;
+    top: 22px;
+    left: 40px;
+    text-align: left;
+    z-index: 3;
+  }
+
+  .org-logo {
+    max-height: 50px;
+    max-width: 160px;
+    object-fit: contain;
+    margin-bottom: 4px;
+  }
+
+  .org-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: {{primary_color}};
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+  }
+
+  .title {
+    font-family: ''Playfair Display'', ''{{font_family}}'', serif;
+    font-size: 58px;
+    font-weight: 900;
+    color: {{primary_color}};
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    font-weight: 300;
+    color: {{primary_color}};
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .participant-name {
+    font-family: ''Playfair Display'', ''{{font_family}}'', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: {{primary_color}};
+    letter-spacing: 6px;
+    margin: 10px 0 5px;
+  }
+
+  .divider {
+    width: 400px;
+    height: 3px;
+    background: {{secondary_color}};
+    margin: 15px auto;
+    border-radius: 2px;
+  }
+
+  .description {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 10px auto 0;
+  }
+
+  .description .course-name {
+    font-weight: 600;
+    color: {{primary_color}};
+  }
+
+  .dependency-logos {
+    margin-top: 10px;
+  }
+
+  /* === Footer / Signatures === */
+  .footer {
+    position: absolute;
+    bottom: 35px;
+    left: 80px;
+    right: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 3;
+  }
+
+  .signature-block {
+    text-align: center;
+    min-width: 250px;
+  }
+
+  .instructor-signature {
+    max-height: 80px;
+    max-width: 220px;
+    object-fit: contain;
+    margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .signature-line {
+    width: 220px;
+    height: 2px;
+    background: {{primary_color}};
+    margin: 0 auto 6px;
+  }
+
+  .signer-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .signer-title {
+    font-size: 10px;
+    color: #777;
+    margin-top: 2px;
+  }
+
+  .footer-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .qr-code img { width: 55px; height: 55px; }
+  .qr-label { font-size: 7px; color: #aaa; }
+  .issue-date { font-size: 10px; color: #888; margin-top: 2px; }
+
+  .uuid {
+    font-size: 7px;
+    color: #ddd;
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    z-index: 3;
+  }
+</style>
+</head>
+<body>
+  <div class="certificate">
+
+    <!-- Circuit pattern: top-left -->
+    <div class="circuit-tl">
+      <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 40 H80 L120 80 H200" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M0 70 H60 L90 100 H160 L180 120 H240" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M0 110 H40 L70 140 H130" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M0 150 H30 L60 180" stroke="#a0b8d0" stroke-width="0.8" fill="none"/>
+        <path d="M40 0 V60 L70 90 V140" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M80 0 V30 L110 60 V100 L130 120" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M130 0 V20 L150 40 H200 L220 60 V100" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M180 0 V50 L210 80 H260" stroke="{{secondary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M220 0 V30 H280" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+        <path d="M0 200 H20 L50 230 V260" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+        <circle cx="80" cy="40" r="3" fill="{{primary_color}}"/>
+        <circle cx="200" cy="40" r="4" fill="{{primary_color}}"/>
+        <circle cx="160" cy="100" r="3" fill="{{primary_color}}"/>
+        <circle cx="240" cy="120" r="3" fill="{{primary_color}}"/>
+        <circle cx="130" cy="140" r="3" fill="#a0b8d0"/>
+        <circle cx="40" cy="60" r="3" fill="{{primary_color}}"/>
+        <circle cx="70" cy="140" r="3" fill="{{primary_color}}"/>
+        <circle cx="130" cy="120" r="3.5" fill="{{primary_color}}"/>
+        <circle cx="220" cy="100" r="3" fill="#a0b8d0"/>
+        <circle cx="260" cy="80" r="4" fill="{{secondary_color}}"/>
+        <circle cx="280" cy="30" r="3" fill="{{secondary_color}}"/>
+        <circle cx="50" cy="230" r="3" fill="{{secondary_color}}"/>
+        <circle cx="20" cy="200" r="3" fill="{{secondary_color}}"/>
+        <polygon points="270,55 285,47 300,55 300,71 285,79 270,71" fill="{{secondary_color}}" opacity="0.8"/>
+        <polygon points="60,175 70,169 80,175 80,185 70,191 60,185" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Circuit pattern: top-right -->
+    <div class="circuit-tr">
+      <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 40 H80 L120 80 H200" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M0 70 H60 L90 100 H160 L180 120 H240" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M0 110 H40 L70 140 H130" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M0 150 H30 L60 180" stroke="#a0b8d0" stroke-width="0.8" fill="none"/>
+        <path d="M40 0 V60 L70 90 V140" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M80 0 V30 L110 60 V100 L130 120" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M130 0 V20 L150 40 H200 L220 60 V100" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M180 0 V50 L210 80 H260" stroke="{{secondary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M220 0 V30 H280" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+        <path d="M0 200 H20 L50 230 V260" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+        <circle cx="80" cy="40" r="3" fill="{{primary_color}}"/>
+        <circle cx="200" cy="40" r="4" fill="{{primary_color}}"/>
+        <circle cx="160" cy="100" r="3" fill="{{primary_color}}"/>
+        <circle cx="240" cy="120" r="3" fill="{{primary_color}}"/>
+        <circle cx="130" cy="140" r="3" fill="#a0b8d0"/>
+        <circle cx="40" cy="60" r="3" fill="{{primary_color}}"/>
+        <circle cx="70" cy="140" r="3" fill="{{primary_color}}"/>
+        <circle cx="130" cy="120" r="3.5" fill="{{primary_color}}"/>
+        <circle cx="220" cy="100" r="3" fill="#a0b8d0"/>
+        <circle cx="260" cy="80" r="4" fill="{{secondary_color}}"/>
+        <circle cx="280" cy="30" r="3" fill="{{secondary_color}}"/>
+        <circle cx="50" cy="230" r="3" fill="{{secondary_color}}"/>
+        <circle cx="20" cy="200" r="3" fill="{{secondary_color}}"/>
+        <polygon points="270,55 285,47 300,55 300,71 285,79 270,71" fill="{{secondary_color}}" opacity="0.8"/>
+        <polygon points="60,175 70,169 80,175 80,185 70,191 60,185" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Circuit pattern: bottom-left -->
+    <div class="circuit-bl">
+      <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 40 H80 L120 80 H200" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M0 70 H60 L90 100 H160 L180 120 H240" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M0 110 H40 L70 140 H130" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M40 0 V60 L70 90 V140" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M80 0 V30 L110 60 V100 L130 120" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M130 0 V20 L150 40 H200 L220 60 V100" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M180 0 V50 L210 80 H260" stroke="{{secondary_color}}" stroke-width="1.5" fill="none"/>
+        <circle cx="80" cy="40" r="3" fill="{{primary_color}}"/>
+        <circle cx="200" cy="40" r="4" fill="{{primary_color}}"/>
+        <circle cx="160" cy="100" r="3" fill="{{primary_color}}"/>
+        <circle cx="130" cy="140" r="3" fill="#a0b8d0"/>
+        <circle cx="40" cy="60" r="3" fill="{{primary_color}}"/>
+        <circle cx="260" cy="80" r="4" fill="{{secondary_color}}"/>
+        <polygon points="60,175 70,169 80,175 80,185 70,191 60,185" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Circuit pattern: bottom-right -->
+    <div class="circuit-br">
+      <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 40 H80 L120 80 H200" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M0 70 H60 L90 100 H160 L180 120 H240" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M0 110 H40 L70 140 H130" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M40 0 V60 L70 90 V140" stroke="{{primary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M80 0 V30 L110 60 V100 L130 120" stroke="{{primary_color}}" stroke-width="1" fill="none"/>
+        <path d="M130 0 V20 L150 40 H200 L220 60 V100" stroke="#a0b8d0" stroke-width="1" fill="none"/>
+        <path d="M180 0 V50 L210 80 H260" stroke="{{secondary_color}}" stroke-width="1.5" fill="none"/>
+        <path d="M220 0 V30 H280" stroke="{{secondary_color}}" stroke-width="1" fill="none"/>
+        <circle cx="80" cy="40" r="3" fill="{{primary_color}}"/>
+        <circle cx="200" cy="40" r="4" fill="{{primary_color}}"/>
+        <circle cx="160" cy="100" r="3" fill="{{primary_color}}"/>
+        <circle cx="240" cy="120" r="3" fill="{{primary_color}}"/>
+        <circle cx="40" cy="60" r="3" fill="{{primary_color}}"/>
+        <circle cx="260" cy="80" r="4" fill="{{secondary_color}}"/>
+        <circle cx="280" cy="30" r="3" fill="{{secondary_color}}"/>
+        <polygon points="270,55 285,47 300,55 300,71 285,79 270,71" fill="{{secondary_color}}" opacity="0.8"/>
+      </svg>
+    </div>
+
+    <!-- Header: org logo + name -->
+    <div class="org-header">
+      <img class="org-logo" src="{{institutional_logo_base64}}" alt="Logo" />
+      <div class="org-name">{{organization_name}}</div>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="title">Certificado<br>de {{course_type}}</div>
+      <div class="subtitle">Se concede a:</div>
+      <div class="participant-name">{{participant_name}}</div>
+      <div class="divider"></div>
+      <div class="description">
+        Por haber completado satisfactoriamente el curso
+        <span class="course-name">{{course_name}}</span>,
+        con una duracion de <strong>{{course_duration}} horas</strong>.
+      </div>
+      <div class="dependency-logos">{{dependency_logos_html}}</div>
+    </div>
+
+    <!-- Footer: signatures, QR, date -->
+    <div class="footer">
+      <div class="signature-block">
+        {{instructor_signature_html}}
+        <div class="signature-line"></div>
+        <div class="signer-name">{{instructor}}</div>
+        <div class="signer-title">Instructor</div>
+      </div>
+      <div class="footer-center">
+        <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
+        <div class="qr-label">Verificacion</div>
+        <div class="issue-date">{{issue_date}}</div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signer-name">{{dependency_names}}</div>
+        <div class="signer-title">Dependencia</div>
+      </div>
+    </div>
+
+    <div class="uuid">{{certificate_uuid}}</div>
   </div>
 </body>
 </html>',
