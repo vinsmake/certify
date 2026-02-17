@@ -729,13 +729,6 @@ VALUES (
     gap: 8px;
     padding: 20px 0;
   }
-  .sidebar .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-  }
-  .sidebar .dot.active { background: #fff; width: 8px; height: 8px; }
 
   .main {
     flex: 1;
@@ -892,11 +885,6 @@ VALUES (
 <body>
   <div class="certificate">
     <div class="sidebar">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
     </div>
 
     <div class="main">
