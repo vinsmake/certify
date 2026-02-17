@@ -350,10 +350,13 @@ VALUES (
   }
 
   .instructor-signature {
-    max-height: 60px;
-    max-width: 180px;
+    max-height: 80px;
+    max-width: 220px;
     object-fit: contain;
     margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .instructor-name {
@@ -623,10 +626,13 @@ VALUES (
   .issue-date { font-size: 11px; color: #777; }
 
   .instructor-signature {
-    max-height: 60px;
-    max-width: 180px;
+    max-height: 80px;
+    max-width: 220px;
     object-fit: contain;
     margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .instructor-name {
@@ -865,10 +871,13 @@ VALUES (
 
   .footer-left { text-align: left; }
   .instructor-signature {
-    max-height: 60px;
-    max-width: 180px;
+    max-height: 80px;
+    max-width: 220px;
     object-fit: contain;
     margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
   .instructor-name {
     margin-top: 30px;
