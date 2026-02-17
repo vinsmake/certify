@@ -109,7 +109,7 @@ const previewTemplate = async (req, res, next) => {
       course_name: 'Diplomado en Gestion de Proyectos',
       course_type: 'Diplomado',
       course_duration: '120',
-      instructor: 'Lic. Amanda Isbosseth',
+      instructor: 'Dra. Amanda Isbosseth',
       issue_date: '15 de febrero de 2026',
       certificate_uuid: sampleUuid,
       verification_url: 'https://vinsmake.dev/verificar/' + sampleUuid,

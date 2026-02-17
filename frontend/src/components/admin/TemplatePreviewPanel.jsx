@@ -24,7 +24,7 @@ const SAMPLE_DATA = {
   course_name: 'Diplomado en Gestion de Proyectos',
   course_duration: '120',
   course_type: 'Diplomado',
-  instructor: 'Lic. Amanda Isbosseth',
+  instructor: 'Dra. Amanda Isbosseth',
 
   // Certificado
   certificate_uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',

@@ -853,13 +853,7 @@ VALUES (
     padding-top: 15px;
   }
 
-  .footer-left { display: flex; align-items: center; gap: 10px; }
-  .qr-code img { width: 60px; height: 60px; }
-  .qr-info { text-align: left; }
-  .qr-info .label { font-size: 8px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
-  .qr-info .value { font-size: 10px; color: #666; margin-top: 2px; }
-
-  .footer-center { text-align: center; }
+  .footer-left { text-align: left; }
   .instructor-name {
     font-size: 14px;
     font-weight: 600;
@@ -875,9 +869,15 @@ VALUES (
     letter-spacing: 1px;
   }
 
-  .footer-right { text-align: right; }
+  .footer-center { text-align: center; }
   .date-label { font-size: 8px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
   .date-value { font-size: 13px; color: #444; font-weight: 600; }
+
+  .footer-right { display: flex; align-items: center; gap: 10px; }
+  .qr-code img { width: 60px; height: 60px; }
+  .qr-info { text-align: right; }
+  .qr-info .label { font-size: 8px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
+  .qr-info .value { font-size: 10px; color: #666; margin-top: 2px; }
 
   .uuid {
     font-size: 7px;
@@ -925,19 +925,19 @@ VALUES (
 
       <div class="footer">
         <div class="footer-left">
-          <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
+          <div class="instructor-name">{{instructor}}</div>
+          <div class="instructor-label">Instructor</div>
+        </div>
+        <div class="footer-center">
+          <div class="date-label">Fecha de emision</div>
+          <div class="date-value">{{issue_date}}</div>
+        </div>
+        <div class="footer-right">
           <div class="qr-info">
             <div class="label">Verificacion</div>
             <div class="value">{{certificate_uuid}}</div>
           </div>
-        </div>
-        <div class="footer-center">
-          <div class="instructor-name">{{instructor}}</div>
-          <div class="instructor-label">Instructor</div>
-        </div>
-        <div class="footer-right">
-          <div class="date-label">Fecha de emision</div>
-          <div class="date-value">{{issue_date}}</div>
+          <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
         </div>
       </div>
 
