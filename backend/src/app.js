@@ -17,6 +17,7 @@ app.use(cors({
 // (logos y firmas son publicos; PDFs solo via endpoint autenticado)
 app.use('/storage/logos', express.static(path.join('/app', 'storage', 'logos')));
 app.use('/storage/signatures', express.static(path.join('/app', 'storage', 'signatures')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Middlewares globales
 app.use(helmet());

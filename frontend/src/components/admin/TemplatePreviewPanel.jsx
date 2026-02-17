@@ -91,7 +91,7 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
     const qrPromise = api.get('/templates/sample-qr').then((r) => {
       if (r.data?.qr_code_base64) updates.qr_code_base64 = r.data.qr_code_base64;
     }).catch(() => {});
-    const signaturePromise = fetch('/sample-signature.png')
+    const signaturePromise = fetch(`${BACKEND}/assets/sample-signature.png`)
       .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
       .then((blob) => new Promise((resolve) => {
         const reader = new FileReader();

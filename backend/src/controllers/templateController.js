@@ -120,7 +120,7 @@ const previewTemplate = async (req, res, next) => {
       dependency_logos_html: '',
       dependency_names: 'Dependencia General',
       instructor_signature_html: (() => {
-        const sampleSigPath = path.join(__dirname, '..', '..', '..', 'frontend', 'public', 'sample-signature.png');
+        const sampleSigPath = path.join(__dirname, '..', 'assets', 'sample-signature.png');
         try {
           const sigBase64 = readFileAsBase64(sampleSigPath);
           return `<div style="text-align:center;"><img src="${sigBase64}" alt="Firma" class="instructor-signature" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`;
