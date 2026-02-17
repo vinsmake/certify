@@ -91,7 +91,18 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
     const qrPromise = api.get('/templates/sample-qr').then((r) => {
       if (r.data?.qr_code_base64) updates.qr_code_base64 = r.data.qr_code_base64;
     }).catch(() => {});
-    Promise.all([logoPromise, qrPromise]).then(() => setDynamicData(updates));
+    const signaturePromise = fetch('/sample-signature.png')
+      .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
+      .then((blob) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          updates.instructor_signature_html = `<div style="text-align:center;"><img src="${reader.result}" alt="Firma" class="instructor-signature" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`;
+          resolve();
+        };
+        reader.readAsDataURL(blob);
+      }))
+      .catch(() => {});
+    Promise.all([logoPromise, qrPromise, signaturePromise]).then(() => setDynamicData(updates));
   }, []);
 
   const pageDims = useMemo(() => getPageDimensions(orientation, pageSize), [orientation, pageSize]);

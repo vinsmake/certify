@@ -1,7 +1,9 @@
+const path = require('path');
 const CertificateTemplate = require('../models/CertificateTemplate');
 const BrandingVersion = require('../models/BrandingVersion');
 const { resolveLogos } = require('../services/templateService');
 const { generateQR } = require('../services/qrService');
+const { readFileAsBase64 } = require('../utils/fileUtils');
 const puppeteer = require('puppeteer');
 
 const listTemplates = async (req, res, next) => {
@@ -117,7 +119,13 @@ const previewTemplate = async (req, res, next) => {
       institutional_logo_base64: institutionalLogoBase64,
       dependency_logos_html: '',
       dependency_names: 'Dependencia General',
-      instructor_signature_html: '',
+      instructor_signature_html: (() => {
+        const sampleSigPath = path.join(__dirname, '..', '..', '..', 'frontend', 'public', 'sample-signature.png');
+        try {
+          const sigBase64 = readFileAsBase64(sampleSigPath);
+          return `<div style="text-align:center;"><img src="${sigBase64}" alt="Firma" class="instructor-signature" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`;
+        } catch { return ''; }
+      })(),
       primary_color: '#1e3a5f',
       secondary_color: '#c9a84c',
       font_family: 'Georgia',
