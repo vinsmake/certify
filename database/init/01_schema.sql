@@ -1053,14 +1053,13 @@ VALUES (
   }
 
   .org-logo {
-    max-height: 50px;
-    max-width: 160px;
+    max-height: 80px;
     object-fit: contain;
     margin-bottom: 4px;
   }
 
   .org-name {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     color: {{primary_color}};
     letter-spacing: 0.5px;
@@ -1126,7 +1125,7 @@ VALUES (
   /* === Footer / Signatures === */
   .footer {
     position: absolute;
-    bottom: 35px;
+    bottom: 110px;
     left: 180px;
     right: 180px;
     display: flex;
@@ -1169,14 +1168,19 @@ VALUES (
     margin-top: 2px;
   }
 
-  .footer-center {
+  .qr-section {
+    position: absolute;
+    bottom: 25px;
+    left: 0;
+    right: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
+    z-index: 3;
   }
 
-  .qr-code img { width: 55px; height: 55px; }
+  .qr-code img { width: 50px; height: 50px; }
   .qr-label { font-size: 7px; color: #aaa; }
   .issue-date { font-size: 10px; color: #888; margin-top: 2px; }
 
@@ -1317,7 +1321,7 @@ VALUES (
       <div class="dependency-logos">{{dependency_logos_html}}</div>
     </div>
 
-    <!-- Footer: signatures, QR, date -->
+    <!-- Footer: signatures -->
     <div class="footer">
       <div class="signature-block">
         {{instructor_signature_html}}
@@ -1325,16 +1329,18 @@ VALUES (
         <div class="signer-name">{{instructor}}</div>
         <div class="signer-title">Instructor</div>
       </div>
-      <div class="footer-center">
-        <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
-        <div class="qr-label">Verificacion</div>
-        <div class="issue-date">{{issue_date}}</div>
-      </div>
       <div class="signature-block">
         <div class="signature-line"></div>
         <div class="signer-name">{{dependency_names}}</div>
         <div class="signer-title">Dependencia</div>
       </div>
+    </div>
+
+    <!-- QR section: centered below signatures -->
+    <div class="qr-section">
+      <div class="qr-code"><img src="{{qr_code_base64}}" alt="QR" /></div>
+      <div class="qr-label">Verificacion</div>
+      <div class="issue-date">{{issue_date}}</div>
     </div>
 
     <div class="uuid">{{certificate_uuid}}</div>
