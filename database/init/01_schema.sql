@@ -765,7 +765,7 @@ VALUES (
   }
 
   .header-left { display: flex; align-items: center; gap: 15px; }
-  .header-left img { max-height: 100px; max-width: 200px; object-fit: contain; }
+  .header-left img { height: 70px; width: auto; object-fit: contain; }
 
   .org-name {
     font-size: 11px;
