@@ -11,6 +11,7 @@ dist/
 database/data/
 storage/certificates/
 storage/logos/
+storage/signatures/
 
 # Logs
 *.log
