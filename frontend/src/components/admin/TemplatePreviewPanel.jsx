@@ -32,6 +32,9 @@ const SAMPLE_DATA = {
   verification_url: 'https://vinsmake.dev/verificar/a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   qr_code_base64: '',
 
+  // Firma del instructor (vacio por defecto en preview; se muestra solo si el curso tiene firma)
+  instructor_signature_html: '',
+
   // Dependencias
   dependency_names: 'Dependencia General',
   dependency_logos_html: '<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;"><div style="width:50px;height:50px;background:#ddd;border-radius:6px;"></div><div style="font-size:10px;color:#666;margin-top:4px;">Dependencia A</div></div><div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;"><div style="width:50px;height:50px;background:#ddd;border-radius:6px;"></div><div style="font-size:10px;color:#666;margin-top:4px;">Dependencia B</div></div></div>',

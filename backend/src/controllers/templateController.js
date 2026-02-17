@@ -117,6 +117,7 @@ const previewTemplate = async (req, res, next) => {
       institutional_logo_base64: institutionalLogoBase64,
       dependency_logos_html: '',
       dependency_names: 'Dependencia General',
+      instructor_signature_html: '',
       primary_color: '#1e3a5f',
       secondary_color: '#c9a84c',
       font_family: 'Georgia',

@@ -94,7 +94,9 @@ const renderTemplate = (htmlContent, variables) => {
   let rendered = htmlContent;
   for (const [key, value] of Object.entries(variables)) {
     const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
-    rendered = rendered.replace(regex, value !== null && value !== undefined ? String(value) : '');
+    const replacement = value !== null && value !== undefined ? String(value) : '';
+    // Usar funcion como segundo argumento para evitar que $ en base64 se interprete como patron especial
+    rendered = rendered.replace(regex, () => replacement);
   }
   return rendered;
 };
