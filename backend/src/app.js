@@ -7,21 +7,22 @@ const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 
-// Middlewares globales
-app.use(helmet());
-
-// 31.09 - CORS solo permite el origen del frontend
+// 31.09 - CORS solo permite el origen del frontend (antes de todo para cubrir rutas estaticas)
 app.use(cors({
   origin: process.env.BASE_URL || 'http://localhost:5173',
   credentials: true,
 }));
 
-app.use(express.json());
-app.use(morgan('dev'));
-
-// 31.08 - Solo servir logos y firmas como archivos estaticos (PDFs solo via endpoint autenticado)
+// 31.08 - Servir archivos estaticos ANTES de helmet para evitar bloqueo CORP
+// (logos y firmas son publicos; PDFs solo via endpoint autenticado)
 app.use('/storage/logos', express.static(path.join('/app', 'storage', 'logos')));
 app.use('/storage/signatures', express.static(path.join('/app', 'storage', 'signatures')));
+
+// Middlewares globales
+app.use(helmet());
+
+app.use(express.json());
+app.use(morgan('dev'));
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {

@@ -128,10 +128,13 @@ const buildCertificateHtml = async (templateId, data) => {
   let instructorSignatureHtml = '';
   if (course.signature_path) {
     const absPath = path.join(STORAGE_ROOT, course.signature_path.replace('/storage/', ''));
+    console.log('[templateService] Firma del instructor - signature_path:', course.signature_path, '| absPath:', absPath, '| exists:', fs.existsSync(absPath));
     if (fs.existsSync(absPath)) {
       const signatureBase64 = readFileAsBase64(absPath);
       instructorSignatureHtml = `<img src="${signatureBase64}" alt="Firma" class="instructor-signature" />`;
     }
+  } else {
+    console.log('[templateService] Curso sin firma - signature_path:', course.signature_path);
   }
 
   const variables = {

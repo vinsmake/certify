@@ -6,6 +6,8 @@ import Select from '../ui/Select';
 import Button from '../ui/Button';
 import Alert from '../ui/Alert';
 
+const BACKEND = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace('/api', '');
+
 const TYPE_OPTIONS = [
   { value: 'curso',    label: 'Curso' },
   { value: 'taller',   label: 'Taller' },
@@ -33,7 +35,22 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
 
   const [errors, setErrors] = useState({});
   const [signatureFile, setSignatureFile] = useState(null);
-  const [signaturePreview, setSignaturePreview] = useState(initial?.signature_path || null);
+  const [signaturePreview, setSignaturePreview] = useState(null);
+  const [hasExistingSignature, setHasExistingSignature] = useState(!!initial?.signature_path);
+
+  // Cargar preview de firma existente via fetch+blob (evita bloqueo CORP de Helmet)
+  useEffect(() => {
+    if (!initial?.signature_path) return;
+    const url = `${BACKEND}${initial.signature_path}`;
+    fetch(url)
+      .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => setSignaturePreview(reader.result);
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => setSignaturePreview(null));
+  }, [initial?.signature_path]);
 
   const handleSignatureChange = (e) => {
     const file = e.target.files[0];
@@ -46,6 +63,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
   const handleRemoveSignature = () => {
     setSignatureFile(null);
     setSignaturePreview(null);
+    setHasExistingSignature(false);
   };
 
   const set = (field) => (e) =>
@@ -77,7 +95,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
       start_date:     form.start_date  || null,
       end_date:       form.end_date    || null,
       dependency_id:  form.dependency_id ? Number(form.dependency_id) : null,
-    }, { signatureFile, signatureRemoved: !signaturePreview && !!initial?.signature_path });
+    }, { signatureFile, signatureRemoved: !signaturePreview && hasExistingSignature });
   };
 
   return (
@@ -144,7 +162,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
         {signaturePreview && (
           <div style={styles.signaturePreview}>
             <img
-              src={signaturePreview.startsWith('blob:') ? signaturePreview : `${(import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace('/api', '')}${signaturePreview}`}
+              src={signaturePreview}
               alt="Firma"
               style={styles.signatureImg}
             />
