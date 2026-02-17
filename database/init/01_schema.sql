@@ -1046,8 +1046,9 @@ VALUES (
   .org-header {
     position: absolute;
     top: 22px;
-    left: 40px;
-    text-align: left;
+    left: 0;
+    right: 0;
+    text-align: center;
     z-index: 3;
   }
 
@@ -1126,8 +1127,8 @@ VALUES (
   .footer {
     position: absolute;
     bottom: 35px;
-    left: 80px;
-    right: 80px;
+    left: 180px;
+    right: 180px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -1136,7 +1137,7 @@ VALUES (
 
   .signature-block {
     text-align: center;
-    min-width: 250px;
+    min-width: 220px;
   }
 
   .instructor-signature {
