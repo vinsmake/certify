@@ -846,7 +846,7 @@ VALUES (
   .footer {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     width: 100%;
     z-index: 1;
     border-top: 1px solid #eee;
@@ -855,6 +855,7 @@ VALUES (
 
   .footer-left { text-align: left; }
   .instructor-name {
+    margin-top: 30px;
     font-size: 14px;
     font-weight: 600;
     color: #333;
