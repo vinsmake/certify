@@ -69,12 +69,12 @@ const buildDependencyLogosHtml = (dependencyLogos) => {
 
   const items = dependencyLogos.map((dep) => {
     const imgTag = dep.logoBase64
-      ? `<img src="${dep.logoBase64}" alt="${dep.name}" style="object-fit:contain;">`
+      ? `<img src="${dep.logoBase64}" alt="${dep.name}" style="max-height:60px;max-width:120px;width:auto;height:auto;object-fit:contain;display:block;">`
       : '';
     const nameTag = dep.name
       ? `<div style="font-size:10px;color:#666;margin-top:4px;white-space:nowrap;">${dep.name}</div>`
       : '';
-    return `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;">${imgTag}${nameTag}</div>`;
+    return `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:80px;max-width:140px;">${imgTag}${nameTag}</div>`;
   });
 
   return `<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;">${items.join('')}</div>`;
