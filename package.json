@@ -11,10 +11,10 @@
     "ps": "docker compose ps",
     "backup:db": "tar -czf database/backup.tar.gz -C database data",
     "backup:storage": "tar -czf storage/backup.tar.gz -C storage certificates logos",
-    "backup": "npm run backup:db && npm run backup:storage",
+    "backup": "npm run down && npm run backup:db && npm run backup:storage && npm run up",
     "restore:db": "rm -rf database/data && tar -xzf database/backup.tar.gz -C database",
     "restore:storage": "rm -rf storage/certificates storage/logos && tar -xzf storage/backup.tar.gz -C storage",
-    "restore": "npm run restore:db && npm run restore:storage",
+    "restore": "npm run down && npm run restore:db && npm run restore:storage && npm run up",
     "pull:sync": "npm run down && npm run restore && npm run up:build",
     "snapshot": "tar -czf database/snapshot.tar.gz -C database data && tar -czf storage/snapshot.tar.gz -C storage certificates logos",
     "reset": "npm run down && npm run snapshot && rm -rf database/data storage/certificates storage/logos && npm run up:build"
