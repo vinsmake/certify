@@ -78,8 +78,11 @@ const updateCourse = async (req, res, next) => {
     }
 
     const { name, description, type, duration_hours, instructor, start_date, end_date } = req.body;
+    const dependency_id = req.user.role === 'admin'
+      ? (req.body.dependency_id !== undefined ? req.body.dependency_id : course.dependency_id)
+      : course.dependency_id;
     const updated = await Course.update(req.params.id, {
-      name, description, type, duration_hours, instructor, start_date, end_date,
+      name, description, type, duration_hours, instructor, start_date, end_date, dependency_id,
     });
 
     res.json(updated);

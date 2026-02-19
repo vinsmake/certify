@@ -71,7 +71,7 @@ const Course = {
     return rows[0] || null;
   },
 
-  async update(id, { name, description, type, duration_hours, instructor, start_date, end_date }) {
+  async update(id, { name, description, type, duration_hours, instructor, start_date, end_date, dependency_id }) {
     const { rows } = await pool.query(
       `UPDATE courses
        SET name = COALESCE($2, name),
@@ -81,10 +81,11 @@ const Course = {
            instructor = COALESCE($6, instructor),
            start_date = COALESCE($7, start_date),
            end_date = COALESCE($8, end_date),
+           dependency_id = $9,
            updated_at = NOW()
        WHERE id = $1
        RETURNING *`,
-      [id, name, description, type, duration_hours, instructor, start_date, end_date]
+      [id, name, description, type, duration_hours, instructor, start_date, end_date, dependency_id ?? null]
     );
     return rows[0] || null;
   },
