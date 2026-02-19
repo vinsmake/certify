@@ -73,7 +73,7 @@ router.post(
     body('duration_hours').optional().isInt({ min: 1 }).withMessage('Duracion debe ser un numero entero positivo'),
     body('start_date').optional().isISO8601().withMessage('Fecha de inicio invalida'),
     body('end_date').optional().isISO8601().withMessage('Fecha de fin invalida'),
-    body('dependency_id').optional().isInt().withMessage('dependency_id invalido'),
+    body('dependency_id').optional({ nullable: true }).isInt().withMessage('dependency_id invalido'),
   ],
   validateRequest,
   createCourse

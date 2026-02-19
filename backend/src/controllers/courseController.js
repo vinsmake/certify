@@ -78,12 +78,27 @@ const updateCourse = async (req, res, next) => {
     }
 
     const { name, description, type, duration_hours, instructor, start_date, end_date } = req.body;
+    const oldDependencyId = course.dependency_id;
     const dependency_id = req.user.role === 'admin'
       ? (req.body.dependency_id !== undefined ? req.body.dependency_id : course.dependency_id)
       : course.dependency_id;
     const updated = await Course.update(req.params.id, {
       name, description, type, duration_hours, instructor, start_date, end_date, dependency_id,
     });
+
+    // Sincronizar course_dependencies cuando cambia la dependencia principal
+    if (oldDependencyId !== dependency_id) {
+      if (oldDependencyId) {
+        await CourseDependency.removeDependency(course.id, oldDependencyId);
+      }
+      if (dependency_id) {
+        try {
+          await CourseDependency.addDependency(course.id, dependency_id, 1);
+        } catch (e) {
+          if (e.code !== '23505') throw e; // ignorar si ya existe
+        }
+      }
+    }
 
     res.json(updated);
   } catch (err) {
