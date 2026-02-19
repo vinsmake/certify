@@ -38,7 +38,7 @@ const resolveLogos = (brandingVersion, courseDependencies) => {
     }
   }
 
-  // --- Logos de dependencias del curso (en orden de display_order) ---
+  // --- Logos y firmas de dependencias del curso (en orden de display_order) ---
   const dependencyLogos = (courseDependencies || []).map((dep) => {
     let logoBase64 = '';
     if (dep.logo_path) {
@@ -47,9 +47,18 @@ const resolveLogos = (brandingVersion, courseDependencies) => {
         logoBase64 = readFileAsBase64(absPath);
       }
     }
+    let signatureBase64 = '';
+    if (dep.signature_path) {
+      const absPath = path.join(STORAGE_ROOT, dep.signature_path.replace('/storage/', ''));
+      if (fs.existsSync(absPath)) {
+        signatureBase64 = readFileAsBase64(absPath);
+      }
+    }
     return {
       name: dep.dependency_name || dep.name || '',
+      manager_name: dep.manager_name || '',
       logoBase64,
+      signatureBase64,
       display_order: dep.display_order || 1,
     };
   }).sort((a, b) => a.display_order - b.display_order);
@@ -78,6 +87,27 @@ const buildDependencyLogosHtml = (dependencyLogos) => {
   });
 
   return `<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;">${items.join('')}</div>`;
+};
+
+/**
+ * 13.06 - Construye los bloques de firma de las dependencias invitadas.
+ * Cada dependencia genera un bloque con: imagen de firma (si existe) + línea + nombre del encargado + título.
+ * Se inyecta como {{dependency_signatures_html}} en la plantilla.
+ */
+const buildDependencySignaturesHtml = (dependencyLogos) => {
+  if (!dependencyLogos || dependencyLogos.length === 0) {
+    return '';
+  }
+
+  const blocks = dependencyLogos.map((dep) => {
+    const signerName = dep.manager_name || dep.name || '';
+    const sigImg = dep.signatureBase64
+      ? `<div style="text-align:center;"><img src="${dep.signatureBase64}" alt="Firma" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`
+      : '';
+    return `<div class="signature-block">${sigImg}<div class="signature-line"></div><div class="signer-name">${signerName}</div><div class="signer-title">Dependencia</div></div>`;
+  });
+
+  return blocks.join('');
 };
 
 /**
@@ -122,7 +152,8 @@ const buildCertificateHtml = async (templateId, data) => {
   const template = await loadTemplate(templateId);
   const { institutionalLogoBase64, dependencyLogos } = resolveLogos(brandingVersion, courseDependencies);
   const dependencyLogosHtml = buildDependencyLogosHtml(dependencyLogos);
-  const dependencyNames = (courseDependencies || []).map(d => d.dependency_name || d.name).join(', ');
+  const dependencySignaturesHtml = buildDependencySignaturesHtml(dependencyLogos);
+  const dependencyNames = (courseDependencies || []).map(d => d.manager_name || d.dependency_name || d.name).join(', ');
 
   // Resolver firma del instructor
   let instructorSignatureHtml = '';
@@ -166,6 +197,9 @@ const buildCertificateHtml = async (templateId, data) => {
 
     // Firma del instructor
     instructor_signature_html: instructorSignatureHtml,
+
+    // Firmas de dependencias invitadas
+    dependency_signatures_html: dependencySignaturesHtml,
 
     // Extra
     dependency_names:         dependencyNames,

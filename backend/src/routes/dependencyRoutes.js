@@ -10,6 +10,8 @@ const {
   updateDependency,
   deactivateDependency,
   uploadLogo,
+  uploadSignature,
+  deleteSignature,
 } = require('../controllers/dependencyController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
@@ -18,7 +20,7 @@ const validateRequest = require('../middlewares/validateRequest');
 const router = Router();
 
 // Multer para logos de dependencias
-const storage = multer.diskStorage({
+const logoStorage = multer.diskStorage({
   destination: '/app/storage/logos/dependencies/',
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -27,7 +29,30 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage,
+  storage: logoStorage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowed.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Formato de imagen no permitido'));
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
+
+// Multer para firmas de encargados de dependencias
+const signatureStorage = multer.diskStorage({
+  destination: '/app/storage/signatures/',
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, uuidv4() + ext);
+  },
+});
+
+const uploadSig = multer({
+  storage: signatureStorage,
   fileFilter: (req, file, cb) => {
     const allowed = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -92,6 +117,25 @@ router.post(
   validateRequest,
   upload.single('logo'),
   uploadLogo
+);
+
+// POST /:id/signature - subir firma del encargado (solo admin)
+router.post(
+  '/:id/signature',
+  roleMiddleware('admin'),
+  [param('id').isInt().withMessage('ID invalido')],
+  validateRequest,
+  uploadSig.single('signature'),
+  uploadSignature
+);
+
+// DELETE /:id/signature - eliminar firma del encargado (solo admin)
+router.delete(
+  '/:id/signature',
+  roleMiddleware('admin'),
+  [param('id').isInt().withMessage('ID invalido')],
+  validateRequest,
+  deleteSignature
 );
 
 module.exports = router;

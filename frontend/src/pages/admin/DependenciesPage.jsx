@@ -78,6 +78,26 @@ const DependenciesPage = () => {
     }
   };
 
+  const handleSignatureUpload = async (id, file) => {
+    try {
+      await dependencyService.uploadSignature(id, file);
+      setSuccessMsg('Firma actualizada correctamente.');
+      load();
+    } catch {
+      setErrorMsg('Error al subir la firma.');
+    }
+  };
+
+  const handleSignatureDelete = async (id) => {
+    try {
+      await dependencyService.deleteSignature(id);
+      setSuccessMsg('Firma eliminada correctamente.');
+      load();
+    } catch {
+      setErrorMsg('Error al eliminar la firma.');
+    }
+  };
+
   return (
     <div>
       <div style={styles.topBar}>
@@ -94,6 +114,8 @@ const DependenciesPage = () => {
         onEdit={handleEdit}
         onDeactivate={setDeactivateDep}
         onLogoUpload={handleLogoUpload}
+        onSignatureUpload={handleSignatureUpload}
+        onSignatureDelete={handleSignatureDelete}
       />
 
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Nueva Dependencia" size="md">

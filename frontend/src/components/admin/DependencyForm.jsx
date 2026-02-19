@@ -8,12 +8,14 @@ import Alert from '../ui/Alert';
 const DependencyForm = ({ initial, onSubmit, onCancel, loading, error }) => {
   const [name,         setName]         = useState('');
   const [abbreviation, setAbbreviation] = useState('');
+  const [managerName,  setManagerName]  = useState('');
   const [errors,       setErrors]       = useState({});
 
   useEffect(() => {
     if (initial) {
       setName(initial.name || '');
       setAbbreviation(initial.abbreviation || '');
+      setManagerName(initial.manager_name || '');
     }
   }, [initial]);
 
@@ -27,7 +29,11 @@ const DependencyForm = ({ initial, onSubmit, onCancel, loading, error }) => {
     e.preventDefault();
     const e2 = validate();
     if (Object.keys(e2).length) { setErrors(e2); return; }
-    onSubmit({ name: name.trim(), abbreviation: abbreviation.trim() || undefined });
+    onSubmit({
+      name: name.trim(),
+      abbreviation: abbreviation.trim() || undefined,
+      manager_name: managerName.trim() || undefined,
+    });
   };
 
   return (
@@ -49,6 +55,13 @@ const DependencyForm = ({ initial, onSubmit, onCancel, loading, error }) => {
         value={abbreviation}
         onChange={(e) => setAbbreviation(e.target.value)}
         placeholder="Ej: DDRRHH (opcional)"
+      />
+      <Input
+        label="Nombre del encargado"
+        id="dep-manager"
+        value={managerName}
+        onChange={(e) => setManagerName(e.target.value)}
+        placeholder="Ej: Lic. Juan Pérez (aparece en la firma del certificado)"
       />
 
       <div style={styles.footer}>

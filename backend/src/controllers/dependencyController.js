@@ -23,8 +23,8 @@ const getDependency = async (req, res, next) => {
 
 const createDependency = async (req, res, next) => {
   try {
-    const { name, abbreviation } = req.body;
-    const dependency = await Dependency.create({ name, abbreviation });
+    const { name, abbreviation, manager_name } = req.body;
+    const dependency = await Dependency.create({ name, abbreviation, manager_name });
     res.status(201).json(dependency);
   } catch (err) {
     next(err);
@@ -33,8 +33,8 @@ const createDependency = async (req, res, next) => {
 
 const updateDependency = async (req, res, next) => {
   try {
-    const { name, abbreviation, is_active } = req.body;
-    const dependency = await Dependency.update(req.params.id, { name, abbreviation, is_active });
+    const { name, abbreviation, is_active, manager_name } = req.body;
+    const dependency = await Dependency.update(req.params.id, { name, abbreviation, is_active, manager_name });
     if (!dependency) {
       return res.status(404).json({ error: 'Dependencia no encontrada' });
     }
@@ -75,4 +75,32 @@ const uploadLogo = async (req, res, next) => {
   }
 };
 
-module.exports = { listDependencies, getDependency, createDependency, updateDependency, deactivateDependency, uploadLogo };
+const uploadSignature = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Archivo de firma requerido' });
+    }
+    const signaturePath = '/storage/signatures/' + req.file.filename;
+    const dependency = await Dependency.updateSignature(req.params.id, signaturePath);
+    if (!dependency) {
+      return res.status(404).json({ error: 'Dependencia no encontrada' });
+    }
+    res.json({ message: 'Firma actualizada', signature_path: signaturePath });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteSignature = async (req, res, next) => {
+  try {
+    const dependency = await Dependency.clearSignature(req.params.id);
+    if (!dependency) {
+      return res.status(404).json({ error: 'Dependencia no encontrada' });
+    }
+    res.json({ message: 'Firma eliminada' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { listDependencies, getDependency, createDependency, updateDependency, deactivateDependency, uploadLogo, uploadSignature, deleteSignature };

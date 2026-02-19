@@ -3,7 +3,7 @@ const pool = require('../config/database');
 const CourseDependency = {
   async findByCourse(courseId) {
     const { rows } = await pool.query(
-      `SELECT cd.*, d.name AS dependency_name, d.abbreviation, d.logo_path
+      `SELECT cd.*, d.name AS dependency_name, d.abbreviation, d.logo_path, d.manager_name, d.signature_path
        FROM course_dependencies cd
        JOIN dependencies d ON cd.dependency_id = d.id
        WHERE cd.course_id = $1

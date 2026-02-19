@@ -23,6 +23,19 @@ const dependencyService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     }).then((r) => r.data);
   },
+
+  // Sube firma del encargado usando FormData (campo: signature)
+  uploadSignature: (id, file) => {
+    const form = new FormData();
+    form.append('signature', file);
+    return api.post(`/dependencies/${id}/signature`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((r) => r.data);
+  },
+
+  // Elimina la firma del encargado
+  deleteSignature: (id) =>
+    api.delete(`/dependencies/${id}/signature`).then((r) => r.data),
 };
 
 export default dependencyService;
