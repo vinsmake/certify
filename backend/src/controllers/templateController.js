@@ -126,6 +126,14 @@ const previewTemplate = async (req, res, next) => {
           return `<div style="text-align:center;"><img src="${sigBase64}" alt="Firma" class="instructor-signature" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`;
         } catch { return ''; }
       })(),
+      dependency_signatures_html: (() => {
+        const sampleDepSigPath = path.join(__dirname, '..', 'assets', 'sample-dependnecy-signature.png');
+        try {
+          const sigBase64 = readFileAsBase64(sampleDepSigPath);
+          const sigImg = `<div style="text-align:center;"><img src="${sigBase64}" alt="Firma" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`;
+          return `<div class="signature-block">${sigImg}<div class="signature-line"></div><div class="signer-name">Lic. Dependencia General</div><div class="signer-title">Dependencia</div></div>`;
+        } catch { return ''; }
+      })(),
       primary_color: '#1e3a5f',
       secondary_color: '#c9a84c',
       font_family: 'Georgia',

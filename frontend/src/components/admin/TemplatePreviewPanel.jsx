@@ -102,7 +102,19 @@ const TemplatePreviewPanel = ({ htmlContent, orientation = 'landscape', pageSize
         reader.readAsDataURL(blob);
       }))
       .catch(() => {});
-    Promise.all([logoPromise, qrPromise, signaturePromise]).then(() => setDynamicData(updates));
+    const depSignaturePromise = fetch(`${BACKEND}/assets/sample-dependnecy-signature.png`)
+      .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
+      .then((blob) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const sigImg = `<div style="text-align:center;"><img src="${reader.result}" alt="Firma" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 5px auto;" /></div>`;
+          updates.dependency_signatures_html = `<div class="signature-block">${sigImg}<div class="signature-line"></div><div class="signer-name">Lic. Dependencia General</div><div class="signer-title">Dependencia</div></div>`;
+          resolve();
+        };
+        reader.readAsDataURL(blob);
+      }))
+      .catch(() => {});
+    Promise.all([logoPromise, qrPromise, signaturePromise, depSignaturePromise]).then(() => setDynamicData(updates));
   }, []);
 
   const pageDims = useMemo(() => getPageDimensions(orientation, pageSize), [orientation, pageSize]);
