@@ -42,7 +42,7 @@
 
 ## FASE 1 — Configuración del Sistema en el Servidor
 
-- [ ] **Agregar usuario al grupo `docker`** *(para no usar sudo con cada comando docker)*
+- [x] **Agregar usuario al grupo `docker`** *(para no usar sudo con cada comando docker)*
   ```bash
   sudo usermod -aG docker $USER
   # Cerrar sesion SSH y volver a entrar para que tome efecto
@@ -50,14 +50,14 @@
   docker ps
   ```
 
-- [ ] **Instalar Certbot y su plugin para Nginx**
+- [x] **Instalar Certbot y su plugin para Nginx**
   ```bash
   sudo apt install -y certbot python3-certbot-nginx
   # Verificar instalacion:
   certbot --version
   ```
 
-- [ ] **Crear directorio del proyecto en el servidor**
+- [x] **Crear directorio del proyecto en el servidor**
   ```bash
   sudo mkdir -p /opt/certify
   sudo chown $USER:$USER /opt/certify
