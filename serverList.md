@@ -75,7 +75,7 @@
   ls /opt/certify/database/init/01_schema.sql
   ```
 
-- [ ] **Proteger `.env.prod` de futuros `git pull`**
+- [x] **Proteger `.env.prod` de futuros `git pull`**
 
   > Hacer esto ahora, antes de editar el archivo con credenciales reales. Le dice a git que ignore los cambios locales de este archivo, para que un `git pull` futuro nunca sobreescriba las credenciales del servidor.
   ```bash
@@ -86,7 +86,7 @@
 
 ## FASE 3 — Configurar `.env.prod` en el Servidor
 
-- [ ] **Generar contraseñas seguras**
+- [x] **Generar contraseñas seguras**
   ```bash
   # POSTGRES_PASSWORD:
   openssl rand -base64 32
@@ -96,7 +96,7 @@
   ```
   > Guardar ambos valores antes de editar el archivo.
 
-- [ ] **Editar `.env.prod` con las credenciales reales**
+- [x] **Editar `.env.prod` con las credenciales reales**
   ```bash
   nano /opt/certify/.env.prod
   ```
@@ -123,7 +123,7 @@
   ```
   > Guardar con `Ctrl+O`, salir con `Ctrl+X`.
 
-- [ ] **Verificar que no quedaron placeholders**
+- [x] **Verificar que no quedaron placeholders**
   ```bash
   grep "CAMBIAR" /opt/certify/.env.prod
   # No debe mostrar nada
@@ -133,7 +133,7 @@
 
 ## FASE 4 — Configurar Nginx (HTTP temporal para obtener SSL)
 
-- [ ] **Crear la configuración de Nginx**
+- [x] **Crear la configuración de Nginx**
   ```bash
   sudo nano /etc/nginx/sites-available/certify.jalisco.gob.mx
   ```
@@ -174,13 +174,13 @@
   }
   ```
 
-- [ ] **Habilitar el sitio y deshabilitar el default**
+- [x] **Habilitar el sitio y deshabilitar el default**
   ```bash
   sudo ln -s /etc/nginx/sites-available/certify.jalisco.gob.mx /etc/nginx/sites-enabled/
   sudo rm -f /etc/nginx/sites-enabled/default
   ```
 
-- [ ] **Verificar sintaxis y recargar Nginx**
+- [x] **Verificar sintaxis y recargar Nginx**
   ```bash
   sudo nginx -t
   sudo systemctl reload nginx
@@ -192,14 +192,14 @@
 
 > El `docker compose up --build` compila el frontend dentro de Docker (multi-stage build). No se necesita Node.js en el host.
 
-- [ ] **Construir e iniciar todos los contenedores**
+- [x] **Construir e iniciar todos los contenedores**
   ```bash
   cd /opt/certify
   docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
   ```
   > La primera vez tarda varios minutos: descarga imágenes y compila el frontend + backend.
 
-- [ ] **Verificar que los tres contenedores están corriendo**
+- [x] **Verificar que los tres contenedores están corriendo**
   ```bash
   docker compose -f docker-compose.prod.yml ps
   ```
@@ -208,7 +208,7 @@
   - `certify-backend-1`
   - `certify-database-1`
 
-- [ ] **Revisar logs para detectar errores**
+- [x] **Revisar logs para detectar errores**
   ```bash
   # Todos los servicios
   docker compose -f docker-compose.prod.yml logs --tail=50
