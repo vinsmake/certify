@@ -62,7 +62,8 @@ En el servidor, el proyecto se organiza así en `/opt/certify`:
 │       └── 01_schema.sql
 └── storage/
     ├── certificates/
-    └── logos/
+    ├── logos/
+    └── signatures/
 ```
 
 > **No se sube:** `node_modules/`, código fuente del frontend, ni archivos de desarrollo.
@@ -118,6 +119,12 @@ scp docker-compose.prod.yml .env.prod usuario@servidor:/opt/certify/
 scp -r frontend/dist frontend/nginx.conf frontend/Dockerfile.prod usuario@servidor:/opt/certify/frontend/
 scp -r backend/ usuario@servidor:/opt/certify/backend/
 scp -r database/init/ usuario@servidor:/opt/certify/database/init/
+```
+
+> **Nota:** el directorio `storage/signatures/` no se crea automáticamente con rsync si no existe localmente. Crearlo manualmente en el servidor:
+
+```bash
+mkdir -p /opt/certify/storage/signatures
 ```
 
 ### Actualizaciones posteriores (solo frontend)
