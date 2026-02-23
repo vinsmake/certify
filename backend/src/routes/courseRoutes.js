@@ -69,7 +69,7 @@ router.post(
   '/',
   [
     body('name').notEmpty().withMessage('Nombre es requerido'),
-    body('type').isIn(['curso', 'charla', 'taller', 'seminario']).withMessage('Tipo debe ser curso, charla, taller o seminario'),
+    body('type').isIn(['curso', 'charla', 'taller', 'seminario', 'diploma']).withMessage('Tipo invalido'),
     body('duration_hours').optional().isInt({ min: 1 }).withMessage('Duracion debe ser un numero entero positivo'),
     body('start_date').optional().isISO8601().withMessage('Fecha de inicio invalida'),
     body('end_date').optional().isISO8601().withMessage('Fecha de fin invalida'),
@@ -85,7 +85,7 @@ router.put(
   [
     param('id').isInt().withMessage('ID invalido'),
     body('name').optional().notEmpty().withMessage('Nombre no puede estar vacio'),
-    body('type').optional().isIn(['curso', 'charla', 'taller', 'seminario']).withMessage('Tipo debe ser curso, charla, taller o seminario'),
+    body('type').optional().isIn(['curso', 'charla', 'taller', 'seminario', 'diploma']).withMessage('Tipo invalido'),
     body('duration_hours').optional().isInt({ min: 1 }).withMessage('Duracion debe ser un numero entero positivo'),
     body('start_date').optional().isISO8601().withMessage('Fecha de inicio invalida'),
     body('end_date').optional().isISO8601().withMessage('Fecha de fin invalida'),

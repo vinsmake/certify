@@ -178,6 +178,9 @@ const buildCertificateHtml = async (templateId, data) => {
     course_type:              course.type || '',
     course_duration:          course.duration_hours ? `${course.duration_hours}` : '',
     instructor:               course.instructor || '',
+    certificate_noun:         course.type === 'diploma' ? 'Diploma' : 'Certificado',
+    certificate_noun_lower:   course.type === 'diploma' ? 'diploma' : 'certificado',
+    course_label:             ({ diploma: 'el programa', charla: 'la charla', taller: 'el taller', seminario: 'el seminario', curso: 'el curso' })[course.type] || 'el curso',
 
     // Certificado
     issue_date:               issueDate || new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }),

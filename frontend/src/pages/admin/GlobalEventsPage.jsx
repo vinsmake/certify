@@ -12,7 +12,7 @@ const TYPE_OPTIONS = [
   { value: 'taller',    label: 'Taller'    },
   { value: 'charla',    label: 'Charla'    },
   { value: 'seminario', label: 'Seminario' },
-  { value: 'otro',      label: 'Otro'      },
+  { value: 'diploma',   label: 'Diploma'   },
 ];
 
 const formatDate = (d) =>

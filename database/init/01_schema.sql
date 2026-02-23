@@ -402,7 +402,7 @@ VALUES (
         <img src="{{institutional_logo_base64}}" alt="Logo Institucional" />
       </div>
       <div class="org-name">{{organization_name}}</div>
-      <div class="title">Certificado</div>
+      <div class="title">{{certificate_noun}}</div>
       <div class="subtitle">{{course_type}}</div>
     </div>
 
@@ -411,7 +411,7 @@ VALUES (
       <div class="participant-name">{{participant_name}}</div>
       <div class="document">C.I. {{document_id}}</div>
       <div class="description">
-        Ha completado satisfactoriamente el <span class="course-name">{{course_name}}</span>,
+        Ha completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
         con una duracion de <strong>{{course_duration}} horas</strong>.
       </div>
       <div class="dependency-logos">
@@ -668,16 +668,16 @@ VALUES (
       </div>
       <div class="org-name">{{organization_name}}</div>
       <div class="divider"></div>
-      <div class="title">Certificado</div>
+      <div class="title">{{certificate_noun}}</div>
       <div class="subtitle">{{course_type}}</div>
     </div>
 
     <div class="body">
-      <div class="certify-text">Otorga el presente certificado a</div>
+      <div class="certify-text">Otorga el presente {{certificate_noun_lower}} a</div>
       <div class="participant-name">{{participant_name}}</div>
       <div class="document">C.I. {{document_id}}</div>
       <div class="description">
-        Por haber completado satisfactoriamente el <span class="course-name">{{course_name}}</span>,
+        Por haber completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
         con una duracion de <strong>{{course_duration}} horas</strong>.
       </div>
       <div class="dependency-logos">{{dependency_logos_html}}</div>
@@ -933,12 +933,12 @@ VALUES (
       </div>
 
       <div class="body">
-        <div class="title">Certificado de completitud</div>
-        <div class="main-title">Certificado</div>
+        <div class="title">{{certificate_noun}} de completitud</div>
+        <div class="main-title">{{certificate_noun}}</div>
         <div class="participant-name">{{participant_name}}</div>
         <div class="document">C.I. {{document_id}}</div>
         <div class="description">
-          Ha completado satisfactoriamente el <span class="course-name">{{course_name}}</span>,
+          Ha completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
           con una duracion de <strong>{{course_duration}} horas</strong>.
         </div>
         <div class="dependency-logos">{{dependency_logos_html}}</div>
@@ -1309,12 +1309,12 @@ VALUES (
 
     <!-- Main content -->
     <div class="content">
-      <div class="title">Certificado<br>de {{course_type}}</div>
+      <div class="title">{{certificate_noun}}<br>de {{course_type}}</div>
       <div class="subtitle">Se concede a:</div>
       <div class="participant-name">{{participant_name}}</div>
       <div class="divider"></div>
       <div class="description">
-        Por haber completado satisfactoriamente el curso
+        Por haber completado satisfactoriamente {{course_label}}
         <span class="course-name">{{course_name}}</span>,
         con una duracion de <strong>{{course_duration}} horas</strong>.
       </div>
