@@ -104,7 +104,7 @@ server {
     client_max_body_size 50M;
 
     location / {
-        proxy_pass http://localhost:80;
+        proxy_pass http://localhost:8080;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
