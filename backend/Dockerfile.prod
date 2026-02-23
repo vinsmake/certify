@@ -1,0 +1,28 @@
+FROM node:20-alpine
+
+# Chromium y dependencias para Puppeteer (generación de PDFs)
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY package*.json ./
+
+# Solo dependencias de producción (sin devDependencies)
+RUN npm ci --only=production
+
+COPY . .
+
+EXPOSE 3000
+
+# Usa node directamente, sin nodemon
+CMD ["node", "src/index.js"]
