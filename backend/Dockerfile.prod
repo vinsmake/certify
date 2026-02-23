@@ -18,7 +18,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Solo dependencias de producción (sin devDependencies)
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 COPY . .
 
