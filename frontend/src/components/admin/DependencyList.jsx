@@ -5,7 +5,7 @@ import Table from '../ui/Table';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 
-const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
+const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') ?? 'http://localhost:3000';
 
 const DependencyList = ({ dependencies, loading, onEdit, onDeactivate, onLogoUpload, onSignatureUpload, onSignatureDelete }) => {
   const logoInputRefs = useRef({});

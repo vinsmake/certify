@@ -6,7 +6,7 @@ import templateService from '../services/templateService';
 import Button from '../components/ui/Button';
 import Alert from '../components/ui/Alert';
 
-const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
+const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') ?? 'http://localhost:3000';
 
 const FONT_OPTIONS = ['Arial', 'Georgia', 'Times New Roman', 'Helvetica', 'Verdana', 'Trebuchet MS'];
 

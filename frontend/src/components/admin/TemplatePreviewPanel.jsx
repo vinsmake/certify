@@ -4,7 +4,7 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import api from '../../services/api';
 
-const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
+const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') ?? 'http://localhost:3000';
 
 // Datos de ejemplo para reemplazar los placeholders de la plantilla
 // Solo incluye las variables que realmente soporta el backend (templateService.js)
