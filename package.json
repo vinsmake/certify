@@ -18,6 +18,7 @@
     "pull:sync": "npm run down && npm run restore && npm run up:build",
     "snapshot": "tar -czf database/snapshot.tar.gz -C database data && tar -czf storage/snapshot.tar.gz -C storage certificates logos",
     "reset": "npm run down && npm run snapshot && rm -rf database/data storage/certificates storage/logos && npm run up:build",
+    "remake": "npm run down && rm -rf database/data storage/certificates storage/logos && npm run up:build",
     "prod:up": "docker compose -f docker-compose.prod.yml up -d",
     "prod:build": "docker compose -f docker-compose.prod.yml up --build -d",
     "prod:down": "docker compose -f docker-compose.prod.yml down",

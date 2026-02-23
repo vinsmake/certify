@@ -160,7 +160,7 @@ VALUES ('Dependencia General', 'DG', true);
 INSERT INTO users (email, password_hash, full_name, role, dependency_id, is_active)
 VALUES (
     'vinsmakedev@gmail.com',
-    '$2b$12$0RxGVnMPWZcMYC8RjJYr/OgMjgpy13v9rOT40vcxtrmuo6y88RzTO',
+    '$2b$12$u27ziNwNDz1T./RvRNbGu.xrCrhZoACXW/60gHX.V6nkNijn2APe.',
     'Administrador',
     'admin',
     NULL,
