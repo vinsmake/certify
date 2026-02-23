@@ -3,6 +3,9 @@ node_modules/
 
 # Variables de entorno
 .env
+.env.prod
+.env.prod.local
+.env.local
 
 # Build de frontend
 dist/
