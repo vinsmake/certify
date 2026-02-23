@@ -27,6 +27,9 @@
     "prod:backup:db": "tar -czf database/backup.tar.gz -C database data",
     "prod:backup:storage": "tar -czf storage/backup.tar.gz -C storage certificates logos signatures",
     "prod:backup": "npm run prod:down && npm run prod:backup:db && npm run prod:backup:storage && npm run prod:up",
+    "prod:restore:db": "rm -rf database/data && tar -xzf database/backup.tar.gz -C database",
+    "prod:restore:storage": "rm -rf storage/certificates storage/logos storage/signatures && tar -xzf storage/backup.tar.gz -C storage",
+    "prod:restore": "npm run prod:down && npm run prod:restore:db && npm run prod:restore:storage && npm run prod:up",
     "prod:remake": "npm run prod:down && rm -rf database/data storage/certificates storage/logos storage/signatures && npm run prod:build"
   }
 }
