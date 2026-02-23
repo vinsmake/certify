@@ -26,6 +26,7 @@
     "prod:ps": "docker compose -f docker-compose.prod.yml ps",
     "prod:backup:db": "tar -czf database/backup.tar.gz -C database data",
     "prod:backup:storage": "tar -czf storage/backup.tar.gz -C storage certificates logos signatures",
-    "prod:backup": "npm run prod:down && npm run prod:backup:db && npm run prod:backup:storage && npm run prod:up"
+    "prod:backup": "npm run prod:down && npm run prod:backup:db && npm run prod:backup:storage && npm run prod:up",
+    "prod:remake": "npm run prod:down && rm -rf database/data storage/certificates storage/logos storage/signatures && npm run prod:build"
   }
 }
