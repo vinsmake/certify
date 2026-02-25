@@ -90,8 +90,8 @@ const EMPTY_FORM = {
   version_label: '',
   organization_name: '',
   font_family: 'Arial',
-  primary_color: '#1e40af',
-  secondary_color: '#64748b',
+  primary_color: '#61859D',
+  secondary_color: '#EA8215',
 };
 
 const NewVersionForm = ({ onCreated }) => {
