@@ -38,7 +38,7 @@ const createCourse = async (req, res, next) => {
     const { name, description, type, duration_hours, instructor, start_date, end_date } = req.body;
 
     // Emisor: usa su dependency_id. Admin: usa el del body o null.
-    const dependency_id = req.user.role === 'emisor'
+    const dependency_id = req.user.role === 'dependencia'
       ? req.user.dependency_id
       : (req.body.dependency_id || null);
 
@@ -73,7 +73,7 @@ const updateCourse = async (req, res, next) => {
     }
 
     // Emisor solo puede editar cursos de su dependencia
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
     }
 
@@ -113,7 +113,7 @@ const deleteCourse = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para eliminar este curso' });
     }
 
@@ -166,7 +166,7 @@ const listCourseParticipants = async (req, res, next) => {
     }
 
     // Emisor solo puede ver participantes de cursos de su dependencia
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para ver este curso' });
     }
 
@@ -186,7 +186,7 @@ const enrollParticipants = async (req, res, next) => {
     }
 
     // Emisor solo puede inscribir en cursos de su dependencia
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para gestionar este curso' });
     }
 
@@ -226,7 +226,7 @@ const updateParticipantStatus = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para gestionar este curso' });
     }
 
@@ -258,7 +258,7 @@ const uploadSignature = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
     }
 
@@ -277,7 +277,7 @@ const deleteSignature = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
     }
 

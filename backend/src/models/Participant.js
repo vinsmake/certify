@@ -1,28 +1,35 @@
 const pool = require('../config/database');
 
-const Participant = {
-  async findAll({ page = 1, limit = 20, search = '' }) {
-    const offset = (page - 1) * limit;
-    let query, countQuery, params, countParams;
+const BASE_SELECT = `
+  SELECT p.id, p.full_name, p.email, p.dependency_id,
+         d.name AS dependency_name,
+         p.created_at, p.updated_at
+  FROM participants p
+  LEFT JOIN dependencies d ON p.dependency_id = d.id`;
 
-    if (search) {
-      const searchPattern = `%${search}%`;
-      query = `SELECT * FROM participants
-               WHERE full_name ILIKE $1
-               ORDER BY full_name ASC
-               LIMIT $2 OFFSET $3`;
-      countQuery = `SELECT COUNT(*) FROM participants
-                    WHERE full_name ILIKE $1`;
-      params = [searchPattern, limit, offset];
-      countParams = [searchPattern];
-    } else {
-      query = `SELECT * FROM participants
-               ORDER BY full_name ASC
-               LIMIT $1 OFFSET $2`;
-      countQuery = 'SELECT COUNT(*) FROM participants';
-      params = [limit, offset];
-      countParams = [];
+const Participant = {
+  async findAll({ page = 1, limit = 20, search = '', dependency_id = null }) {
+    const offset = (page - 1) * limit;
+    const conditions = [];
+    const params = [];
+    let idx = 1;
+
+    if (dependency_id) {
+      conditions.push(`p.dependency_id = $${idx++}`);
+      params.push(dependency_id);
     }
+    if (search) {
+      conditions.push(`p.full_name ILIKE $${idx++}`);
+      params.push(`%${search}%`);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const query = `${BASE_SELECT} ${where} ORDER BY p.full_name ASC LIMIT $${idx++} OFFSET $${idx}`;
+    const countQuery = `SELECT COUNT(*) FROM participants p ${where}`;
+
+    params.push(limit, offset);
+    const countParams = params.slice(0, conditions.length);
 
     const [{ rows }, countResult] = await Promise.all([
       pool.query(query, params),
@@ -39,33 +46,32 @@ const Participant = {
 
   async findById(id) {
     const { rows } = await pool.query(
-      'SELECT * FROM participants WHERE id = $1',
+      `${BASE_SELECT} WHERE p.id = $1`,
       [id]
     );
     return rows[0] || null;
   },
 
-  async create({ full_name, email, organization, position }) {
+  async create({ full_name, email, dependency_id }) {
     const { rows } = await pool.query(
-      `INSERT INTO participants (full_name, email, organization, position)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO participants (full_name, email, dependency_id)
+       VALUES ($1, $2, $3)
        RETURNING *`,
-      [full_name, email || null, organization || null, position || null]
+      [full_name, email || null, dependency_id || null]
     );
     return rows[0];
   },
 
-  async update(id, { full_name, email, organization, position }) {
+  async update(id, { full_name, email, dependency_id }) {
     const { rows } = await pool.query(
       `UPDATE participants
-       SET full_name    = COALESCE($2, full_name),
-           email        = COALESCE($3, email),
-           organization = COALESCE($4, organization),
-           position     = COALESCE($5, position),
-           updated_at   = NOW()
+       SET full_name     = COALESCE($2, full_name),
+           email         = COALESCE($3, email),
+           dependency_id = COALESCE($4, dependency_id),
+           updated_at    = NOW()
        WHERE id = $1
        RETURNING *`,
-      [id, full_name, email, organization, position]
+      [id, full_name, email, dependency_id]
     );
     return rows[0] || null;
   },

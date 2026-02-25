@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import participantService from '../services/participantService';
+import dependencyService from '../services/dependencyService';
+import useAuth from '../hooks/useAuth';
 import ParticipantList from '../components/participants/ParticipantList';
 import ParticipantForm from '../components/participants/ParticipantForm';
 import ParticipantDetail from '../components/participants/ParticipantDetail';
@@ -12,12 +14,17 @@ import Button from '../components/ui/Button';
 import Alert from '../components/ui/Alert';
 
 const ParticipantsPage = () => {
+  const { user } = useAuth();
+
   // Lista
   const [participants,  setParticipants]  = useState([]);
   const [total,         setTotal]         = useState(0);
   const [loading,       setLoading]       = useState(true);
   const [page,          setPage]          = useState(1);
   const LIMIT = 20;
+
+  // Dependencias (solo necesarias para admin al crear/editar)
+  const [deps, setDeps] = useState([]);
 
   // 24.04 - Busqueda
   const [search, setSearch] = useState('');
@@ -33,6 +40,12 @@ const ParticipantsPage = () => {
   const [formError,     setFormError]     = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [successMsg,    setSuccessMsg]    = useState('');
+
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      dependencyService.getAll().then((data) => setDeps(data || [])).catch(() => {});
+    }
+  }, [user?.role]);
 
   const loadParticipants = useCallback(() => {
     setLoading(true);
@@ -139,6 +152,8 @@ const ParticipantsPage = () => {
           onCancel={() => setShowForm(false)}
           loading={formLoading}
           error={formError}
+          dependencies={deps}
+          userRole={user?.role}
         />
       </Modal>
 
@@ -156,6 +171,8 @@ const ParticipantsPage = () => {
             onCancel={() => setEditPart(null)}
             loading={formLoading}
             error={formError}
+            dependencies={deps}
+            userRole={user?.role}
           />
         )}
       </Modal>

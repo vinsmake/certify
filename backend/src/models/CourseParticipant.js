@@ -5,9 +5,10 @@ const CourseParticipant = {
     const { rows } = await pool.query(
       `SELECT cp.id, cp.enrollment_date, cp.attendance_status,
               p.id AS participant_id, p.full_name, p.email,
-              p.organization, p.position
+              p.dependency_id, d.name AS dependency_name
        FROM course_participants cp
        JOIN participants p ON cp.participant_id = p.id
+       LEFT JOIN dependencies d ON p.dependency_id = d.id
        WHERE cp.course_id = $1
        ORDER BY p.full_name ASC`,
       [courseId]

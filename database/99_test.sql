@@ -18,13 +18,16 @@ VALUES
 -- PARTICIPANTES
 -- ============================================================
 
-INSERT INTO participants (full_name, email, organization, position)
-VALUES
-  ('Ana Sofía Torres Medina',     'ana.torres@ejemplo.com',    'Universidad del Estado',   'Coordinadora de Proyectos'),
-  ('Luis Ernesto Vega Campos',    'luis.vega@ejemplo.com',     'Instituto Tecnológico',    'Técnico en Sistemas'),
-  ('Patricia Gómez Ríos',         'patricia.gomez@ejemplo.com', 'Secretaría de Educación', 'Jefa de Departamento'),
-  ('Miguel Ángel Herrera Soto',   'miguel.herrera@ejemplo.com', 'Gobierno Municipal',      'Analista Administrativo'),
-  ('Valeria Montes de Oca Díaz',  'valeria.montes@ejemplo.com', 'Empresa Privada S.A.',    'Gerente de Recursos Humanos');
+INSERT INTO participants (full_name, email, dependency_id)
+SELECT 'Ana Sofía Torres Medina',    'ana.torres@ejemplo.com',     id FROM dependencies WHERE abbreviation = 'DDRRHH';
+INSERT INTO participants (full_name, email, dependency_id)
+SELECT 'Luis Ernesto Vega Campos',   'luis.vega@ejemplo.com',      id FROM dependencies WHERE abbreviation = 'DTI';
+INSERT INTO participants (full_name, email, dependency_id)
+SELECT 'Patricia Gómez Ríos',        'patricia.gomez@ejemplo.com', id FROM dependencies WHERE abbreviation = 'DDRRHH';
+INSERT INTO participants (full_name, email, dependency_id)
+SELECT 'Miguel Ángel Herrera Soto',  'miguel.herrera@ejemplo.com', id FROM dependencies WHERE abbreviation = 'CC';
+INSERT INTO participants (full_name, email, dependency_id)
+SELECT 'Valeria Montes de Oca Díaz', 'valeria.montes@ejemplo.com', id FROM dependencies WHERE abbreviation = 'DTI';
 
 
 -- ============================================================

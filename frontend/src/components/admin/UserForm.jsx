@@ -8,14 +8,14 @@ import Alert from '../ui/Alert';
 
 const ROLE_OPTIONS = [
   { value: 'admin',  label: 'Administrador' },
-  { value: 'emisor', label: 'Emisor'         },
+  { value: 'dependencia', label: 'Dependencia'    },
 ];
 
 const UserForm = ({ initial, dependencies, onSubmit, onCancel, loading, error }) => {
   const [email,      setEmail]      = useState('');
   const [fullName,   setFullName]   = useState('');
   const [password,   setPassword]   = useState('');
-  const [role,       setRole]       = useState('emisor');
+  const [role,       setRole]       = useState('dependencia');
   const [depId,      setDepId]      = useState('');
   const [isActive,   setIsActive]   = useState(true);
   const [errors,     setErrors]     = useState({});
@@ -25,7 +25,7 @@ const UserForm = ({ initial, dependencies, onSubmit, onCancel, loading, error })
     if (initial) {
       setEmail(initial.email || '');
       setFullName(initial.full_name || '');
-      setRole(initial.role || 'emisor');
+      setRole(initial.role || 'dependencia');
       setDepId(initial.dependency_id ? String(initial.dependency_id) : '');
       setIsActive(initial.is_active !== false);
     }
@@ -37,8 +37,8 @@ const UserForm = ({ initial, dependencies, onSubmit, onCancel, loading, error })
     if (!fullName.trim()) e.fullName = 'El nombre es requerido.';
     if (!isEdit && password.length < 8)
       e.password = 'La contrasena debe tener al menos 8 caracteres.';
-    if (role === 'emisor' && !depId)
-      e.depId = 'La dependencia es requerida para el rol emisor.';
+    if (role === 'dependencia' && !depId)
+      e.depId = 'La dependencia es requerida para este rol.';
     return e;
   };
 
@@ -94,7 +94,7 @@ const UserForm = ({ initial, dependencies, onSubmit, onCancel, loading, error })
           <Select label="Dependencia" id="usr-dep" value={depId}
             onChange={(e) => { setDepId(e.target.value); setErrors((p) => ({ ...p, depId: '' })); }}
             options={depOptions}
-            placeholder={role === 'admin' ? 'Sin dependencia (admin)' : 'Selecciona una...'}
+            placeholder={role === 'admin' ? 'Sin dependencia (admin)' : 'Selecciona una dependencia...'}
             error={errors.depId}
           />
         </div>

@@ -36,7 +36,7 @@ const getCertificate = async (req, res, next) => {
     }
 
     // Emisor solo puede ver certificados de su dependencia
-    if (req.user.role === 'emisor' && cert.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && cert.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para ver este certificado' });
     }
 
@@ -57,7 +57,7 @@ const emitCertificates = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'emisor' && course.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para emitir certificados de este curso' });
     }
 
@@ -84,7 +84,7 @@ const downloadCertificate = async (req, res, next) => {
       return res.status(404).json({ error: 'Certificado no encontrado' });
     }
 
-    if (req.user.role === 'emisor' && cert.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && cert.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para descargar este certificado' });
     }
 
@@ -121,7 +121,7 @@ const revokeCertificateHandler = async (req, res, next) => {
     }
 
     // 15.07 - Solo admin o emisor de la misma dependencia
-    if (req.user.role === 'emisor' && cert.dependency_id !== req.user.dependency_id) {
+    if (req.user.role === 'dependencia' && cert.dependency_id !== req.user.dependency_id) {
       return res.status(403).json({ error: 'No tienes permisos para revocar este certificado' });
     }
 

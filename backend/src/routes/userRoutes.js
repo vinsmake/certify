@@ -22,10 +22,10 @@ router.post(
     body('email').isEmail().withMessage('Email invalido'),
     body('password').isLength({ min: 8 }).withMessage('Password debe tener minimo 8 caracteres'),
     body('full_name').notEmpty().withMessage('Nombre completo es requerido'),
-    body('role').isIn(['admin', 'emisor']).withMessage('Rol debe ser admin o emisor'),
+    body('role').isIn(['admin', 'dependencia']).withMessage('Rol debe ser admin o dependencia'),
     body('dependency_id').custom((value, { req }) => {
-      if (req.body.role === 'emisor' && !value) {
-        throw new Error('dependency_id es requerido para el rol emisor');
+      if (req.body.role === 'dependencia' && !value) {
+        throw new Error('dependency_id es requerido para el rol dependencia');
       }
       return true;
     }),
@@ -41,7 +41,7 @@ router.put(
     param('id').isInt().withMessage('ID invalido'),
     body('email').optional().isEmail().withMessage('Email invalido'),
     body('full_name').optional().notEmpty().withMessage('Nombre completo no puede estar vacio'),
-    body('role').optional().isIn(['admin', 'emisor']).withMessage('Rol debe ser admin o emisor'),
+    body('role').optional().isIn(['admin', 'dependencia']).withMessage('Rol debe ser admin o dependencia'),
     body('dependency_id').optional(),
   ],
   validateRequest,

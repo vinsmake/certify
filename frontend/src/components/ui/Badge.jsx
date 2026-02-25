@@ -13,8 +13,8 @@ const VARIANTS = {
   active:   { bg: 'var(--color-success-light)', color: 'var(--color-success)',   label: 'Activo'    },
   inactive: { bg: '#f8fafc',                    color: 'var(--color-text-muted)', label: 'Inactivo' },
   // Roles
-  admin:    { bg: '#faf5ff', color: '#7c3aed', label: 'Admin'   },
-  emisor:   { bg: '#eff6ff', color: '#1d4ed8', label: 'Emisor'  },
+  admin:       { bg: '#faf5ff', color: '#7c3aed', label: 'Admin'       },
+  dependencia: { bg: '#eff6ff', color: '#1d4ed8', label: 'Dependencia' },
 };
 
 /**

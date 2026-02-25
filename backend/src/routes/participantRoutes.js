@@ -11,11 +11,14 @@ const {
 const authMiddleware = require('../middlewares/authMiddleware');
 const validateRequest = require('../middlewares/validateRequest');
 
+const dependencyMiddleware = require('../middlewares/dependencyMiddleware');
+
 const router = Router();
 
 // 9.09 - Todas las rutas requieren autenticacion
-// Ambos roles (admin y emisor) pueden gestionar participantes
+// Ambos roles (admin y dependencia) pueden gestionar participantes
 router.use(authMiddleware);
+router.use(dependencyMiddleware);
 
 // GET / - listar participantes con paginacion y busqueda
 router.get(
@@ -43,6 +46,7 @@ router.post(
   [
     body('full_name').notEmpty().withMessage('El nombre completo es requerido'),
     body('email').optional().isEmail().withMessage('Email invalido'),
+    body('dependency_id').optional().isInt().withMessage('dependency_id debe ser un entero'),
   ],
   validateRequest,
   createParticipant

@@ -26,7 +26,7 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'emisor')),
+    role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'dependencia')),
     dependency_id INTEGER REFERENCES dependencies(id),
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT NOW(),
@@ -80,8 +80,7 @@ CREATE TABLE participants (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255),
-    organization VARCHAR(255),
-    position VARCHAR(255),
+    dependency_id INTEGER REFERENCES dependencies(id),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

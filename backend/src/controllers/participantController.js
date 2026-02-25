@@ -8,7 +8,12 @@ const listParticipants = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 20;
     const search = req.query.search || '';
 
-    const result = await Participant.findAll({ page, limit, search });
+    const result = await Participant.findAll({
+      page,
+      limit,
+      search,
+      dependency_id: req.dependencyFilter,
+    });
     res.json(result);
   } catch (err) {
     next(err);
@@ -31,8 +36,14 @@ const getParticipant = async (req, res, next) => {
 // 9.04 - POST / - crear participante
 const createParticipant = async (req, res, next) => {
   try {
-    const { full_name, email, organization, position } = req.body;
-    const participant = await Participant.create({ full_name, email, organization, position });
+    const { full_name, email } = req.body;
+
+    // Dependencia: el rol 'dependencia' usa la suya; admin especifica en el body
+    const dependency_id = req.user.role === 'dependencia'
+      ? req.user.dependency_id
+      : (req.body.dependency_id || null);
+
+    const participant = await Participant.create({ full_name, email, dependency_id });
     res.status(201).json(participant);
   } catch (err) {
     next(err);
@@ -47,8 +58,12 @@ const updateParticipant = async (req, res, next) => {
       return res.status(404).json({ error: 'Participante no encontrado' });
     }
 
-    const { full_name, email, organization, position } = req.body;
-    const updated = await Participant.update(req.params.id, { full_name, email, organization, position });
+    const { full_name, email } = req.body;
+    const dependency_id = req.user.role === 'dependencia'
+      ? req.user.dependency_id
+      : (req.body.dependency_id !== undefined ? req.body.dependency_id : participant.dependency_id);
+
+    const updated = await Participant.update(req.params.id, { full_name, email, dependency_id });
     res.json(updated);
   } catch (err) {
     next(err);

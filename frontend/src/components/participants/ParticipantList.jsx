@@ -9,9 +9,8 @@ const ParticipantList = ({ participants, loading, onView, onEdit, onDelete }) =>
     { key: 'full_name',   label: 'Nombre', render: (v, row) => (
       <button onClick={() => onView(row)} style={styles.linkBtn}>{v}</button>
     )},
-    { key: 'email',        label: 'Correo',       render: (v) => v || '—' },
-    { key: 'organization', label: 'Organizacion', render: (v) => v || '—' },
-    { key: 'position',     label: 'Cargo',        render: (v) => v || '—' },
+    { key: 'dependency_name', label: 'Dependencia', render: (v) => v || '—' },
+    { key: 'email',           label: 'Correo',      render: (v) => v || '—' },
     { key: 'actions', label: 'Acciones', render: (_, row) => (
       <div style={styles.actions}>
         <Button size="sm" variant="secondary" onClick={() => onEdit(row)}>Editar</Button>
