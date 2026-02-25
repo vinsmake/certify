@@ -5,6 +5,7 @@ import api from '../services/api';
 import templateService from '../services/templateService';
 import Button from '../components/ui/Button';
 import Alert from '../components/ui/Alert';
+import Modal from '../components/ui/Modal';
 
 const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') ?? 'http://localhost:3000';
 
@@ -186,61 +187,135 @@ const NewVersionForm = ({ onCreated }) => {
   );
 };
 
-// 29.04 - Fila individual del historial (componente propio para manejar ref de file input)
-const VersionRow = ({ version, onActivate, onLogoUpload }) => {
+// 29.04 - Fila individual del historial con edicion inline y eliminacion
+const VersionRow = ({ version, onActivate, onLogoUpload, onSaveEdit, onDelete }) => {
   const fileRef = useRef(null);
   const logoSrc = version.logo_path ? `${BACKEND}${version.logo_path}` : null;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    version_label:     version.version_label,
+    organization_name: version.organization_name,
+    font_family:       version.font_family,
+    primary_color:     version.primary_color,
+    secondary_color:   version.secondary_color,
+  });
+  const [saving, setSaving] = useState(false);
+
+  const setEdit = (k, v) => setEditForm((p) => ({ ...p, [k]: v }));
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSaveEdit(version.id, editForm);
+    setSaving(false);
+    setIsEditing(false);
+  };
 
   return (
-    <div style={{ ...styles.historyItem, ...(version.is_active ? styles.historyItemActive : {}) }}>
-      <div style={styles.historyLeft}>
-        {logoSrc ? (
-          <img src={logoSrc} alt="logo" style={styles.logoSmall} onError={(e) => { e.target.style.display = 'none'; }} />
-        ) : (
-          <div style={styles.logoSmallPlaceholder} />
-        )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={(e) => { if (e.target.files[0]) onLogoUpload(version.id, e.target.files[0]); e.target.value = ''; }}
-        />
+    <div style={{ ...styles.historyItem, ...(version.is_active ? styles.historyItemActive : {}), flexDirection: 'column', alignItems: 'stretch', gap: '0.75rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={styles.historyLeft}>
+          {logoSrc ? (
+            <img src={logoSrc} alt="logo" style={styles.logoSmall} onError={(e) => { e.target.style.display = 'none'; }} />
+          ) : (
+            <div style={styles.logoSmallPlaceholder} />
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={(e) => { if (e.target.files[0]) onLogoUpload(version.id, e.target.files[0]); e.target.value = ''; }}
+          />
+        </div>
+
+        <div style={styles.historyMid}>
+          <span style={styles.historyLabel}>{version.version_label}</span>
+          <span style={styles.historyOrg}>{version.organization_name}</span>
+          <span style={styles.historyDate}>{formatDate(version.created_at)}</span>
+        </div>
+
+        <div style={styles.historyColors}>
+          <span style={{ ...styles.colorSwatch, background: version.primary_color }} title={version.primary_color} />
+          <span style={{ ...styles.colorSwatch, background: version.secondary_color }} title={version.secondary_color} />
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>{version.font_family}</span>
+        </div>
+
+        <div style={styles.historyActions}>
+          {version.is_active ? (
+            <span style={styles.activeBadge}>Activa</span>
+          ) : (
+            <Button variant="secondary" size="sm" onClick={() => onActivate(version)}>Activar</Button>
+          )}
+          <Button variant="secondary" size="sm" onClick={() => fileRef.current?.click()}>Logo</Button>
+          <Button variant="secondary" size="sm" onClick={() => setIsEditing((v) => !v)}>
+            {isEditing ? 'Cancelar' : 'Editar'}
+          </Button>
+          {!version.is_active && (
+            <Button variant="danger" size="sm" onClick={() => onDelete(version)}>Eliminar</Button>
+          )}
+        </div>
       </div>
 
-      <div style={styles.historyMid}>
-        <span style={styles.historyLabel}>{version.version_label}</span>
-        <span style={styles.historyOrg}>{version.organization_name}</span>
-        <span style={styles.historyDate}>{formatDate(version.created_at)}</span>
-      </div>
-
-      <div style={styles.historyColors}>
-        <span style={{ ...styles.colorSwatch, background: version.primary_color }} title={version.primary_color} />
-        <span style={{ ...styles.colorSwatch, background: version.secondary_color }} title={version.secondary_color} />
-        <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>{version.font_family}</span>
-      </div>
-
-      <div style={styles.historyActions}>
-        {version.is_active ? (
-          <span style={styles.activeBadge}>Activa</span>
-        ) : (
-          <Button variant="secondary" size="sm" onClick={() => onActivate(version)}>Activar</Button>
-        )}
-        <Button variant="secondary" size="sm" onClick={() => fileRef.current?.click()}>Logo</Button>
-      </div>
+      {isEditing && (
+        <div style={styles.editForm}>
+          <div style={styles.editGrid}>
+            <label style={styles.editLabel}>
+              Etiqueta
+              <input style={styles.input} value={editForm.version_label}
+                onChange={(e) => setEdit('version_label', e.target.value)} />
+            </label>
+            <label style={styles.editLabel}>
+              Organizacion
+              <input style={styles.input} value={editForm.organization_name}
+                onChange={(e) => setEdit('organization_name', e.target.value)} />
+            </label>
+            <label style={styles.editLabel}>
+              Fuente
+              <select style={styles.input} value={editForm.font_family}
+                onChange={(e) => setEdit('font_family', e.target.value)}>
+                {FONT_OPTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </label>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <label style={{ ...styles.editLabel, flex: 1 }}>
+                Color principal
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input type="color" value={editForm.primary_color}
+                    onChange={(e) => setEdit('primary_color', e.target.value)} style={styles.colorInput} />
+                  <input style={{ ...styles.input, flex: 1, fontFamily: 'monospace' }} value={editForm.primary_color}
+                    onChange={(e) => setEdit('primary_color', e.target.value)} />
+                </div>
+              </label>
+              <label style={{ ...styles.editLabel, flex: 1 }}>
+                Color secundario
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input type="color" value={editForm.secondary_color}
+                    onChange={(e) => setEdit('secondary_color', e.target.value)} style={styles.colorInput} />
+                  <input style={{ ...styles.input, flex: 1, fontFamily: 'monospace' }} value={editForm.secondary_color}
+                    onChange={(e) => setEdit('secondary_color', e.target.value)} />
+                </div>
+              </label>
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.75rem' }}>
+            <Button size="sm" loading={saving} onClick={handleSave}>Guardar cambios</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 // 29.04 - Historial de versiones de branding
-const VersionHistory = ({ versions, onActivate, onLogoUpload }) => {
+const VersionHistory = ({ versions, onActivate, onLogoUpload, onSaveEdit, onDelete }) => {
   if (!versions.length) {
     return <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>No hay versiones registradas.</p>;
   }
   return (
     <div style={styles.historyList}>
       {versions.map((v) => (
-        <VersionRow key={v.id} version={v} onActivate={onActivate} onLogoUpload={onLogoUpload} />
+        <VersionRow key={v.id} version={v} onActivate={onActivate} onLogoUpload={onLogoUpload}
+          onSaveEdit={onSaveEdit} onDelete={onDelete} />
       ))}
     </div>
   );
@@ -248,11 +323,13 @@ const VersionHistory = ({ versions, onActivate, onLogoUpload }) => {
 
 // 29.01 - Pagina principal de configuracion
 const SettingsPage = () => {
-  const [active,     setActive]     = useState(null);
-  const [versions,   setVersions]   = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [successMsg, setSuccessMsg] = useState('');
-  const [errorMsg,   setErrorMsg]   = useState('');
+  const [active,         setActive]         = useState(null);
+  const [versions,       setVersions]       = useState([]);
+  const [loading,        setLoading]        = useState(true);
+  const [successMsg,     setSuccessMsg]     = useState('');
+  const [errorMsg,       setErrorMsg]       = useState('');
+  const [deleteTarget,   setDeleteTarget]   = useState(null);
+  const [deleteLoading,  setDeleteLoading]  = useState(false);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -304,6 +381,31 @@ const SettingsPage = () => {
     }
   };
 
+  const handleSaveEdit = async (id, data) => {
+    try {
+      await api.put(`/branding/versions/${id}`, data);
+      setSuccessMsg('Version actualizada correctamente.');
+      load();
+    } catch (err) {
+      setErrorMsg(err.response?.data?.error || 'Error al actualizar la version.');
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    setDeleteLoading(true);
+    try {
+      await api.delete(`/branding/versions/${deleteTarget.id}`);
+      setSuccessMsg(`Version "${deleteTarget.version_label}" eliminada.`);
+      setDeleteTarget(null);
+      load();
+    } catch (err) {
+      setErrorMsg(err.response?.data?.error || 'Error al eliminar la version.');
+      setDeleteTarget(null);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   const handleCreated = (newVersion) => {
     setSuccessMsg(`Version "${newVersion.version_label}" creada. Puedes subir el logo y activarla desde el historial.`);
     load();
@@ -343,10 +445,29 @@ const SettingsPage = () => {
               versions={versions}
               onActivate={handleActivate}
               onLogoUpload={handleLogoUpload}
+              onSaveEdit={handleSaveEdit}
+              onDelete={setDeleteTarget}
             />
           </section>
         </>
       )}
+
+      <Modal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Eliminar Version"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setDeleteTarget(null)} disabled={deleteLoading}>Cancelar</Button>
+            <Button variant="danger" onClick={handleDeleteConfirm} loading={deleteLoading}>Eliminar</Button>
+          </>
+        }
+      >
+        <p>
+          Estas a punto de eliminar la version <strong>{deleteTarget?.version_label}</strong>.
+          Esta accion no se puede deshacer.
+        </p>
+      </Modal>
     </div>
   );
 };
@@ -416,6 +537,9 @@ const styles = {
   historyColors: { display: 'flex', gap: '0.4rem', alignItems: 'center' },
   historyActions: { display: 'flex', gap: '0.5rem', alignItems: 'center' },
   activeBadge:  { padding: '0.2rem 0.6rem', backgroundColor: '#dcfce7', color: '#16a34a', borderRadius: '999px', fontSize: '0.75rem', fontWeight: '600' },
+  editForm:     { borderTop: '1px solid var(--color-border)', paddingTop: '0.75rem' },
+  editGrid:     { display: 'flex', flexDirection: 'column', gap: '0.75rem' },
+  editLabel:    { display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8125rem', fontWeight: '500', color: 'var(--color-text-secondary)' },
 };
 
 export default SettingsPage;

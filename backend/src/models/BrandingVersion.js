@@ -63,6 +63,29 @@ const BrandingVersion = {
     );
     return rows[0] || null;
   },
+
+  async update(id, { version_label, primary_color, secondary_color, font_family, organization_name }) {
+    const { rows } = await pool.query(
+      `UPDATE branding_versions
+       SET version_label     = COALESCE($2, version_label),
+           primary_color     = COALESCE($3, primary_color),
+           secondary_color   = COALESCE($4, secondary_color),
+           font_family       = COALESCE($5, font_family),
+           organization_name = COALESCE($6, organization_name)
+       WHERE id = $1
+       RETURNING *`,
+      [id, version_label, primary_color, secondary_color, font_family, organization_name]
+    );
+    return rows[0] || null;
+  },
+
+  async delete(id) {
+    const { rows } = await pool.query(
+      'DELETE FROM branding_versions WHERE id = $1 RETURNING *',
+      [id]
+    );
+    return rows[0] || null;
+  },
 };
 
 module.exports = BrandingVersion;

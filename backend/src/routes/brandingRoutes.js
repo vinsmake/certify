@@ -9,6 +9,8 @@ const {
   createVersion,
   activateVersion,
   uploadLogo,
+  updateVersion,
+  deleteVersion,
 } = require('../controllers/brandingController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
@@ -73,6 +75,29 @@ router.put(
   [param('id').isInt().withMessage('ID invalido')],
   validateRequest,
   activateVersion
+);
+
+// PUT /versions/:id - editar una version
+router.put(
+  '/versions/:id',
+  [
+    param('id').isInt().withMessage('ID invalido'),
+    body('version_label').optional().notEmpty().withMessage('version_label no puede estar vacio'),
+    body('primary_color').optional().matches(/^#[0-9A-Fa-f]{6}$/).withMessage('Color hexadecimal invalido'),
+    body('secondary_color').optional().matches(/^#[0-9A-Fa-f]{6}$/).withMessage('Color hexadecimal invalido'),
+    body('font_family').optional().notEmpty(),
+    body('organization_name').optional().notEmpty(),
+  ],
+  validateRequest,
+  updateVersion
+);
+
+// DELETE /versions/:id - eliminar una version
+router.delete(
+  '/versions/:id',
+  [param('id').isInt().withMessage('ID invalido')],
+  validateRequest,
+  deleteVersion
 );
 
 // POST /versions/:id/logo - subir logo institucional

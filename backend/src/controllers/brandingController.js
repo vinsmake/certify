@@ -78,4 +78,38 @@ const uploadLogo = async (req, res, next) => {
   }
 };
 
-module.exports = { getActive, listVersions, createVersion, activateVersion, uploadLogo };
+// PUT /versions/:id - editar campos de una version (admin)
+const updateVersion = async (req, res, next) => {
+  try {
+    const version = await BrandingVersion.findById(req.params.id);
+    if (!version) {
+      return res.status(404).json({ error: 'Version de branding no encontrada' });
+    }
+    const { version_label, primary_color, secondary_color, font_family, organization_name } = req.body;
+    const updated = await BrandingVersion.update(req.params.id, {
+      version_label, primary_color, secondary_color, font_family, organization_name,
+    });
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /versions/:id - eliminar una version (admin, no se puede eliminar la activa)
+const deleteVersion = async (req, res, next) => {
+  try {
+    const version = await BrandingVersion.findById(req.params.id);
+    if (!version) {
+      return res.status(404).json({ error: 'Version de branding no encontrada' });
+    }
+    if (version.is_active) {
+      return res.status(409).json({ error: 'No se puede eliminar la version activa. Activa otra version primero.' });
+    }
+    await BrandingVersion.delete(req.params.id);
+    res.json({ message: 'Version eliminada', id: version.id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getActive, listVersions, createVersion, activateVersion, uploadLogo, updateVersion, deleteVersion };
