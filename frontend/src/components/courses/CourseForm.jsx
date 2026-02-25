@@ -18,7 +18,7 @@ const TYPE_OPTIONS = [
 
 const EMPTY = {
   name: '', description: '', type: '', duration_hours: '',
-  instructor: '', start_date: '', end_date: '', dependency_id: '',
+  instructor: '', start_date: '', end_date: '',
 };
 
 const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error = '', dependencies = [], userRole = '' }) => {
@@ -30,8 +30,19 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
     instructor:     initial.instructor   || '',
     start_date:     initial.start_date   ? initial.start_date.slice(0, 10) : '',
     end_date:       initial.end_date     ? initial.end_date.slice(0, 10)   : '',
-    dependency_id:  initial.dependency_id ? String(initial.dependency_id)  : '',
   } : { ...EMPTY });
+
+  // Dependencias colaboradoras (solo al crear, admin)
+  const [selectedDepIds, setSelectedDepIds] = useState([]);
+
+  const addDep = (e) => {
+    const id = parseInt(e.target.value);
+    if (!id || selectedDepIds.includes(id)) return;
+    setSelectedDepIds((prev) => [...prev, id]);
+  };
+
+  const removeDep = (id) =>
+    setSelectedDepIds((prev) => prev.filter((x) => x !== id));
 
   const [errors, setErrors] = useState({});
   const [signatureFile, setSignatureFile] = useState(null);
@@ -86,7 +97,7 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setErrors({});
-    onSubmit({
+    const payload = {
       name:           form.name.trim(),
       description:    form.description.trim() || null,
       type:           form.type,
@@ -94,8 +105,12 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
       instructor:     form.instructor.trim()  || null,
       start_date:     form.start_date  || null,
       end_date:       form.end_date    || null,
-      dependency_id:  form.dependency_id ? Number(form.dependency_id) : null,
-    }, { signatureFile, signatureRemoved: !signaturePreview && hasExistingSignature });
+    };
+    // Solo al crear un curso, el admin puede seleccionar dependencias colaboradoras
+    if (!initial && userRole === 'admin') {
+      payload.dependency_ids = selectedDepIds;
+    }
+    onSubmit(payload, { signatureFile, signatureRemoved: !signaturePreview && hasExistingSignature });
   };
 
   return (
@@ -121,14 +136,36 @@ const CourseForm = ({ initial = null, onSubmit, onCancel, loading = false, error
         placeholder="Selecciona el tipo"
       />
 
-      {userRole === 'admin' && dependencies.length > 0 && (
-        <Select
-          label="Dependencia"
-          value={form.dependency_id}
-          onChange={set('dependency_id')}
-          options={dependencies.map((d) => ({ value: String(d.id), label: d.name }))}
-          placeholder="Selecciona una dependencia"
-        />
+      {!initial && userRole === 'admin' && dependencies.length > 0 && (
+        <div style={styles.depSection}>
+          <label style={styles.label}>Dependencias colaboradoras</label>
+
+          {selectedDepIds.length > 0 && (
+            <div style={styles.depList}>
+              {selectedDepIds.map((id) => {
+                const dep = dependencies.find((d) => d.id === id);
+                return dep ? (
+                  <div key={id} style={styles.depChip}>
+                    <span>{dep.name}</span>
+                    <button type="button" onClick={() => removeDep(id)} style={styles.chipRemove} title="Quitar">
+                      &times;
+                    </button>
+                  </div>
+                ) : null;
+              })}
+            </div>
+          )}
+
+          <Select
+            value=""
+            onChange={addDep}
+            options={dependencies
+              .filter((d) => !selectedDepIds.includes(d.id))
+              .map((d) => ({ value: d.id, label: d.name }))}
+            placeholder="Agregar dependencia..."
+            style={{ marginBottom: 0 }}
+          />
+        </div>
       )}
 
       <Input
@@ -214,11 +251,15 @@ const styles = {
   row:     { display: 'flex', gap: '1rem', flexWrap: 'wrap' },
   actions: { display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' },
   signatureSection: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
-  label: { fontSize: '0.875rem', fontWeight: '500', color: 'var(--color-text-primary)' },
+  label: { fontSize: '0.875rem', fontWeight: '500', color: 'var(--color-text-primary)', display: 'block', marginBottom: '0.375rem' },
   signaturePreview: { display: 'flex', alignItems: 'center', gap: '1rem' },
   signatureImg: { maxHeight: '60px', maxWidth: '180px', objectFit: 'contain', border: '1px solid #ddd', borderRadius: '4px', padding: '4px' },
   removeBtn: { background: 'none', border: '1px solid #e53e3e', color: '#e53e3e', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem' },
   fileInput: { fontSize: '0.875rem' },
+  depSection: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
+  depList:    { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
+  depChip:    { display: 'inline-flex', alignItems: 'center', gap: '0.375rem', padding: '0.25rem 0.625rem', backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: 'var(--radius-full)', fontSize: '0.8125rem', fontWeight: '500' },
+  chipRemove: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', fontSize: '1rem', lineHeight: 1, padding: 0 },
 };
 
 export default CourseForm;

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Certificate = require('../models/Certificate');
 const Course = require('../models/Course');
+const CourseDependency = require('../models/CourseDependency');
 const { emitBulkCertificates, revokeCertificate } = require('../services/certificateService');
 
 const STORAGE_ROOT = '/app/storage';
@@ -57,8 +58,11 @@ const emitCertificates = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
-      return res.status(403).json({ error: 'No tienes permisos para emitir certificados de este curso' });
+    if (req.user.role === 'dependencia') {
+      const hasAccess = await CourseDependency.hasAccess(course.id, req.user.dependency_id);
+      if (!hasAccess) {
+        return res.status(403).json({ error: 'No tienes permisos para emitir certificados de este curso' });
+      }
     }
 
     const results = await emitBulkCertificates({

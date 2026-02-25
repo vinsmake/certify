@@ -257,6 +257,7 @@ const CoursesPage = () => {
             allParticipants={allParts}
             onClose={() => setViewCourse(null)}
             onRefresh={handleRefreshDetail}
+            userRole={user?.role}
           />
         )}
       </Modal>

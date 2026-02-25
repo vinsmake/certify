@@ -4,6 +4,12 @@ const CourseParticipant = require('../models/CourseParticipant');
 const Participant = require('../models/Participant');
 const { ensureDirectoryExists } = require('../utils/fileUtils');
 
+// Helper: verifica que el usuario tiene acceso al curso (admin siempre, dependencia si esta en course_dependencies)
+const checkCourseAccess = async (course, user) => {
+  if (user.role === 'admin') return true;
+  return CourseDependency.hasAccess(course.id, user.dependency_id);
+};
+
 const listCourses = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -35,12 +41,12 @@ const getCourse = async (req, res, next) => {
 
 const createCourse = async (req, res, next) => {
   try {
-    const { name, description, type, duration_hours, instructor, start_date, end_date } = req.body;
+    const { name, description, type, duration_hours, instructor, start_date, end_date, dependency_ids } = req.body;
 
-    // Emisor: usa su dependency_id. Admin: usa el del body o null.
+    // La dependencia primaria del curso es la del usuario creador (si es dependencia)
     const dependency_id = req.user.role === 'dependencia'
       ? req.user.dependency_id
-      : (req.body.dependency_id || null);
+      : null;
 
     const course = await Course.create({
       name,
@@ -54,9 +60,18 @@ const createCourse = async (req, res, next) => {
       created_by: req.user.userId,
     });
 
-    // Auto-agregar la dependencia principal como colaboradora
-    if (dependency_id) {
-      await CourseDependency.addDependency(course.id, dependency_id, 1);
+    // Agregar dependencias colaboradoras
+    if (req.user.role === 'dependencia') {
+      // La dependencia del usuario siempre es colaboradora
+      await CourseDependency.addDependency(course.id, req.user.dependency_id, 1);
+    } else if (req.user.role === 'admin' && Array.isArray(dependency_ids)) {
+      for (const depId of dependency_ids) {
+        try {
+          await CourseDependency.addDependency(course.id, depId, 1);
+        } catch (e) {
+          if (e.code !== '23505') throw e;
+        }
+      }
     }
 
     res.status(201).json(course);
@@ -72,33 +87,17 @@ const updateCourse = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    // Emisor solo puede editar cursos de su dependencia
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
     }
 
     const { name, description, type, duration_hours, instructor, start_date, end_date } = req.body;
-    const oldDependencyId = course.dependency_id;
-    const dependency_id = req.user.role === 'admin'
-      ? (req.body.dependency_id !== undefined ? req.body.dependency_id : course.dependency_id)
-      : course.dependency_id;
-    const updated = await Course.update(req.params.id, {
-      name, description, type, duration_hours, instructor, start_date, end_date, dependency_id,
-    });
 
-    // Sincronizar course_dependencies cuando cambia la dependencia principal
-    if (oldDependencyId !== dependency_id) {
-      if (oldDependencyId) {
-        await CourseDependency.removeDependency(course.id, oldDependencyId);
-      }
-      if (dependency_id) {
-        try {
-          await CourseDependency.addDependency(course.id, dependency_id, 1);
-        } catch (e) {
-          if (e.code !== '23505') throw e; // ignorar si ya existe
-        }
-      }
-    }
+    const updated = await Course.update(req.params.id, {
+      name, description, type, duration_hours, instructor, start_date, end_date,
+      dependency_id: course.dependency_id,
+    });
 
     res.json(updated);
   } catch (err) {
@@ -113,7 +112,8 @@ const deleteCourse = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para eliminar este curso' });
     }
 
@@ -124,8 +124,13 @@ const deleteCourse = async (req, res, next) => {
   }
 };
 
+// Solo admin puede agregar/quitar dependencias colaboradoras
 const addCourseDependency = async (req, res, next) => {
   try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Solo el administrador puede gestionar dependencias colaboradoras' });
+    }
+
     const course = await Course.findById(req.params.id);
     if (!course) {
       return res.status(404).json({ error: 'Curso no encontrado' });
@@ -147,6 +152,10 @@ const addCourseDependency = async (req, res, next) => {
 
 const removeCourseDependency = async (req, res, next) => {
   try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Solo el administrador puede gestionar dependencias colaboradoras' });
+    }
+
     const removed = await CourseDependency.removeDependency(req.params.id, req.params.depId);
     if (!removed) {
       return res.status(404).json({ error: 'Asociacion no encontrada' });
@@ -157,7 +166,6 @@ const removeCourseDependency = async (req, res, next) => {
   }
 };
 
-// 10.02 - GET /:id/participants - listar participantes inscritos en un curso
 const listCourseParticipants = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -165,8 +173,8 @@ const listCourseParticipants = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    // Emisor solo puede ver participantes de cursos de su dependencia
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para ver este curso' });
     }
 
@@ -177,7 +185,6 @@ const listCourseParticipants = async (req, res, next) => {
   }
 };
 
-// 10.03 - POST /:id/participants - inscribir participantes (array de participant_ids)
 const enrollParticipants = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -185,8 +192,8 @@ const enrollParticipants = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    // Emisor solo puede inscribir en cursos de su dependencia
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para gestionar este curso' });
     }
 
@@ -194,14 +201,12 @@ const enrollParticipants = async (req, res, next) => {
     const results = { enrolled: [], already_enrolled: [], not_found: [] };
 
     for (const participantId of participant_ids) {
-      // 10.06 - Verificar que el participante existe
       const participant = await Participant.findById(participantId);
       if (!participant) {
         results.not_found.push(participantId);
         continue;
       }
 
-      // 10.06 - Verificar que no esta ya inscrito
       const existing = await CourseParticipant.findEnrollment(req.params.id, participantId);
       if (existing) {
         results.already_enrolled.push(participantId);
@@ -218,7 +223,6 @@ const enrollParticipants = async (req, res, next) => {
   }
 };
 
-// 10.04 - PUT /:id/participants/:participantId - cambiar attendance_status
 const updateParticipantStatus = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -226,7 +230,8 @@ const updateParticipantStatus = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para gestionar este curso' });
     }
 
@@ -258,7 +263,8 @@ const uploadSignature = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
     }
 
@@ -277,7 +283,8 @@ const deleteSignature = async (req, res, next) => {
       return res.status(404).json({ error: 'Curso no encontrado' });
     }
 
-    if (req.user.role === 'dependencia' && course.dependency_id !== req.user.dependency_id) {
+    const hasAccess = await checkCourseAccess(course, req.user);
+    if (!hasAccess) {
       return res.status(403).json({ error: 'No tienes permisos para editar este curso' });
     }
 

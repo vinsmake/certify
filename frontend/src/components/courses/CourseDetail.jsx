@@ -15,7 +15,7 @@ const STATUS_OPTIONS = [
 const formatDate = (d) =>
   d ? new Date(d).toLocaleDateString('es', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
 
-const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, onClose, onRefresh }) => {
+const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, onClose, onRefresh, userRole }) => {
   const [participants, setParticipants] = useState([]);
   const [loadingPart,  setLoadingPart]  = useState(true);
   const [statusMsg,    setStatusMsg]    = useState('');
@@ -107,7 +107,7 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
   const availableForEnroll = (allParticipants || []).filter((p) => !enrolledIds.has(p.id));
   // Dependencias no asociadas aun
   const assocDepIds = new Set((dependencies || []).map((d) => d.dependency_id));
-  const availableDeps = (allDependencies || []).filter((d) => !assocDepIds.has(d.id) && d.id !== course.dependency_id);
+  const availableDeps = (allDependencies || []).filter((d) => !assocDepIds.has(d.id));
 
   return (
     <div style={styles.container}>
@@ -135,9 +135,11 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
             {dependencies.map((dep) => (
               <div key={dep.dependency_id} style={styles.depChip}>
                 <span>{dep.dependency_name}</span>
-                <button onClick={() => handleRemoveDep(dep.dependency_id)} style={styles.chipRemove} title="Quitar">
-                  &times;
-                </button>
+                {userRole === 'admin' && (
+                  <button onClick={() => handleRemoveDep(dep.dependency_id)} style={styles.chipRemove} title="Quitar">
+                    &times;
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -145,7 +147,7 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
           <p style={styles.empty}>Sin dependencias colaboradoras.</p>
         )}
 
-        {availableDeps.length > 0 && (
+        {userRole === 'admin' && availableDeps.length > 0 && (
           <div style={styles.addRow}>
             <Select
               value={addDepId}

@@ -10,10 +10,17 @@ const Course = {
                FROM courses c
                LEFT JOIN dependencies d ON c.dependency_id = d.id
                LEFT JOIN users u ON c.created_by = u.id
-               WHERE c.dependency_id = $1
+               WHERE EXISTS (
+                 SELECT 1 FROM course_dependencies cd
+                 WHERE cd.course_id = c.id AND cd.dependency_id = $1
+               )
                ORDER BY c.created_at DESC
                LIMIT $2 OFFSET $3`;
-      countQuery = 'SELECT COUNT(*) FROM courses WHERE dependency_id = $1';
+      countQuery = `SELECT COUNT(*) FROM courses c
+                    WHERE EXISTS (
+                      SELECT 1 FROM course_dependencies cd
+                      WHERE cd.course_id = c.id AND cd.dependency_id = $1
+                    )`;
       params = [dependency_id, limit, offset];
       countParams = [dependency_id];
     } else {

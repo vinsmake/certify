@@ -41,6 +41,24 @@ const CourseDependency = {
     );
     return rows[0] || null;
   },
+
+  async hasAccess(courseId, dependencyId) {
+    const { rows } = await pool.query(
+      'SELECT 1 FROM course_dependencies WHERE course_id = $1 AND dependency_id = $2',
+      [courseId, dependencyId]
+    );
+    return rows.length > 0;
+  },
+
+  async replaceDeps(courseId, dependencyIds) {
+    await pool.query('DELETE FROM course_dependencies WHERE course_id = $1', [courseId]);
+    for (const depId of dependencyIds) {
+      await pool.query(
+        'INSERT INTO course_dependencies (course_id, dependency_id, display_order) VALUES ($1, $2, 1) ON CONFLICT DO NOTHING',
+        [courseId, depId]
+      );
+    }
+  },
 };
 
 module.exports = CourseDependency;
