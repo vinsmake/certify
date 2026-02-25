@@ -78,7 +78,6 @@ const CertificateDetail = ({ certificate, onClose, onRevoked }) => {
       <section style={styles.section}>
         <h3 style={styles.sectionTitle}>Participante</h3>
         <Row label="Nombre"       value={c.participant_name} />
-        <Row label="Cedula"       value={c.document_id} />
         <Row label="Correo"       value={c.participant_email} />
         <Row label="Organizacion" value={c.organization} />
         <Row label="Cargo"        value={c.position} />

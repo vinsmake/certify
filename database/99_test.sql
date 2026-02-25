@@ -18,13 +18,13 @@ VALUES
 -- PARTICIPANTES
 -- ============================================================
 
-INSERT INTO participants (document_id, full_name, email, organization, position)
+INSERT INTO participants (full_name, email, organization, position)
 VALUES
-  ('1234567890', 'Ana Sofía Torres Medina',     'ana.torres@ejemplo.com',    'Universidad del Estado',   'Coordinadora de Proyectos'),
-  ('0987654321', 'Luis Ernesto Vega Campos',    'luis.vega@ejemplo.com',     'Instituto Tecnológico',    'Técnico en Sistemas'),
-  ('1122334455', 'Patricia Gómez Ríos',         'patricia.gomez@ejemplo.com', 'Secretaría de Educación', 'Jefa de Departamento'),
-  ('5544332211', 'Miguel Ángel Herrera Soto',   'miguel.herrera@ejemplo.com', 'Gobierno Municipal',      'Analista Administrativo'),
-  ('6677889900', 'Valeria Montes de Oca Díaz',  'valeria.montes@ejemplo.com', 'Empresa Privada S.A.',    'Gerente de Recursos Humanos');
+  ('Ana Sofía Torres Medina',     'ana.torres@ejemplo.com',    'Universidad del Estado',   'Coordinadora de Proyectos'),
+  ('Luis Ernesto Vega Campos',    'luis.vega@ejemplo.com',     'Instituto Tecnológico',    'Técnico en Sistemas'),
+  ('Patricia Gómez Ríos',         'patricia.gomez@ejemplo.com', 'Secretaría de Educación', 'Jefa de Departamento'),
+  ('Miguel Ángel Herrera Soto',   'miguel.herrera@ejemplo.com', 'Gobierno Municipal',      'Analista Administrativo'),
+  ('Valeria Montes de Oca Díaz',  'valeria.montes@ejemplo.com', 'Empresa Privada S.A.',    'Gerente de Recursos Humanos');
 
 
 -- ============================================================

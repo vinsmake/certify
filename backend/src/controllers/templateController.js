@@ -107,7 +107,6 @@ const previewTemplate = async (req, res, next) => {
     // Datos de ejemplo para preview (sincronizados con TemplatePreviewPanel.jsx)
     const sampleData = {
       participant_name: 'Enrique Emmanuel Plascencia Soltero',
-      document_id: '4815162342',
       course_name: 'Diplomado en Gestion de Proyectos',
       course_type: 'Diplomado',
       course_duration: '120',

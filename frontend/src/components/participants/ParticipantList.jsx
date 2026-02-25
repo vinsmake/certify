@@ -6,7 +6,6 @@ import Button from '../ui/Button';
 
 const ParticipantList = ({ participants, loading, onView, onEdit, onDelete }) => {
   const columns = [
-    { key: 'document_id', label: 'Cedula' },
     { key: 'full_name',   label: 'Nombre', render: (v, row) => (
       <button onClick={() => onView(row)} style={styles.linkBtn}>{v}</button>
     )},

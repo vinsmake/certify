@@ -18,7 +18,6 @@ const SAMPLE_DATA = {
 
   // Participante
   participant_name: 'Enrique Emmanuel Plascencia Soltero',
-  document_id: '4815162342',
 
   // Curso
   course_name: 'Diplomado en Gestion de Proyectos',

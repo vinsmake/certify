@@ -38,11 +38,9 @@ router.get(
 );
 
 // POST / - crear participante
-// 9.11 - validaciones: document_id requerido y unico, nombre requerido
 router.post(
   '/',
   [
-    body('document_id').notEmpty().withMessage('El documento de identidad es requerido'),
     body('full_name').notEmpty().withMessage('El nombre completo es requerido'),
     body('email').optional().isEmail().withMessage('Email invalido'),
   ],
@@ -55,7 +53,6 @@ router.put(
   '/:id',
   [
     param('id').isInt().withMessage('ID invalido'),
-    body('document_id').optional().notEmpty().withMessage('El documento no puede estar vacio'),
     body('full_name').optional().notEmpty().withMessage('El nombre no puede estar vacio'),
     body('email').optional().isEmail().withMessage('Email invalido'),
   ],

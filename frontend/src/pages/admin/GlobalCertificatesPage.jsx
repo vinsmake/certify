@@ -18,7 +18,6 @@ const formatDate = (d) =>
 const columns = [
   { key: 'uuid',             label: 'UUID',         render: (v) => <span style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>{v?.substring(0,8)}...</span> },
   { key: 'participant_name', label: 'Participante'  },
-  { key: 'document_id',      label: 'Cedula'        },
   { key: 'course_name',      label: 'Curso',        render: (v) => v || '—' },
   { key: 'dependency_name',  label: 'Dependencia',  render: (v) => v || '—' },
   { key: 'template_name',    label: 'Plantilla',    render: (v) => v || '—' },

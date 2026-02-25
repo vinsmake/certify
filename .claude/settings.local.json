@@ -94,7 +94,8 @@
       "Bash(__NEW_LINE_83e0443a93757538__ echo \"=== El token expiró, sacando uno nuevo ===\")",
       "Bash(docker cp:*)",
       "Bash(grep:*)",
-      "Bash(docker run:*)"
+      "Bash(docker run:*)",
+      "Bash(npm run remake)"
     ]
   }
 }

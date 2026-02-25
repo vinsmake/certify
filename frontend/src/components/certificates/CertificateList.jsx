@@ -20,7 +20,6 @@ const CertificateList = ({ certificates, loading, onView, onDownload }) => {
       ),
     },
     { key: 'participant_name', label: 'Participante' },
-    { key: 'document_id',     label: 'Cedula' },
     { key: 'course_name',     label: 'Curso',       render: (v) => v || '—' },
     { key: 'dependency_name', label: 'Dependencia', render: (v) => v || '—' },
     { key: 'issue_date',      label: 'Fecha emision', render: (v) => formatDate(v) },

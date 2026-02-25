@@ -29,7 +29,8 @@ const Certificate = {
     const query = `
       SELECT c.id, c.uuid, c.issue_date, c.status, c.pdf_path,
              c.revocation_reason, c.revoked_at, c.created_at,
-             p.full_name AS participant_name, p.document_id,
+             c.participant_id,
+             p.full_name AS participant_name,
              co.name AS course_name, co.type AS course_type,
              co.dependency_id,
              d.name AS dependency_name,
@@ -72,7 +73,7 @@ const Certificate = {
   async findById(id) {
     const { rows } = await pool.query(
       `SELECT c.*,
-              p.full_name AS participant_name, p.document_id, p.email AS participant_email,
+              p.full_name AS participant_name, p.email AS participant_email,
               p.organization, p.position,
               co.name AS course_name, co.type AS course_type, co.duration_hours,
               co.instructor, co.start_date, co.end_date, co.dependency_id,
@@ -97,7 +98,7 @@ const Certificate = {
   async findByUuid(uuid) {
     const { rows } = await pool.query(
       `SELECT c.*,
-              p.full_name AS participant_name, p.document_id, p.email AS participant_email,
+              p.full_name AS participant_name, p.email AS participant_email,
               p.organization, p.position,
               co.name AS course_name, co.type AS course_type, co.duration_hours,
               co.instructor, co.start_date, co.end_date, co.dependency_id,

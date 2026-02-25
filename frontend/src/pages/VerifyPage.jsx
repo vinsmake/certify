@@ -159,7 +159,6 @@ const VerifyPage = () => {
           {/* 27.09 - Datos del participante */}
           <SectionCard title="Participante">
             <InfoRow label="Nombre"       value={cert.participant?.full_name} />
-            <InfoRow label="Cedula"       value={cert.participant?.document_id} />
             <InfoRow label="Organizacion" value={cert.participant?.organization} />
             <InfoRow label="Cargo"        value={cert.participant?.position} />
           </SectionCard>

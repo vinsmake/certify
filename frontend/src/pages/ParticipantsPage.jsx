@@ -114,7 +114,7 @@ const ParticipantsPage = () => {
 
       {/* 24.04 - Busqueda */}
       <div style={styles.filters}>
-        <SearchBar onSearch={handleSearch} placeholder="Buscar por nombre o cedula..." />
+        <SearchBar onSearch={handleSearch} placeholder="Buscar por nombre..." />
       </div>
 
       <ParticipantList
@@ -177,7 +177,7 @@ const ParticipantsPage = () => {
         }
       >
         <p>
-          Estas a punto de eliminar a <strong>{deletePart?.full_name}</strong> (cedula: {deletePart?.document_id}).
+          Estas a punto de eliminar a <strong>{deletePart?.full_name}</strong>.
           Esta accion no se puede deshacer.
         </p>
       </Modal>

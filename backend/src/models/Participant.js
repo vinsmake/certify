@@ -8,11 +8,11 @@ const Participant = {
     if (search) {
       const searchPattern = `%${search}%`;
       query = `SELECT * FROM participants
-               WHERE full_name ILIKE $1 OR document_id ILIKE $1
+               WHERE full_name ILIKE $1
                ORDER BY full_name ASC
                LIMIT $2 OFFSET $3`;
       countQuery = `SELECT COUNT(*) FROM participants
-                    WHERE full_name ILIKE $1 OR document_id ILIKE $1`;
+                    WHERE full_name ILIKE $1`;
       params = [searchPattern, limit, offset];
       countParams = [searchPattern];
     } else {
@@ -45,36 +45,27 @@ const Participant = {
     return rows[0] || null;
   },
 
-  async findByDocumentId(document_id) {
+  async create({ full_name, email, organization, position }) {
     const { rows } = await pool.query(
-      'SELECT * FROM participants WHERE document_id = $1',
-      [document_id]
-    );
-    return rows[0] || null;
-  },
-
-  async create({ document_id, full_name, email, organization, position }) {
-    const { rows } = await pool.query(
-      `INSERT INTO participants (document_id, full_name, email, organization, position)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO participants (full_name, email, organization, position)
+       VALUES ($1, $2, $3, $4)
        RETURNING *`,
-      [document_id, full_name, email || null, organization || null, position || null]
+      [full_name, email || null, organization || null, position || null]
     );
     return rows[0];
   },
 
-  async update(id, { document_id, full_name, email, organization, position }) {
+  async update(id, { full_name, email, organization, position }) {
     const { rows } = await pool.query(
       `UPDATE participants
-       SET document_id  = COALESCE($2, document_id),
-           full_name    = COALESCE($3, full_name),
-           email        = COALESCE($4, email),
-           organization = COALESCE($5, organization),
-           position     = COALESCE($6, position),
+       SET full_name    = COALESCE($2, full_name),
+           email        = COALESCE($3, email),
+           organization = COALESCE($4, organization),
+           position     = COALESCE($5, position),
            updated_at   = NOW()
        WHERE id = $1
        RETURNING *`,
-      [id, document_id, full_name, email, organization, position]
+      [id, full_name, email, organization, position]
     );
     return rows[0] || null;
   },

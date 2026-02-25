@@ -68,13 +68,13 @@ const EmitCertificatePage = () => {
       certificateService.getCertificates({ course_id: courseId, status: 'valid', limit: 500 }),
     ])
       .then(([parts, certs]) => {
-        // IDs de participantes ya certificados (por document_id)
-        const certifiedDocs = new Set((certs.data || []).map((c) => c.document_id));
+        // IDs de participantes ya certificados
+        const certifiedIds = new Set((certs.data || []).map((c) => c.participant_id));
 
         // Solo los que tienen completed y no tienen certificado valido aun
         const partsList = Array.isArray(parts) ? parts : (parts.participants || []);
         const eligibleParts = partsList.filter(
-          (p) => p.attendance_status === 'completed' && !certifiedDocs.has(p.document_id)
+          (p) => p.attendance_status === 'completed' && !certifiedIds.has(p.participant_id || p.id)
         );
         setEligible(eligibleParts);
       })
@@ -284,7 +284,6 @@ const EmitCertificatePage = () => {
                   <thead>
                     <tr style={styles.thead}>
                       <th style={{ ...styles.th, width: '40px' }}></th>
-                      <th style={styles.th}>Cedula</th>
                       <th style={styles.th}>Nombre</th>
                       <th style={styles.th}>Organizacion</th>
                       <th style={styles.th}>Estado</th>
@@ -308,7 +307,6 @@ const EmitCertificatePage = () => {
                               style={styles.checkbox}
                             />
                           </td>
-                          <td style={styles.td}>{p.document_id}</td>
                           <td style={styles.td}>{p.full_name}</td>
                           <td style={styles.td}>{p.organization || '—'}</td>
                           <td style={styles.td}><Badge status={p.attendance_status} /></td>

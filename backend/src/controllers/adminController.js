@@ -106,7 +106,7 @@ const listAdminCertificates = async (req, res, next) => {
 
     const query = `
       SELECT c.id, c.uuid, c.issue_date, c.status, c.revocation_reason, c.revoked_at, c.created_at,
-             p.full_name AS participant_name, p.document_id,
+             p.full_name AS participant_name,
              co.name AS course_name, co.type AS course_type,
              d.name AS dependency_name,
              ct.name AS template_name,

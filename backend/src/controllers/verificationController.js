@@ -28,7 +28,6 @@ const verifyCertificate = async (req, res, next) => {
         }),
         participant: {
           full_name: cert.participant_name,
-          document_id: cert.document_id,
           organization: cert.organization || null,
           position: cert.position || null,
         },

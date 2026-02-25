@@ -171,7 +171,6 @@ const buildCertificateHtml = async (templateId, data) => {
   const variables = {
     // Participante
     participant_name:         participant.full_name || '',
-    document_id:              participant.document_id || '',
 
     // Curso
     course_name:              course.name || '',

@@ -4,7 +4,7 @@ const CourseParticipant = {
   async findByCourse(courseId) {
     const { rows } = await pool.query(
       `SELECT cp.id, cp.enrollment_date, cp.attendance_status,
-              p.id AS participant_id, p.document_id, p.full_name, p.email,
+              p.id AS participant_id, p.full_name, p.email,
               p.organization, p.position
        FROM course_participants cp
        JOIN participants p ON cp.participant_id = p.id

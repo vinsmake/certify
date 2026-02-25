@@ -25,7 +25,6 @@ const ParticipantDetail = ({ participant, onClose }) => {
       <div style={styles.header}>
         <div>
           <h2 style={styles.title}>{participant.full_name}</h2>
-          <p style={styles.meta}>Cedula: {participant.document_id}</p>
           {participant.email        && <p style={styles.meta}>Correo: {participant.email}</p>}
           {participant.organization && <p style={styles.meta}>Organizacion: {participant.organization}</p>}
           {participant.position     && <p style={styles.meta}>Cargo: {participant.position}</p>}

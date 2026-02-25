@@ -5,11 +5,10 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Alert from '../ui/Alert';
 
-const EMPTY = { document_id: '', full_name: '', email: '', organization: '', position: '' };
+const EMPTY = { full_name: '', email: '', organization: '', position: '' };
 
 const ParticipantForm = ({ initial = null, onSubmit, onCancel, loading = false, error = '' }) => {
   const [form,   setForm]   = useState(initial ? {
-    document_id:  initial.document_id  || '',
     full_name:    initial.full_name    || '',
     email:        initial.email        || '',
     organization: initial.organization || '',
@@ -24,7 +23,6 @@ const ParticipantForm = ({ initial = null, onSubmit, onCancel, loading = false, 
   // 24.06 - Validaciones
   const validate = () => {
     const e = {};
-    if (!form.document_id.trim()) e.document_id = 'La cedula es requerida';
     if (!form.full_name.trim())   e.full_name   = 'El nombre es requerido';
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       e.email = 'El correo no es valido';
@@ -37,7 +35,6 @@ const ParticipantForm = ({ initial = null, onSubmit, onCancel, loading = false, 
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setErrors({});
     onSubmit({
-      document_id:  form.document_id.trim(),
       full_name:    form.full_name.trim(),
       email:        form.email.trim()        || null,
       organization: form.organization.trim() || null,
@@ -49,26 +46,14 @@ const ParticipantForm = ({ initial = null, onSubmit, onCancel, loading = false, 
     <form onSubmit={handleSubmit} style={styles.form}>
       {error && <Alert type="error" message={error} />}
 
-      <div style={styles.row}>
-        <Input
-          label="Cedula / Documento"
-          value={form.document_id}
-          onChange={set('document_id')}
-          required
-          error={errors.document_id}
-          placeholder="Ej: 1234567890"
-          style={{ flex: 1 }}
-        />
-        <Input
-          label="Nombre completo"
-          value={form.full_name}
-          onChange={set('full_name')}
-          required
-          error={errors.full_name}
-          placeholder="Ej: Juan Perez"
-          style={{ flex: 2 }}
-        />
-      </div>
+      <Input
+        label="Nombre completo"
+        value={form.full_name}
+        onChange={set('full_name')}
+        required
+        error={errors.full_name}
+        placeholder="Ej: Juan Perez"
+      />
 
       <Input
         label="Correo electronico"

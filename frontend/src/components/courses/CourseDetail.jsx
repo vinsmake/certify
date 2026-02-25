@@ -177,7 +177,6 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
               <thead>
                 <tr style={styles.thead}>
                   <th style={styles.th}>Nombre</th>
-                  <th style={styles.th}>Cedula</th>
                   <th style={styles.th}>Estado</th>
                 </tr>
               </thead>
@@ -185,7 +184,6 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
                 {participants.map((p) => (
                   <tr key={p.participant_id || p.id} style={styles.tr}>
                     <td style={styles.td}>{p.full_name}</td>
-                    <td style={styles.td}>{p.document_id}</td>
                     <td style={styles.td}>
                       <select
                         value={p.attendance_status}
@@ -211,7 +209,7 @@ const CourseDetail = ({ course, dependencies, allDependencies, allParticipants, 
             <Select
               value={enrollId}
               onChange={(e) => setEnrollId(e.target.value)}
-              options={availableForEnroll.map((p) => ({ value: p.id, label: `${p.full_name} (${p.document_id})` }))}
+              options={availableForEnroll.map((p) => ({ value: p.id, label: p.full_name }))}
               placeholder="Inscribir participante..."
               style={{ flex: 1, marginBottom: 0 }}
             />

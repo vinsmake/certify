@@ -78,7 +78,6 @@ CREATE TABLE course_dependencies (
 -- 2.07 - Tabla participants
 CREATE TABLE participants (
     id SERIAL PRIMARY KEY,
-    document_id VARCHAR(50) UNIQUE NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255),
     organization VARCHAR(255),
@@ -143,7 +142,6 @@ CREATE TABLE course_participants (
 -- =============================================
 
 CREATE INDEX idx_certificates_uuid ON certificates(uuid);
-CREATE INDEX idx_participants_document_id ON participants(document_id);
 CREATE INDEX idx_certificates_status ON certificates(status);
 CREATE INDEX idx_courses_dependency_id ON courses(dependency_id);
 CREATE INDEX idx_users_dependency_id ON users(dependency_id);
@@ -295,12 +293,6 @@ VALUES (
     margin-bottom: 15px;
   }
 
-  .document {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 15px;
-  }
-
   .description {
     font-size: 14px;
     color: #333;
@@ -409,7 +401,6 @@ VALUES (
     <div class="body">
       <div class="certify-text">Se certifica que</div>
       <div class="participant-name">{{participant_name}}</div>
-      <div class="document">C.I. {{document_id}}</div>
       <div class="description">
         Ha completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
         con una duracion de <strong>{{course_duration}} horas</strong>.
@@ -591,8 +582,6 @@ VALUES (
     margin-bottom: 12px;
   }
 
-  .document { font-size: 11px; color: #999; margin-bottom: 12px; }
-
   .description {
     font-size: 14px;
     color: #444;
@@ -675,7 +664,6 @@ VALUES (
     <div class="body">
       <div class="certify-text">Otorga el presente {{certificate_noun_lower}} a</div>
       <div class="participant-name">{{participant_name}}</div>
-      <div class="document">C.I. {{document_id}}</div>
       <div class="description">
         Por haber completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
         con una duracion de <strong>{{course_duration}} horas</strong>.
@@ -836,13 +824,6 @@ VALUES (
     margin-bottom: 6px;
   }
 
-  .document {
-    font-size: 12px;
-    color: #aaa;
-    font-weight: 300;
-    margin-bottom: 20px;
-  }
-
   .description {
     font-size: 14px;
     color: #555;
@@ -936,7 +917,6 @@ VALUES (
         <div class="title">{{certificate_noun}} de completitud</div>
         <div class="main-title">{{certificate_noun}}</div>
         <div class="participant-name">{{participant_name}}</div>
-        <div class="document">C.I. {{document_id}}</div>
         <div class="description">
           Ha completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
           con una duracion de <strong>{{course_duration}} horas</strong>.

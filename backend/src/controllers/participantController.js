@@ -31,14 +31,8 @@ const getParticipant = async (req, res, next) => {
 // 9.04 - POST / - crear participante
 const createParticipant = async (req, res, next) => {
   try {
-    const { document_id, full_name, email, organization, position } = req.body;
-
-    const existing = await Participant.findByDocumentId(document_id);
-    if (existing) {
-      return res.status(409).json({ error: 'Ya existe un participante con ese documento' });
-    }
-
-    const participant = await Participant.create({ document_id, full_name, email, organization, position });
+    const { full_name, email, organization, position } = req.body;
+    const participant = await Participant.create({ full_name, email, organization, position });
     res.status(201).json(participant);
   } catch (err) {
     next(err);
@@ -53,20 +47,8 @@ const updateParticipant = async (req, res, next) => {
       return res.status(404).json({ error: 'Participante no encontrado' });
     }
 
-    const { document_id, full_name, email, organization, position } = req.body;
-
-    // Si se cambia el document_id, verificar que no exista ya en otro registro
-    if (document_id && document_id !== participant.document_id) {
-      const existing = await Participant.findByDocumentId(document_id);
-      if (existing) {
-        return res.status(409).json({ error: 'Ya existe un participante con ese documento' });
-      }
-    }
-
-    const updated = await Participant.update(req.params.id, {
-      document_id, full_name, email, organization, position,
-    });
-
+    const { full_name, email, organization, position } = req.body;
+    const updated = await Participant.update(req.params.id, { full_name, email, organization, position });
     res.json(updated);
   } catch (err) {
     next(err);
