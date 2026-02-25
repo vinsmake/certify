@@ -43,7 +43,7 @@ const ParticipantsPage = () => {
 
   useEffect(() => {
     if (user?.role === 'admin') {
-      dependencyService.getAll().then((data) => setDeps(data || [])).catch(() => {});
+      dependencyService.getActive().then((data) => setDeps(data || [])).catch(() => {});
     }
   }, [user?.role]);
 

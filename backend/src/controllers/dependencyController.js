@@ -2,7 +2,8 @@ const Dependency = require('../models/Dependency');
 
 const listDependencies = async (req, res, next) => {
   try {
-    const dependencies = await Dependency.findAll();
+    const active_only = req.query.active_only === 'true';
+    const dependencies = await Dependency.findAll({ active_only });
     res.json(dependencies);
   } catch (err) {
     next(err);

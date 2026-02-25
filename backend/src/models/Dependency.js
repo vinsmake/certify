@@ -1,10 +1,11 @@
 const pool = require('../config/database');
 
 const Dependency = {
-  async findAll() {
-    const { rows } = await pool.query(
-      'SELECT * FROM dependencies ORDER BY name ASC'
-    );
+  async findAll({ active_only = false } = {}) {
+    const sql = active_only
+      ? 'SELECT * FROM dependencies WHERE is_active = true ORDER BY name ASC'
+      : 'SELECT * FROM dependencies ORDER BY name ASC';
+    const { rows } = await pool.query(sql);
     return rows;
   },
 

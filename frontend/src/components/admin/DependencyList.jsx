@@ -7,7 +7,7 @@ import Button from '../ui/Button';
 
 const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') ?? 'http://localhost:3000';
 
-const DependencyList = ({ dependencies, loading, onEdit, onDeactivate, onLogoUpload, onSignatureUpload, onSignatureDelete }) => {
+const DependencyList = ({ dependencies, loading, onEdit, onDeactivate, onActivate, onLogoUpload, onSignatureUpload, onSignatureDelete }) => {
   const logoInputRefs = useRef({});
   const sigInputRefs  = useRef({});
 
@@ -61,8 +61,10 @@ const DependencyList = ({ dependencies, loading, onEdit, onDeactivate, onLogoUpl
           {row.signature_path && (
             <Button size="sm" variant="danger" onClick={() => onSignatureDelete(row.id)}>Quitar firma</Button>
           )}
-          {row.is_active && (
+          {row.is_active ? (
             <Button size="sm" variant="danger" onClick={() => onDeactivate(row)}>Desactivar</Button>
+          ) : (
+            <Button size="sm" variant="secondary" onClick={() => onActivate(row.id)}>Activar</Button>
           )}
 
           {/* Input oculto para subir logo */}

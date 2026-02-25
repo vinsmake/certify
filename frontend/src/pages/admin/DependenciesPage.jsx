@@ -55,6 +55,16 @@ const DependenciesPage = () => {
     } finally { setFormLoading(false); }
   };
 
+  const handleActivate = async (id) => {
+    try {
+      await dependencyService.update(id, { is_active: true });
+      setSuccessMsg('Dependencia activada correctamente.');
+      load();
+    } catch {
+      setErrorMsg('Error al activar la dependencia.');
+    }
+  };
+
   const handleDeactivateConfirm = async () => {
     setDeactLoading(true);
     try {
@@ -113,6 +123,7 @@ const DependenciesPage = () => {
         loading={loading}
         onEdit={handleEdit}
         onDeactivate={setDeactivateDep}
+        onActivate={handleActivate}
         onLogoUpload={handleLogoUpload}
         onSignatureUpload={handleSignatureUpload}
         onSignatureDelete={handleSignatureDelete}

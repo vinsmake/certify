@@ -6,6 +6,9 @@ const dependencyService = {
   getAll: () =>
     api.get('/dependencies').then((r) => r.data),
 
+  getActive: () =>
+    api.get('/dependencies', { params: { active_only: 'true' } }).then((r) => r.data),
+
   create: (data) =>
     api.post('/dependencies', data).then((r) => r.data),
 

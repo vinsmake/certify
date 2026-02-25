@@ -65,7 +65,7 @@ const CoursesPage = () => {
 
   // Cargar datos auxiliares para CourseDetail
   useEffect(() => {
-    api.get('/dependencies', { params: { limit: 100 } }).then((r) => {
+    api.get('/dependencies', { params: { active_only: 'true' } }).then((r) => {
       const deps = r.data;
       setAllDeps(Array.isArray(deps) ? deps : deps.data || []);
     }).catch(() => {});
