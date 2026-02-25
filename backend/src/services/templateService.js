@@ -192,8 +192,8 @@ const buildCertificateHtml = async (templateId, data) => {
     dependency_logos_html:    dependencyLogosHtml,
 
     // Branding
-    primary_color:            brandingVersion?.primary_color   || '#1a365d',
-    secondary_color:          brandingVersion?.secondary_color || '#2b6cb0',
+    primary_color:            brandingVersion?.primary_color   || '#61859D',
+    secondary_color:          brandingVersion?.secondary_color || '#EA8215',
     font_family:              brandingVersion?.font_family     || 'Roboto',
     organization_name:        brandingVersion?.organization_name || '',
 

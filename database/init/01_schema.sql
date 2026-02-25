@@ -169,8 +169,8 @@ INSERT INTO branding_versions (version_label, logo_path, primary_color, secondar
 VALUES (
     'v1',
     '/storage/logos/branding/default_logo.png',
-    '#1a365d',
-    '#2b6cb0',
+    '#61859D',
+    '#EA8215',
     'Roboto',
     'Organizacion',
     true,
