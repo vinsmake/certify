@@ -14,8 +14,12 @@ const listCourses = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
+    const search = req.query.search || '';
+    const type   = req.query.type   || '';
     const result = await Course.findAll({
       dependency_id: req.dependencyFilter,
+      search,
+      type,
       page,
       limit,
     });

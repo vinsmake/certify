@@ -1,39 +1,48 @@
 const pool = require('../config/database');
 
+const DEPS_SUBQUERY = `
+  COALESCE(
+    (SELECT json_agg(json_build_object('id', d2.id, 'name', d2.name) ORDER BY cd2.display_order)
+     FROM course_dependencies cd2
+     JOIN dependencies d2 ON d2.id = cd2.dependency_id
+     WHERE cd2.course_id = c.id),
+    '[]'::json
+  ) AS dependencies`;
+
 const Course = {
-  async findAll({ dependency_id, page = 1, limit = 20 }) {
+  async findAll({ dependency_id, search, type, page = 1, limit = 20 }) {
     const offset = (page - 1) * limit;
-    let query, countQuery, params, countParams;
+    const conditions = [];
+    const params = [];
+    let idx = 1;
 
     if (dependency_id) {
-      query = `SELECT c.*, d.name AS dependency_name, u.full_name AS created_by_name
-               FROM courses c
-               LEFT JOIN dependencies d ON c.dependency_id = d.id
-               LEFT JOIN users u ON c.created_by = u.id
-               WHERE EXISTS (
-                 SELECT 1 FROM course_dependencies cd
-                 WHERE cd.course_id = c.id AND cd.dependency_id = $1
-               )
-               ORDER BY c.created_at DESC
-               LIMIT $2 OFFSET $3`;
-      countQuery = `SELECT COUNT(*) FROM courses c
-                    WHERE EXISTS (
-                      SELECT 1 FROM course_dependencies cd
-                      WHERE cd.course_id = c.id AND cd.dependency_id = $1
-                    )`;
-      params = [dependency_id, limit, offset];
-      countParams = [dependency_id];
-    } else {
-      query = `SELECT c.*, d.name AS dependency_name, u.full_name AS created_by_name
-               FROM courses c
-               LEFT JOIN dependencies d ON c.dependency_id = d.id
-               LEFT JOIN users u ON c.created_by = u.id
-               ORDER BY c.created_at DESC
-               LIMIT $1 OFFSET $2`;
-      countQuery = 'SELECT COUNT(*) FROM courses';
-      params = [limit, offset];
-      countParams = [];
+      conditions.push(`EXISTS (SELECT 1 FROM course_dependencies cd WHERE cd.course_id = c.id AND cd.dependency_id = $${idx++})`);
+      params.push(dependency_id);
     }
+    if (search) {
+      conditions.push(`c.name ILIKE $${idx++}`);
+      params.push(`%${search}%`);
+    }
+    if (type) {
+      conditions.push(`c.type = $${idx++}`);
+      params.push(type);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const query = `
+      SELECT c.*, ${DEPS_SUBQUERY}, u.full_name AS created_by_name
+      FROM courses c
+      LEFT JOIN users u ON c.created_by = u.id
+      ${where}
+      ORDER BY c.created_at DESC
+      LIMIT $${idx++} OFFSET $${idx}`;
+
+    const countQuery = `SELECT COUNT(*) FROM courses c ${where}`;
+
+    params.push(limit, offset);
+    const countParams = params.slice(0, conditions.length);
 
     const [{ rows }, countResult] = await Promise.all([
       pool.query(query, params),
@@ -50,9 +59,8 @@ const Course = {
 
   async findById(id) {
     const { rows } = await pool.query(
-      `SELECT c.*, d.name AS dependency_name, u.full_name AS created_by_name
+      `SELECT c.*, ${DEPS_SUBQUERY}, u.full_name AS created_by_name
        FROM courses c
-       LEFT JOIN dependencies d ON c.dependency_id = d.id
        LEFT JOIN users u ON c.created_by = u.id
        WHERE c.id = $1`,
       [id]

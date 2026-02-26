@@ -20,7 +20,15 @@ const CourseList = ({ courses, loading, onView, onEdit, onDelete }) => {
     { key: 'type', label: 'Tipo', render: (v) => (
       <Badge status={v} label={TYPE_LABELS[v] || v} />
     )},
-    { key: 'dependency_name', label: 'Dependencia', render: (v) => v || '—' },
+    { key: 'dependencies', label: 'Dependencias', render: (v) => {
+      const list = Array.isArray(v) ? v : [];
+      if (list.length === 0) return <span style={styles.noData}>—</span>;
+      return (
+        <div style={styles.depChips}>
+          {list.map((d) => <span key={d.id} style={styles.depChip}>{d.name}</span>)}
+        </div>
+      );
+    }},
     { key: 'duration_hours',  label: 'Horas',       render: (v) => v ? `${v}h` : '—' },
     { key: 'instructor',      label: 'Instructor',   render: (v) => v || '—' },
     { key: 'start_date',      label: 'Inicio',       render: (v) => formatDate(v) },
@@ -49,7 +57,15 @@ const styles = {
     color: 'var(--color-primary)', cursor: 'pointer',
     fontSize: '0.875rem', fontWeight: '500', textAlign: 'left',
   },
-  actions: { display: 'flex', gap: '0.375rem' },
+  actions:  { display: 'flex', gap: '0.375rem' },
+  depChips: { display: 'flex', flexWrap: 'wrap', gap: '0.25rem' },
+  depChip:  {
+    display: 'inline-block', padding: '0.125rem 0.5rem',
+    borderRadius: '999px', fontSize: '0.75rem', fontWeight: '500',
+    backgroundColor: 'var(--color-surface-hover)',
+    color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)',
+  },
+  noData: { color: 'var(--color-text-muted)', fontSize: '0.875rem' },
 };
 
 export default CourseList;
