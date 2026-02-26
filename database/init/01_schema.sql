@@ -85,6 +85,26 @@ CREATE TABLE participants (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- 2.07b - Tabla tags (etiquetas para participantes)
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    logo_path VARCHAR(500),
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 2.07c - Tabla participant_tags (relacion muchos a muchos entre participantes y tags)
+CREATE TABLE participant_tags (
+    id SERIAL PRIMARY KEY,
+    participant_id INTEGER REFERENCES participants(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
+    UNIQUE (participant_id, tag_id)
+);
+
 -- 2.08 - Tabla branding_versions
 CREATE TABLE branding_versions (
     id SERIAL PRIMARY KEY,
@@ -144,6 +164,8 @@ CREATE INDEX idx_certificates_uuid ON certificates(uuid);
 CREATE INDEX idx_certificates_status ON certificates(status);
 CREATE INDEX idx_courses_dependency_id ON courses(dependency_id);
 CREATE INDEX idx_users_dependency_id ON users(dependency_id);
+CREATE INDEX idx_participant_tags_participant_id ON participant_tags(participant_id);
+CREATE INDEX idx_participant_tags_tag_id ON participant_tags(tag_id);
 
 -- =============================================
 -- DATOS INICIALES (SEED)

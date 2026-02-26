@@ -10,6 +10,17 @@ const ParticipantList = ({ participants, loading, onView, onEdit, onDelete }) =>
       <button onClick={() => onView(row)} style={styles.linkBtn}>{v}</button>
     )},
     { key: 'dependency_name', label: 'Dependencia', render: (v) => v || <span style={styles.guestBadge}>Invitado</span> },
+    { key: 'tags', label: 'Tags', render: (v) => {
+      const tagList = Array.isArray(v) ? v : [];
+      if (tagList.length === 0) return <span style={styles.noTags}>—</span>;
+      return (
+        <div style={styles.tagChips}>
+          {tagList.map((t) => (
+            <span key={t.id} style={styles.tagChip}>{t.name}</span>
+          ))}
+        </div>
+      );
+    }},
     { key: 'email',           label: 'Correo',      render: (v) => v || '—' },
     { key: 'actions', label: 'Acciones', render: (_, row) => (
       <div style={styles.actions}>
@@ -42,6 +53,13 @@ const styles = {
     backgroundColor: 'var(--color-surface-hover)',
     color: 'var(--color-text-muted)', border: '1px solid var(--color-border)',
   },
+  tagChips: { display: 'flex', flexWrap: 'wrap', gap: '0.25rem' },
+  tagChip: {
+    display: 'inline-block', padding: '0.125rem 0.5rem',
+    borderRadius: '999px', fontSize: '0.75rem', fontWeight: '500',
+    backgroundColor: 'var(--color-primary)', color: '#fff',
+  },
+  noTags: { color: 'var(--color-text-muted)', fontSize: '0.875rem' },
 };
 
 export default ParticipantList;

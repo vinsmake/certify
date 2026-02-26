@@ -15,6 +15,7 @@ const MENU_COMMON = [
 
 const MENU_ADMIN_ONLY = [
   { label: 'Dependencias',        path: '/admin/dependencias' },
+  { label: 'Tags',                path: '/admin/tags' },
   { label: 'Plantillas',          path: '/admin/plantillas' },
   { label: 'Usuarios',            path: '/admin/usuarios' },
   { label: 'Eventos globales',    path: '/admin/eventos' },

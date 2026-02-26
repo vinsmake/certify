@@ -20,13 +20,15 @@ const router = Router();
 router.use(authMiddleware);
 router.use(dependencyMiddleware);
 
-// GET / - listar participantes con paginacion y busqueda
+// GET / - listar participantes con paginacion, busqueda y filtros
 router.get(
   '/',
   [
     query('page').optional().isInt({ min: 1 }).withMessage('page debe ser un entero positivo'),
     query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('limit debe ser entre 1 y 100'),
     query('search').optional().isString().trim(),
+    query('course_id').optional().isInt().withMessage('course_id debe ser un entero'),
+    query('tag_id').optional().isInt().withMessage('tag_id debe ser un entero'),
   ],
   validateRequest,
   listParticipants
@@ -47,6 +49,7 @@ router.post(
     body('full_name').notEmpty().withMessage('El nombre completo es requerido'),
     body('email').optional().isEmail().withMessage('Email invalido'),
     body('dependency_id').optional({ nullable: true }).isInt().withMessage('dependency_id debe ser un entero'),
+    body('tag_ids').optional().isArray().withMessage('tag_ids debe ser un arreglo'),
   ],
   validateRequest,
   createParticipant

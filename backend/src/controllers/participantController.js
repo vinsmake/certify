@@ -1,18 +1,23 @@
 const Participant = require('../models/Participant');
+const Tag = require('../models/Tag');
 const pool = require('../config/database');
 
-// 9.02 - GET / - listar con paginacion y busqueda
+// 9.02 - GET / - listar con paginacion, busqueda y filtros de curso/tag
 const listParticipants = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const search = req.query.search || '';
+    const course_id = req.query.course_id ? parseInt(req.query.course_id) : null;
+    const tag_id = req.query.tag_id ? parseInt(req.query.tag_id) : null;
 
     const result = await Participant.findAll({
       page,
       limit,
       search,
       dependency_id: req.dependencyFilter,
+      course_id,
+      tag_id,
     });
     res.json(result);
   } catch (err) {
@@ -45,7 +50,7 @@ const getParticipant = async (req, res, next) => {
 // 9.04 - POST / - crear participante
 const createParticipant = async (req, res, next) => {
   try {
-    const { full_name, email } = req.body;
+    const { full_name, email, tag_ids } = req.body;
 
     // Dependencia: el rol 'dependencia' usa la suya; admin especifica en el body
     const dependency_id = req.user.role === 'dependencia'
@@ -53,7 +58,13 @@ const createParticipant = async (req, res, next) => {
       : (req.body.dependency_id || null);
 
     const participant = await Participant.create({ full_name, email, dependency_id });
-    res.status(201).json(participant);
+
+    if (tag_ids && tag_ids.length > 0) {
+      await Tag.setParticipantTags(participant.id, tag_ids);
+    }
+
+    const result = await Participant.findById(participant.id);
+    res.status(201).json(result);
   } catch (err) {
     next(err);
   }
@@ -70,13 +81,19 @@ const updateParticipant = async (req, res, next) => {
       return res.status(403).json({ error: 'Acceso denegado' });
     }
 
-    const { full_name, email } = req.body;
+    const { full_name, email, tag_ids } = req.body;
     const dependency_id = req.user.role === 'dependencia'
       ? req.user.dependency_id
       : (req.body.dependency_id !== undefined ? req.body.dependency_id : participant.dependency_id);
 
-    const updated = await Participant.update(req.params.id, { full_name, email, dependency_id });
-    res.json(updated);
+    await Participant.update(req.params.id, { full_name, email, dependency_id });
+
+    if (tag_ids !== undefined) {
+      await Tag.setParticipantTags(req.params.id, tag_ids || []);
+    }
+
+    const result = await Participant.findById(req.params.id);
+    res.json(result);
   } catch (err) {
     next(err);
   }

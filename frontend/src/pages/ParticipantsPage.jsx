@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import participantService from '../services/participantService';
 import dependencyService from '../services/dependencyService';
+import courseService from '../services/courseService';
+import tagService from '../services/tagService';
 import useAuth from '../hooks/useAuth';
 import ParticipantList from '../components/participants/ParticipantList';
 import ParticipantForm from '../components/participants/ParticipantForm';
@@ -12,6 +14,7 @@ import Pagination from '../components/ui/Pagination';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
 import Alert from '../components/ui/Alert';
+import Select from '../components/ui/Select';
 
 const ParticipantsPage = () => {
   const { user } = useAuth();
@@ -23,11 +26,16 @@ const ParticipantsPage = () => {
   const [page,          setPage]          = useState(1);
   const LIMIT = 20;
 
-  // Dependencias (solo necesarias para admin al crear/editar)
-  const [deps, setDeps] = useState([]);
+  // Dependencias, cursos y tags para formularios y filtros
+  const [deps,    setDeps]    = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [tags,    setTags]    = useState([]);
 
-  // 24.04 - Busqueda
-  const [search, setSearch] = useState('');
+  // 24.04 - Busqueda y filtros acumulativos
+  const [search,       setSearch]       = useState('');
+  const [filterDep,    setFilterDep]    = useState('');
+  const [filterCourse, setFilterCourse] = useState('');
+  const [filterTag,    setFilterTag]    = useState('');
 
   // Modales
   const [showForm,    setShowForm]    = useState(false);
@@ -42,22 +50,40 @@ const ParticipantsPage = () => {
   const [successMsg,    setSuccessMsg]    = useState('');
 
   useEffect(() => {
+    // Cargar datos para filtros y formularios
     if (user?.role === 'admin') {
       dependencyService.getActive().then((data) => setDeps(data || [])).catch(() => {});
     }
+    courseService.getCourses({ limit: 200 })
+      .then((data) => setCourses(data.data || data || []))
+      .catch(() => {});
+    tagService.getAll()
+      .then((data) => setTags(Array.isArray(data) ? data : []))
+      .catch(() => {});
   }, [user?.role]);
 
   const loadParticipants = useCallback(() => {
     setLoading(true);
-    participantService.getParticipants({ page, limit: LIMIT, search: search || undefined })
+    participantService.getParticipants({
+      page,
+      limit: LIMIT,
+      search:    search    || undefined,
+      course_id: filterCourse || undefined,
+      tag_id:    filterTag    || undefined,
+      // El filtro de dependencia solo aplica para admin (el backend lo maneja via dependencyFilter para otros roles)
+      ...(user?.role === 'admin' && filterDep ? { dependency_id: filterDep } : {}),
+    })
       .then((data) => { setParticipants(data.data || []); setTotal(data.total || 0); })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [page, search]);
+  }, [page, search, filterDep, filterCourse, filterTag, user?.role]);
 
   useEffect(() => { loadParticipants(); }, [loadParticipants]);
 
   const handleSearch = (val) => { setSearch(val); setPage(1); };
+  const handleFilterDep    = (e) => { setFilterDep(e.target.value);    setPage(1); };
+  const handleFilterCourse = (e) => { setFilterCourse(e.target.value); setPage(1); };
+  const handleFilterTag    = (e) => { setFilterTag(e.target.value);    setPage(1); };
 
   // 24.12 - Abrir detalle
   const handleView = (participant) => {
@@ -125,9 +151,45 @@ const ParticipantsPage = () => {
         />
       )}
 
-      {/* 24.04 - Busqueda */}
+      {/* 24.04 - Busqueda y filtros acumulativos */}
       <div style={styles.filters}>
         <SearchBar onSearch={handleSearch} placeholder="Buscar por nombre..." />
+
+        {user?.role === 'admin' && (
+          <Select
+            value={filterDep}
+            onChange={handleFilterDep}
+            options={(deps || []).map((d) => ({ value: d.id, label: d.name }))}
+            placeholder="Todas las dependencias"
+            style={styles.filterSelect}
+          />
+        )}
+
+        <Select
+          value={filterCourse}
+          onChange={handleFilterCourse}
+          options={(courses || []).map((c) => ({ value: c.id, label: c.name }))}
+          placeholder="Todos los cursos"
+          style={styles.filterSelect}
+        />
+
+        <Select
+          value={filterTag}
+          onChange={handleFilterTag}
+          options={(tags || []).map((t) => ({ value: t.id, label: t.name }))}
+          placeholder="Todos los tags"
+          style={styles.filterSelect}
+        />
+
+        {(filterDep || filterCourse || filterTag) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => { setFilterDep(''); setFilterCourse(''); setFilterTag(''); setPage(1); }}
+          >
+            Limpiar filtros
+          </Button>
+        )}
       </div>
 
       <ParticipantList
@@ -153,6 +215,7 @@ const ParticipantsPage = () => {
           loading={formLoading}
           error={formError}
           dependencies={deps}
+          tags={tags}
           userRole={user?.role}
         />
       </Modal>
@@ -172,6 +235,7 @@ const ParticipantsPage = () => {
             loading={formLoading}
             error={formError}
             dependencies={deps}
+            tags={tags}
             userRole={user?.role}
           />
         )}
@@ -218,9 +282,10 @@ const ParticipantsPage = () => {
 };
 
 const styles = {
-  topBar:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' },
-  title:   { fontSize: '1.5rem', fontWeight: '700', color: 'var(--color-text-primary)' },
-  filters: { display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' },
+  topBar:       { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' },
+  title:        { fontSize: '1.5rem', fontWeight: '700', color: 'var(--color-text-primary)' },
+  filters:      { display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' },
+  filterSelect: { minWidth: '180px' },
 };
 
 export default ParticipantsPage;

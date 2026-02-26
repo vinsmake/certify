@@ -21,6 +21,7 @@ import GlobalEventsPage from './pages/admin/GlobalEventsPage';
 import GlobalCertificatesPage from './pages/admin/GlobalCertificatesPage';
 import ActivityLogPage from './pages/admin/ActivityLogPage';
 import SettingsPage from './pages/SettingsPage';
+import TagsPage from './pages/admin/TagsPage';
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
                 <Route path="/admin/eventos"              element={<GlobalEventsPage />} />
                 <Route path="/admin/certificados-global"  element={<GlobalCertificatesPage />} />
                 <Route path="/admin/actividad"            element={<ActivityLogPage />} />
+                <Route path="/admin/tags"                 element={<TagsPage />} />
                 <Route path="/configuracion"              element={<SettingsPage />} />
               </Route>
             </Route>

@@ -3,12 +3,22 @@ const pool = require('../config/database');
 const BASE_SELECT = `
   SELECT p.id, p.full_name, p.email, p.dependency_id,
          d.name AS dependency_name,
+         COALESCE(
+           (SELECT json_agg(
+              json_build_object('id', t.id, 'name', t.name, 'slug', t.slug, 'logo_path', t.logo_path)
+              ORDER BY t.created_at DESC
+            )
+            FROM participant_tags pt
+            JOIN tags t ON t.id = pt.tag_id
+            WHERE pt.participant_id = p.id),
+           '[]'::json
+         ) AS tags,
          p.created_at, p.updated_at
   FROM participants p
   LEFT JOIN dependencies d ON p.dependency_id = d.id`;
 
 const Participant = {
-  async findAll({ page = 1, limit = 20, search = '', dependency_id = null }) {
+  async findAll({ page = 1, limit = 20, search = '', dependency_id = null, course_id = null, tag_id = null }) {
     const offset = (page - 1) * limit;
     const conditions = [];
     const params = [];
@@ -17,6 +27,14 @@ const Participant = {
     if (dependency_id) {
       conditions.push(`p.dependency_id = $${idx++}`);
       params.push(dependency_id);
+    }
+    if (course_id) {
+      conditions.push(`EXISTS (SELECT 1 FROM course_participants cp WHERE cp.participant_id = p.id AND cp.course_id = $${idx++})`);
+      params.push(course_id);
+    }
+    if (tag_id) {
+      conditions.push(`EXISTS (SELECT 1 FROM participant_tags pt WHERE pt.participant_id = p.id AND pt.tag_id = $${idx++})`);
+      params.push(tag_id);
     }
     if (search) {
       conditions.push(`p.full_name ILIKE $${idx++}`);

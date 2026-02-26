@@ -42,6 +42,7 @@ app.use('/api/certificates', require('./routes/certificateRoutes'));
 app.use('/api/verify', require('./routes/verificationRoutes'));
 app.use('/api/stats', require('./routes/statsRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/tags', require('./routes/tagRoutes'));
 
 // Middleware global de manejo de errores (debe ser el ultimo)
 app.use(errorHandler);
