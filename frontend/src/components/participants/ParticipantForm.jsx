@@ -103,7 +103,7 @@ const ParticipantForm = ({
         value={form.email}
         onChange={set('email')}
         error={errors.email}
-        placeholder="correo@ejemplo.com (opcional)"
+        placeholder="correo@ejemplo.com"
       />
 
       {userRole === 'admin' && (
