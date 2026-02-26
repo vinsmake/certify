@@ -35,8 +35,6 @@ const ParticipantForm = ({
     if (!form.full_name.trim()) e.full_name = 'El nombre es requerido';
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       e.email = 'El correo no es valido';
-    if (userRole === 'admin' && !form.dependency_id)
-      e.dependency_id = 'La dependencia es requerida';
     return e;
   };
 
@@ -80,14 +78,19 @@ const ParticipantForm = ({
       />
 
       {userRole === 'admin' && (
-        <Select
-          label="Dependencia"
-          value={form.dependency_id}
-          onChange={set('dependency_id')}
-          options={depOptions}
-          placeholder="Selecciona una dependencia..."
-          error={errors.dependency_id}
-        />
+        <div>
+          <Select
+            label="Dependencia"
+            value={form.dependency_id}
+            onChange={set('dependency_id')}
+            options={depOptions}
+            placeholder="Sin dependencia (Invitado)"
+            error={errors.dependency_id}
+          />
+          {!form.dependency_id && (
+            <p style={styles.hint}>Sin dependencia asignada — el participante quedará como Invitado y solo será visible para el administrador.</p>
+          )}
+        </div>
       )}
 
       <div style={styles.actions}>
@@ -105,6 +108,7 @@ const ParticipantForm = ({
 const styles = {
   form:    { display: 'flex', flexDirection: 'column', gap: '1rem' },
   actions: { display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' },
+  hint:    { fontSize: '0.8125rem', color: 'var(--color-text-muted)', margin: '0.25rem 0 0' },
 };
 
 export default ParticipantForm;

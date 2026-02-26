@@ -25,7 +25,12 @@ const ParticipantDetail = ({ participant, onClose }) => {
       <div style={styles.header}>
         <div>
           <h2 style={styles.title}>{participant.full_name}</h2>
-          {participant.dependency_name && <p style={styles.meta}>Dependencia: {participant.dependency_name}</p>}
+          <p style={styles.meta}>
+            Dependencia:{' '}
+            {participant.dependency_name
+              ? participant.dependency_name
+              : <span style={styles.guestBadge}>Invitado</span>}
+          </p>
           {participant.email           && <p style={styles.meta}>Correo: {participant.email}</p>}
         </div>
         <Button variant="secondary" size="sm" onClick={onClose}>Cerrar</Button>
@@ -73,6 +78,12 @@ const styles = {
   header:       { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' },
   title:        { fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: '0.25rem' },
   meta:         { fontSize: '0.875rem', color: 'var(--color-text-muted)', margin: 0 },
+  guestBadge:   {
+    display: 'inline-block', padding: '0.125rem 0.5rem',
+    borderRadius: '999px', fontSize: '0.75rem', fontWeight: '600',
+    backgroundColor: 'var(--color-surface-hover)',
+    color: 'var(--color-text-muted)', border: '1px solid var(--color-border)',
+  },
   section:      { borderTop: '1px solid var(--color-border)', paddingTop: '1.25rem' },
   sectionTitle: { fontSize: '0.9375rem', fontWeight: '600', color: 'var(--color-text-secondary)', marginBottom: '0.75rem' },
   empty:        { fontSize: '0.875rem', color: 'var(--color-text-muted)' },

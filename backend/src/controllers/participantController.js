@@ -20,12 +20,21 @@ const listParticipants = async (req, res, next) => {
   }
 };
 
+// Verifica que un usuario 'dependencia' pueda acceder a este participante
+const checkParticipantAccess = (participant, user) => {
+  if (user.role === 'admin') return true;
+  return participant.dependency_id === user.dependency_id;
+};
+
 // 9.03 - GET /:id - obtener participante por ID
 const getParticipant = async (req, res, next) => {
   try {
     const participant = await Participant.findById(req.params.id);
     if (!participant) {
       return res.status(404).json({ error: 'Participante no encontrado' });
+    }
+    if (!checkParticipantAccess(participant, req.user)) {
+      return res.status(403).json({ error: 'Acceso denegado' });
     }
     res.json(participant);
   } catch (err) {
@@ -57,6 +66,9 @@ const updateParticipant = async (req, res, next) => {
     if (!participant) {
       return res.status(404).json({ error: 'Participante no encontrado' });
     }
+    if (!checkParticipantAccess(participant, req.user)) {
+      return res.status(403).json({ error: 'Acceso denegado' });
+    }
 
     const { full_name, email } = req.body;
     const dependency_id = req.user.role === 'dependencia'
@@ -73,11 +85,15 @@ const updateParticipant = async (req, res, next) => {
 // 9.06 - DELETE /:id - eliminar participante
 const deleteParticipant = async (req, res, next) => {
   try {
-    const deleted = await Participant.delete(req.params.id);
-    if (!deleted) {
+    const participant = await Participant.findById(req.params.id);
+    if (!participant) {
       return res.status(404).json({ error: 'Participante no encontrado' });
     }
-    res.json({ message: 'Participante eliminado', id: deleted.id });
+    if (!checkParticipantAccess(participant, req.user)) {
+      return res.status(403).json({ error: 'Acceso denegado' });
+    }
+    await Participant.delete(req.params.id);
+    res.json({ message: 'Participante eliminado', id: participant.id });
   } catch (err) {
     next(err);
   }

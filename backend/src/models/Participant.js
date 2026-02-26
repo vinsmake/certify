@@ -67,7 +67,7 @@ const Participant = {
       `UPDATE participants
        SET full_name     = COALESCE($2, full_name),
            email         = COALESCE($3, email),
-           dependency_id = COALESCE($4, dependency_id),
+           dependency_id = $4,
            updated_at    = NOW()
        WHERE id = $1
        RETURNING *`,

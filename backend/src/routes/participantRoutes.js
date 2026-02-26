@@ -46,7 +46,7 @@ router.post(
   [
     body('full_name').notEmpty().withMessage('El nombre completo es requerido'),
     body('email').optional().isEmail().withMessage('Email invalido'),
-    body('dependency_id').optional().isInt().withMessage('dependency_id debe ser un entero'),
+    body('dependency_id').optional({ nullable: true }).isInt().withMessage('dependency_id debe ser un entero'),
   ],
   validateRequest,
   createParticipant
