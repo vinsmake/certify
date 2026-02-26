@@ -20,9 +20,9 @@ const TagForm = ({ initial = null, onSubmit, onCancel, loading = false, error = 
   const handleNameChange = (e) => {
     const val = e.target.value;
     setName(val);
-    // Auto-generar slug solo al crear (no al editar)
+    // Auto-generar slug solo al crear (no al editar): reemplaza espacios con guiones
     if (!initial) {
-      setSlug(val.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''));
+      setSlug(val.replace(/\s+/g, '-'));
     }
   };
 
@@ -30,7 +30,6 @@ const TagForm = ({ initial = null, onSubmit, onCancel, loading = false, error = 
     const e = {};
     if (!name.trim()) e.name = 'El nombre es requerido';
     if (!slug.trim()) e.slug = 'El slug es requerido';
-    if (slug && !/^[a-z0-9-]+$/.test(slug)) e.slug = 'Solo letras minusculas, numeros y guiones';
     return e;
   };
 

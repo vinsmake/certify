@@ -11,11 +11,16 @@ const listParticipants = async (req, res, next) => {
     const course_id = req.query.course_id ? parseInt(req.query.course_id) : null;
     const tag_id = req.query.tag_id ? parseInt(req.query.tag_id) : null;
 
+    // Admin puede filtrar por dependencia via query param; dependencia usa la suya (del middleware)
+    const dependency_id = req.user.role === 'admin'
+      ? (req.query.dependency_id ? parseInt(req.query.dependency_id) : null)
+      : req.dependencyFilter;
+
     const result = await Participant.findAll({
       page,
       limit,
       search,
-      dependency_id: req.dependencyFilter,
+      dependency_id,
       course_id,
       tag_id,
     });

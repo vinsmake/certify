@@ -60,9 +60,7 @@ router.post(
   roleMiddleware('admin'),
   [
     body('name').notEmpty().withMessage('Nombre es requerido'),
-    body('slug')
-      .notEmpty().withMessage('Slug es requerido')
-      .matches(/^[a-z0-9-]+$/).withMessage('Slug debe ser alfanumerico en minusculas con guiones'),
+    body('slug').notEmpty().withMessage('Slug es requerido'),
   ],
   validateRequest,
   createTag
@@ -75,7 +73,7 @@ router.put(
   [
     param('id').isInt().withMessage('ID invalido'),
     body('name').optional().notEmpty().withMessage('Nombre no puede estar vacio'),
-    body('slug').optional().matches(/^[a-z0-9-]+$/).withMessage('Slug debe ser alfanumerico en minusculas con guiones'),
+    body('slug').optional().notEmpty().withMessage('Slug no puede estar vacio'),
   ],
   validateRequest,
   updateTag
