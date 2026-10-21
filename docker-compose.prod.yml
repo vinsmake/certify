@@ -1,8 +1,13 @@
+# Entorno de PRODUCCION.
+#   npm run prod:build -> construye imagenes y levanta
+# El backend aplica las migraciones pendientes (prisma migrate deploy) al arrancar.
+# Variables en .env.prod (ver .env.example).
+
 services:
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: frontend/Dockerfile.prod
     ports:
       - "8080:80"
     depends_on:
@@ -11,23 +16,30 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: backend/Dockerfile.prod
     volumes:
-      - ./storage/certificates:/app/storage/certificates
-      - ./storage/logos:/app/storage/logos
-      - ./storage/signatures:/app/storage/signatures
+      - ./storage:/app/storage
     env_file:
       - .env.prod
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+      STORAGE_ROOT: /app/storage
+      PRISMA_HIDE_UPDATE_MESSAGE: "true"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     restart: unless-stopped
 
   database:
     image: postgres:16-alpine
     volumes:
       - ./database/data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
     env_file:
       - .env.prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
     restart: unless-stopped

@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "default",
+    "name": "Plantilla Por Defecto",
+    "description": "Plantilla basica horizontal en tamano carta con zonas para logos, datos del participante y QR",
+    "orientation": "landscape",
+    "page_size": "letter",
+    "is_default": false,
+    "is_active": true
+  },
+  {
+    "slug": "formal",
+    "name": "Plantilla Formal",
+    "description": "Diseno formal con bordes decorativos y tipografia serif",
+    "orientation": "landscape",
+    "page_size": "letter",
+    "is_default": false,
+    "is_active": true
+  },
+  {
+    "slug": "modern",
+    "name": "Plantilla Moderna",
+    "description": "Diseno moderno minimalista con colores planos",
+    "orientation": "landscape",
+    "page_size": "letter",
+    "is_default": true,
+    "is_active": true
+  },
+  {
+    "slug": "circuits",
+    "name": "Plantilla Circuitos",
+    "description": "Diseno tecnologico con patron de circuitos en las esquinas, fondo crema",
+    "orientation": "landscape",
+    "page_size": "letter",
+    "is_default": false,
+    "is_active": true
+  }
+]

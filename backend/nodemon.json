@@ -1,6 +1,8 @@
 {
-  "watch": ["src"],
-  "ext": "js,json",
+  "watch": ["src", "../packages/shared/src"],
+  "ext": "ts,json",
+  "ignore": ["src/generated/**"],
   "legacyWatch": true,
-  "delay": 500
+  "delay": 500,
+  "exec": "tsx src/index.ts"
 }

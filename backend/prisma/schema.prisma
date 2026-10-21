@@ -1,0 +1,280 @@
+// Schema de la Plataforma de Credenciales Digitales.
+// Fuente de verdad de la BD: cualquier cambio se aplica con `npm run db:migrate` (crea una migracion).
+//
+// Convencion: los campos se mantienen en snake_case para que las respuestas de la API
+// conserven el contrato existente sin capas de mapeo. Los modelos van en PascalCase con @@map.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  admin
+  dependencia
+}
+
+enum CourseType {
+  curso
+  charla
+  taller
+  seminario
+  diploma
+}
+
+enum AttendanceStatus {
+  enrolled
+  completed
+}
+
+enum CertificateStatus {
+  valid
+  revoked
+}
+
+enum Orientation {
+  landscape
+  portrait
+}
+
+enum PageSize {
+  letter
+  A4
+}
+
+/// Unidad organizacional. Tiene logo, encargado y firma que aparecen en los certificados.
+model Dependency {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  abbreviation   String?  @db.VarChar(50)
+  logo_path      String?  @db.VarChar(500)
+  manager_name   String?  @db.VarChar(255)
+  signature_path String?  @db.VarChar(500)
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now()) @db.Timestamp(6)
+  updated_at     DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  users               User[]
+  courses             Course[]
+  course_dependencies CourseDependency[]
+  participants        Participant[]
+
+  @@map("dependencies")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique @db.VarChar(255)
+  password_hash String   @db.VarChar(255)
+  full_name     String   @db.VarChar(255)
+  role          Role
+  dependency_id Int?
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  updated_at    DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  dependency           Dependency?           @relation(fields: [dependency_id], references: [id])
+  templates_created    CertificateTemplate[]
+  courses_created      Course[]
+  branding_created     BrandingVersion[]
+  certificates_issued  Certificate[]         @relation("CertificateIssuedBy")
+  certificates_revoked Certificate[]         @relation("CertificateRevokedBy")
+  revocations          RevocationLog[]
+
+  @@index([dependency_id])
+  @@map("users")
+}
+
+/// Plantilla HTML/CSS con variables {{...}} que se renderiza a PDF con Puppeteer.
+model CertificateTemplate {
+  id             Int         @id @default(autoincrement())
+  name           String      @db.VarChar(255)
+  slug           String      @unique @db.VarChar(100)
+  description    String?
+  html_content   String
+  orientation    Orientation @default(landscape)
+  page_size      PageSize    @default(letter)
+  thumbnail_path String?     @db.VarChar(500)
+  is_default     Boolean     @default(false)
+  is_active      Boolean     @default(true)
+  created_at     DateTime    @default(now()) @db.Timestamp(6)
+  created_by     Int?
+
+  creator      User?         @relation(fields: [created_by], references: [id])
+  courses      Course[]
+  certificates Certificate[]
+
+  @@map("certificate_templates")
+}
+
+model Course {
+  id             Int        @id @default(autoincrement())
+  name           String     @db.VarChar(500)
+  description    String?
+  type           CourseType
+  duration_hours Int?
+  instructor     String?    @db.VarChar(255)
+  signature_path String?    @db.VarChar(500)
+  /// Diseño de certificado del curso. Si es null se usa la plantilla por defecto.
+  template_id    Int?
+  start_date     DateTime?  @db.Date
+  end_date       DateTime?  @db.Date
+  /// Dependencia duena (la del usuario creador si es rol dependencia)
+  dependency_id  Int?
+  created_by     Int?
+  created_at     DateTime   @default(now()) @db.Timestamp(6)
+  updated_at     DateTime   @default(now()) @updatedAt @db.Timestamp(6)
+
+  template            CertificateTemplate? @relation(fields: [template_id], references: [id])
+  dependency          Dependency?          @relation(fields: [dependency_id], references: [id])
+  creator             User?                @relation(fields: [created_by], references: [id])
+  course_dependencies CourseDependency[]
+  course_participants CourseParticipant[]
+  certificates        Certificate[]
+
+  @@index([dependency_id])
+  @@map("courses")
+}
+
+/// Dependencias colaboradoras de un curso (sus logos y firmas salen en el certificado).
+model CourseDependency {
+  id            Int @id @default(autoincrement())
+  course_id     Int
+  dependency_id Int
+  display_order Int @default(1)
+
+  course     Course     @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  dependency Dependency @relation(fields: [dependency_id], references: [id])
+
+  @@unique([course_id, dependency_id])
+  @@map("course_dependencies")
+}
+
+model Participant {
+  id            Int      @id @default(autoincrement())
+  full_name     String   @db.VarChar(255)
+  email         String?  @db.VarChar(255)
+  dependency_id Int?
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  updated_at    DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  dependency          Dependency?         @relation(fields: [dependency_id], references: [id])
+  participant_tags    ParticipantTag[]
+  course_participants CourseParticipant[]
+  certificates        Certificate[]
+
+  @@map("participants")
+}
+
+model Tag {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(100)
+  description String?
+  logo_path   String?  @db.VarChar(500)
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  participant_tags ParticipantTag[]
+
+  @@map("tags")
+}
+
+model ParticipantTag {
+  id             Int @id @default(autoincrement())
+  participant_id Int
+  tag_id         Int
+
+  participant Participant @relation(fields: [participant_id], references: [id], onDelete: Cascade)
+  tag         Tag         @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@unique([participant_id, tag_id])
+  @@index([participant_id])
+  @@index([tag_id])
+  @@map("participant_tags")
+}
+
+/// Branding institucional versionado: cada certificado guarda la version con la que se emitio.
+model BrandingVersion {
+  id                Int      @id @default(autoincrement())
+  version_label     String   @db.VarChar(50)
+  logo_path         String   @db.VarChar(500)
+  primary_color     String   @db.VarChar(7)
+  secondary_color   String   @db.VarChar(7)
+  font_family       String   @db.VarChar(100)
+  organization_name String   @db.VarChar(255)
+  is_active         Boolean  @default(false)
+  created_at        DateTime @default(now()) @db.Timestamp(6)
+  created_by        Int?
+
+  creator      User?         @relation(fields: [created_by], references: [id])
+  certificates Certificate[]
+
+  @@map("branding_versions")
+}
+
+/// Certificado emitido. Nunca se borra: se revoca. Se puede reimprimir conservando el uuid (mismo QR).
+model Certificate {
+  id                  Int               @id @default(autoincrement())
+  uuid                String            @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  participant_id      Int
+  course_id           Int
+  issued_by           Int?
+  issue_date          DateTime          @db.Date
+  branding_version_id Int?
+  template_id         Int?
+  pdf_path            String?           @db.VarChar(500)
+  status              CertificateStatus @default(valid)
+  revocation_reason   String?
+  revoked_at          DateTime?         @db.Timestamp(6)
+  revoked_by          Int?
+  reprint_count       Int               @default(0)
+  last_reprinted_at   DateTime?         @db.Timestamp(6)
+  created_at          DateTime          @default(now()) @db.Timestamp(6)
+
+  participant      Participant          @relation(fields: [participant_id], references: [id])
+  course           Course               @relation(fields: [course_id], references: [id])
+  issuer           User?                @relation("CertificateIssuedBy", fields: [issued_by], references: [id])
+  revoker          User?                @relation("CertificateRevokedBy", fields: [revoked_by], references: [id])
+  branding_version BrandingVersion?     @relation(fields: [branding_version_id], references: [id])
+  template         CertificateTemplate? @relation(fields: [template_id], references: [id])
+  revocation_logs  RevocationLog[]
+
+  @@index([status])
+  @@index([course_id])
+  @@index([participant_id])
+  @@map("certificates")
+}
+
+model RevocationLog {
+  id             Int      @id @default(autoincrement())
+  certificate_id Int
+  revoked_by     Int?
+  reason         String
+  revoked_at     DateTime @default(now()) @db.Timestamp(6)
+
+  certificate Certificate @relation(fields: [certificate_id], references: [id])
+  revoker     User?       @relation(fields: [revoked_by], references: [id])
+
+  @@map("revocation_log")
+}
+
+/// Inscripcion de un participante a un curso.
+model CourseParticipant {
+  id                Int              @id @default(autoincrement())
+  course_id         Int
+  participant_id    Int
+  enrollment_date   DateTime         @default(now()) @db.Date
+  attendance_status AttendanceStatus @default(enrolled)
+
+  course      Course      @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  participant Participant @relation(fields: [participant_id], references: [id], onDelete: Cascade)
+
+  @@unique([course_id, participant_id])
+  @@map("course_participants")
+}

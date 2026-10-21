@@ -1,0 +1,8 @@
+node_modules
+dist
+database
+storage
+**/src/generated
+**/prisma/migrations
+**/seed-data/templates/*.html
+package-lock.json
