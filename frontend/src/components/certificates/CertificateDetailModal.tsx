@@ -10,7 +10,7 @@ import { Button } from '../ui/Button';
 import { Textarea } from '../ui/Field';
 import { Modal } from '../ui/Modal';
 import { Spinner } from '../ui/Spinner';
-import { downloadCertificate, useRevokeCertificate } from './certificateActions';
+import { downloadCertificate, useReprintCertificate, useRevokeCertificate } from './certificateActions';
 
 const Section = ({ title, rows }: { title: string; rows: [string, ReactNode][] }) => (
   <section className="section">
@@ -67,6 +67,7 @@ const RevokeForm = ({ cert, onDone, onCancel }: { cert: CertificateDetail; onDon
 const Detail = ({ cert, onClose }: { cert: CertificateDetail; onClose: () => void }) => {
   const [revoking, setRevoking] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const reprint = useReprintCertificate();
 
   const download = async () => {
     setDownloading(true);
@@ -129,9 +130,19 @@ const Detail = ({ cert, onClose }: { cert: CertificateDetail; onClose: () => voi
             Descargar PDF
           </Button>
           {cert.status === 'valid' && (
-            <Button variant="danger" onClick={() => setRevoking(true)}>
-              Revocar
-            </Button>
+            <>
+              <Button
+                variant="secondary"
+                onClick={() => reprint.mutate(cert.id)}
+                loading={reprint.isPending}
+                title="Regenera el PDF con el diseño actual conservando el mismo QR"
+              >
+                Reimprimir
+              </Button>
+              <Button variant="danger" onClick={() => setRevoking(true)}>
+                Revocar
+              </Button>
+            </>
           )}
         </div>
       )}

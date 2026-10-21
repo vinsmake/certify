@@ -10,7 +10,19 @@ export const downloadCertificate = async (cert: { id: number; uuid: string }) =>
 /** Queries que cambian cuando cambia un certificado. */
 export const CERTIFICATE_RELATED = [keys.certificates.all, keys.courses.all, keys.participants.all, keys.stats.all];
 
-export const useRevokeCertificate = (onSuccess?: () => void) =>
+/**
+ * Reimprime: regenera el PDF con los datos y el diseño actuales del curso, conservando
+ * uuid (mismo QR), fecha de emision y branding original.
+ */
+export const useReprintCertificate = (onSuccess?: () => void) =>
+  useApiMutation({
+    mutationFn: (id: number) => certificateApi.reprint(id),
+    invalidate: CERTIFICATE_RELATED,
+    success: 'Certificado reimpreso con el mismo QR.',
+    onSuccess,
+  });
+
+export const useRevokeCertificate =(onSuccess?: () => void) =>
   useApiMutation({
     mutationFn: ({ id, reason }: { id: number; reason: string }) => certificateApi.revoke(id, reason),
     invalidate: CERTIFICATE_RELATED,

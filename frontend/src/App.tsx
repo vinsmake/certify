@@ -14,7 +14,6 @@ const CoursesPage = lazy(() => import('./pages/courses/CoursesPage'));
 const CoursePage = lazy(() => import('./pages/courses/CoursePage'));
 const ParticipantsPage = lazy(() => import('./pages/ParticipantsPage'));
 const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
-const EmitCertificatePage = lazy(() => import('./pages/EmitCertificatePage'));
 const DependenciesPage = lazy(() => import('./pages/admin/DependenciesPage'));
 const TagsPage = lazy(() => import('./pages/admin/TagsPage'));
 const TemplatesPage = lazy(() => import('./pages/admin/TemplatesPage'));
@@ -41,7 +40,8 @@ export const App = () => (
             <Route path="/cursos/:id/:tab?" element={<CoursePage />} />
             <Route path="/participantes" element={<ParticipantsPage />} />
             <Route path="/certificados" element={<CertificatesPage />} />
-            <Route path="/emitir" element={<EmitCertificatePage />} />
+            {/* La emision ahora vive en la pagina de cada curso */}
+            <Route path="/emitir" element={<Navigate to="/cursos" replace />} />
 
             <Route element={<ProtectedRoute adminOnly />}>
               <Route path="/admin/dependencias" element={<DependenciesPage />} />

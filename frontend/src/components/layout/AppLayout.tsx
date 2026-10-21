@@ -12,7 +12,6 @@ const MENU: MenuItem[] = [
   { label: 'Cursos', path: '/cursos' },
   { label: 'Participantes', path: '/participantes' },
   { label: 'Certificados', path: '/certificados' },
-  { label: 'Emitir', path: '/emitir' },
 ];
 
 const ADMIN_MENU: MenuItem[] = [

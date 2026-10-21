@@ -1,4 +1,5 @@
 // Pagina de un curso: todo lo del curso en un solo lugar, organizado en pestañas.
+// Flujo: inscribir participantes -> elegir diseño -> generar -> consultar, reimprimir o revocar.
 // La pestaña activa vive en la URL (/cursos/:id/:tab) para poder enlazarla.
 import { useQuery } from '@tanstack/react-query';
 import { Link, NavLink, useParams } from 'react-router';
@@ -12,6 +13,9 @@ import { Spinner } from '../../components/ui/Spinner';
 import { courseTypeLabel, formatDate } from '../../lib/format';
 import { errorMessage } from '../../lib/http';
 import StatusPage from '../StatusPage';
+import { CertificatesTab } from './tabs/CertificatesTab';
+import { DesignTab } from './tabs/DesignTab';
+import { GenerateTab } from './tabs/GenerateTab';
 import { InfoTab } from './tabs/InfoTab';
 import { ParticipantsTab } from './tabs/ParticipantsTab';
 
@@ -21,6 +25,9 @@ export interface CourseTabProps {
 
 const TABS = [
   { slug: 'participantes', label: 'Participantes', component: ParticipantsTab },
+  { slug: 'diseno', label: 'Diseño', component: DesignTab },
+  { slug: 'generar', label: 'Generar', component: GenerateTab },
+  { slug: 'certificados', label: 'Certificados', component: CertificatesTab },
   { slug: 'informacion', label: 'Informacion', component: InfoTab },
 ] as const;
 
