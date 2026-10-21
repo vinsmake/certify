@@ -11,7 +11,7 @@ import { httpStatus } from '../lib/http';
 const Shell = ({ children, logo, org }: { children: ReactNode; logo?: string | null; org?: string | null }) => (
   <div className="verify">
     <header className="verify__header">
-      {logo && <StoredImage path={logo} alt="Logo institucional" className="verify__logo" />}
+      {logo && <StoredImage path={logo} alt="Logo institucional" className="verify__logo" fallback={null} />}
       <div>
         <p className="verify__org">{org || 'Sistema de Certificados'}</p>
         <p>Verificacion de Certificado Digital</p>
@@ -123,7 +123,7 @@ const VerifyPage = () => {
               .sort((a, b) => a.display_order - b.display_order)
               .map((dep) => (
                 <div key={dep.name} className="verify__dep">
-                  {dep.logo_path && <StoredImage path={dep.logo_path} alt={dep.name} className="" />}
+                  {dep.logo_path && <StoredImage path={dep.logo_path} alt={dep.name} className="" fallback={null} />}
                   <span>{dep.name}</span>
                   {dep.abbreviation && <span className="muted">({dep.abbreviation})</span>}
                 </div>
