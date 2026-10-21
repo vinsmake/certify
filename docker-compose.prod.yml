@@ -6,8 +6,8 @@
 services:
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: frontend/Dockerfile.prod
     ports:
       - "8080:80"
     depends_on:
