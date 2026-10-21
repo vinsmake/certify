@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { randomUUID } from 'node:crypto';
-import type { EmitCertificatesInput, ListCertificatesQuery } from '@certify/shared';
+import type { CoursePreviewInput, EmitCertificatesInput, ListCertificatesQuery } from '@certify/shared';
 import type { AuthUser } from '../../lib/auth';
 import { badRequest, conflict, forbidden, notFound, orNotFound } from '../../lib/http-error';
 import { logger } from '../../lib/logger';
@@ -132,11 +132,14 @@ const resolveTemplate = async (...candidates: (number | null | undefined)[]) => 
   return fallback;
 };
 
+/** Fecha de hoy como DATE (medianoche UTC). */
+const today = () => new Date(new Date().toISOString().slice(0, 10));
+
 type Course = NonNullable<Awaited<ReturnType<typeof prisma.course.findUnique>>>;
 type Template = Awaited<ReturnType<typeof resolveTemplate>>;
 type Branding = NonNullable<Awaited<ReturnType<typeof prisma.brandingVersion.findUnique>>>;
 
-const renderCertificatePdf = async (args: {
+const renderCertificateHtml = async (args: {
   uuid: string;
   participantName: string;
   course: Course;
@@ -160,11 +163,29 @@ const renderCertificatePdf = async (args: {
     uuid: args.uuid,
     qrCodeBase64: await generateQr(args.uuid),
   });
-  return renderPdf(renderTemplate(args.template.html_content, variables), args.template);
+  return renderTemplate(args.template.html_content, variables);
 };
 
-/** Fecha de hoy como DATE (medianoche UTC). */
-const today = () => new Date(new Date().toISOString().slice(0, 10));
+const renderCertificatePdf = async (args: Parameters<typeof renderCertificateHtml>[0]) =>
+  renderPdf(await renderCertificateHtml(args), args.template);
+
+// ---------- Vista previa del curso ----------
+
+const PREVIEW_UUID = '00000000-0000-4000-8000-000000000000';
+
+/**
+ * Certificado del curso con sus datos reales (dependencias, firmas, branding activo) y un participante
+ * de ejemplo. Sirve para revisar el diseno antes de emitir. No guarda nada.
+ */
+export const coursePreview = async (courseId: number, input: CoursePreviewInput, user: AuthUser) => {
+  const course = await getAccessibleCourse(courseId, user, 'ver');
+  const template = await resolveTemplate(input.template_id, course.template_id);
+  const branding = await prisma.brandingVersion.findFirst({ where: { is_active: true } });
+  const args = { uuid: PREVIEW_UUID, participantName: 'Nombre del Participante', course, template, branding, issueDate: today() };
+  const meta = { template_id: template.id, template_name: template.name, orientation: template.orientation, page_size: template.page_size };
+  if (input.format === 'pdf') return { ...meta, format: 'pdf' as const, pdf: await renderCertificatePdf(args) };
+  return { ...meta, format: 'html' as const, html: await renderCertificateHtml(args) };
+};
 
 // ---------- Emision ----------
 

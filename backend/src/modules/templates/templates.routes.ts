@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createTemplateSchema, idParamSchema, updateTemplateSchema } from '@certify/shared';
+import { createTemplateSchema, idParamSchema, renderTemplateSchema, updateTemplateSchema } from '@certify/shared';
 import { authenticate, currentUser, requireRole } from '../../middlewares/auth';
 import { parseBody, parseParams } from '../../middlewares/validate';
 import { sendPdf } from '../../lib/http';
@@ -13,9 +13,9 @@ templateRoutes.get('/', async (_req, res) => {
   res.json(await templates.list());
 });
 
-// QR de ejemplo para el preview en tiempo real del editor
-templateRoutes.get('/sample-qr', async (_req, res) => {
-  res.json(await templates.sampleQr());
+// Preview en vivo del editor: HTML de la plantilla con datos de ejemplo
+templateRoutes.post('/render', requireRole('admin'), async (req, res) => {
+  res.json(await templates.renderSampleHtml(parseBody(renderTemplateSchema, req).html_content));
 });
 
 templateRoutes.get('/:id', async (req, res) => {

@@ -3,6 +3,7 @@ import {
   addCourseDependencySchema,
   courseDependencyParamsSchema,
   courseParticipantParamsSchema,
+  coursePreviewSchema,
   createCourseSchema,
   enrollParticipantsSchema,
   idParamSchema,
@@ -11,9 +12,11 @@ import {
   updateCourseSchema,
 } from '@certify/shared';
 import { badRequest } from '../../lib/http-error';
+import { sendPdf } from '../../lib/http';
 import { imageUpload, STORAGE_DIRS, toPublicPath } from '../../lib/storage';
 import { authenticate, currentUser, scopeToDependency } from '../../middlewares/auth';
 import { parseBody, parseParams, parseQuery } from '../../middlewares/validate';
+import { coursePreview } from '../certificates/certificates.service';
 import * as courses from './courses.service';
 
 export const courseRoutes = Router();
@@ -75,6 +78,20 @@ courseRoutes.put('/:id/participants/:participantId', async (req, res) => {
 courseRoutes.delete('/:id/participants/:participantId', async (req, res) => {
   const { id, participantId } = parseParams(courseParticipantParamsSchema, req);
   res.json(await courses.unenroll(id, participantId, currentUser(req)));
+});
+
+// ---------- Diseno del certificado ----------
+
+// Vista previa con los datos del curso; template_id permite probar otra plantilla antes de guardarla
+courseRoutes.post('/:id/certificate-preview', async (req, res) => {
+  const { id } = parseParams(idParamSchema, req);
+  const preview = await coursePreview(id, parseBody(coursePreviewSchema, req), currentUser(req));
+  if (preview.format === 'pdf') {
+    sendPdf(res, preview.pdf, `preview_curso_${id}.pdf`, 'inline');
+    return;
+  }
+  const { format: _format, ...body } = preview;
+  res.json(body);
 });
 
 // ---------- Firma del instructor ----------

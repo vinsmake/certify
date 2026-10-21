@@ -98,6 +98,11 @@ export const createTemplateSchema = z.object({
   page_size: z.enum(PAGE_SIZES, { error: 'Tamano debe ser letter o A4' }).optional(),
 });
 
+// Render HTML del editor con datos de ejemplo (preview en vivo)
+export const renderTemplateSchema = z.object({
+  html_content: z.string(),
+});
+
 export const updateTemplateSchema = createTemplateSchema.partial().extend({
   name: nonEmpty('Nombre no puede estar vacio').optional(),
   slug: nonEmpty('Slug no puede estar vacio').optional(),
@@ -175,8 +180,10 @@ export const updateAttendanceSchema = z.object({
   attendance_status: z.enum(ATTENDANCE_STATUSES, { error: 'attendance_status debe ser: enrolled o completed' }),
 });
 
+// Vista previa del certificado del curso con sus datos reales y un participante de ejemplo
 export const coursePreviewSchema = z.object({
   template_id: optionalId,
+  format: z.enum(['html', 'pdf']).default('html'),
 });
 
 // ---------- Certificados ----------
@@ -236,6 +243,7 @@ export type ListCoursesQuery = z.infer<typeof listCoursesQuerySchema>;
 export type CreateCourseInput = z.infer<typeof createCourseSchema>;
 export type UpdateCourseInput = z.infer<typeof updateCourseSchema>;
 export type ListCertificatesQuery = z.infer<typeof listCertificatesQuerySchema>;
+export type CoursePreviewInput = z.infer<typeof coursePreviewSchema>;
 export type EmitCertificatesInput = z.infer<typeof emitCertificatesSchema>;
 export type AdminEventsQuery = z.infer<typeof adminEventsQuerySchema>;
 export type AdminCertificatesQuery = z.infer<typeof adminCertificatesQuerySchema>;

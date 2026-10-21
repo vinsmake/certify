@@ -138,3 +138,36 @@ describe('flujo completo: curso -> inscripcion -> emision -> reimpresion -> revo
     await api().delete(`/api/courses/${courseId}`).set(auth()).expect(409);
   });
 });
+
+describe('vistas previas', () => {
+  it('renderiza el HTML del editor con datos de ejemplo', async () => {
+    const res = await api()
+      .post('/api/templates/render')
+      .set(auth())
+      .send({ html_content: '<p>{{participant_name}} - {{desconocida}}</p>' })
+      .expect(200);
+    expect(res.body.html).toContain('Enrique Emmanuel');
+    // Las variables desconocidas se dejan intactas
+    expect(res.body.html).toContain('{{desconocida}}');
+  });
+
+  it('previsualiza el certificado del curso con sus datos (HTML y PDF)', async () => {
+    const course = await api()
+      .post('/api/courses')
+      .set(auth())
+      .send({ name: 'Curso para preview', type: 'taller' })
+      .expect(201);
+
+    const html = await api().post(`/api/courses/${course.body.id}/certificate-preview`).set(auth()).send({}).expect(200);
+    expect(html.body.html).toContain('Curso para preview');
+    expect(html.body.html).toContain('Nombre del Participante');
+    expect(html.body).toMatchObject({ template_name: 'Prueba', orientation: 'landscape', page_size: 'letter' });
+
+    const pdf = await api()
+      .post(`/api/courses/${course.body.id}/certificate-preview`)
+      .set(auth())
+      .send({ format: 'pdf' })
+      .expect(200);
+    expect(pdf.headers['content-type']).toBe('application/pdf');
+  });
+});

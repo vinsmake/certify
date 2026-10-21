@@ -82,17 +82,15 @@ export const setDefault = async (id: number) => {
   return { message: 'Plantilla establecida como default', id: updated.id, name: updated.name };
 };
 
-export const sampleQr = async () => ({ qr_code_base64: await generateQr(SAMPLE_UUID) });
 
 /**
  * PDF de muestra con datos ficticios (sincronizados con TemplatePreviewPanel del frontend).
  * Usa el logo del branding activo para que el preview se parezca al resultado real.
  */
-export const previewPdf = async (id: number) => {
-  const template = await findOrFail(id);
+/** Variables de ejemplo para previsualizar una plantilla sin curso ni participante reales. */
+const sampleVariables = async () => {
   const branding = await prisma.brandingVersion.findFirst({ where: { is_active: true } });
-
-  const html = renderTemplate(template.html_content, {
+  return {
     participant_name: 'Enrique Emmanuel Plascencia Soltero',
     course_name: 'Diplomado en Gestion de Proyectos',
     course_type: 'Diplomado',
@@ -117,8 +115,18 @@ export const previewPdf = async (id: number) => {
     secondary_color: '#c9a84c',
     font_family: 'Georgia',
     organization_name: 'Vinsmake University',
-  });
+  };
+};
 
+/** HTML de la plantilla con datos de ejemplo (preview en vivo del editor). */
+export const renderSampleHtml = async (htmlContent: string) => ({
+  html: renderTemplate(htmlContent, await sampleVariables()),
+});
+
+export const previewPdf = async (id: number) => {
+  const template = await findOrFail(id);
+  const html = renderTemplate(template.html_content, await sampleVariables());
   const pdf = await renderPdf(html, { orientation: template.orientation, page_size: template.page_size });
   return { pdf, filename: `preview_${template.slug}.pdf` };
 };
+
