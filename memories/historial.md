@@ -49,3 +49,20 @@ y fix de PDF (`a53a537`).
   usa el frontend responden 200 con el frontend viejo funcionando, y la imagen de produccion construye,
   migra y genera PDFs.
 - Pendiente: fase 2 (frontend TS), fase 3 (CI) y fase 4 (pagina de curso).
+
+## 2026-10-21 - Fase 2: frontend v2 y pagina del curso
+
+- Backend: vistas previas renderizadas en el servidor (`POST /templates/render`,
+  `POST /courses/:id/certificate-preview`) con tests; se elimino `GET /templates/sample-qr` (decision #8).
+- Frontend reescrito en TypeScript con React 19, Router 8, TanStack Query y clases CSS (decision #7).
+- Pagina del curso con pestañas Participantes, Diseño, Generar, Certificados e Informacion; reimpresion
+  con el mismo QR; se elimino `/emitir` (decision #9).
+- CI descartado por el usuario (decision #10).
+- Trampas encontradas: Prisma Studio trae React 18 a la raiz del monorepo (Vite usa `resolve.dedupe`);
+  el build del frontend fuerza `NODE_ENV=production` porque `.env` trae `development`.
+- Verificado: typecheck y lint de los 3 paquetes, 20/20 tests, imagen de produccion del frontend, y flujo
+  completo en navegador (inscribir, completar, diseño, generar, reimprimir, verificacion publica).
+- Commits por bloque (el usuario lo pidio): `6dfc5bc` API, `f52ba50` frontend, `28504e1` pagina del curso,
+  `85c9054` fix.
+- Pendiente: actualizar `readme.md` de la raiz (sigue describiendo v1), `entorno-local.md` y `conocimiento.md`
+  con lo del frontend.

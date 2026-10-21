@@ -45,11 +45,12 @@ otra que la reemplace y se marca la anterior como "Reemplazada por #N".
 - **Decision:** las metas de la reestructura son mantener el contrato de la API (mismas rutas y
   formas de respuesta) para que el frontend siga funcionando durante la transicion; validar
   con Zod; organizar el backend en modulos por dominio; agregar lint, format, tests y CI.
+  (CI descartado por el usuario: ver #10.)
 - **Consecuencias:** se reescriben los modelos SQL crudos a Prisma. Las consultas complejas
   (agregados JSON, estadisticas) pueden usar `prisma.$queryRaw` tipado.
   `database/init/` deja de ser la fuente del schema.
 
-## #5 - Pagina de curso como centro del flujo (2026-10-21, pendiente)
+## #5 - Pagina de curso como centro del flujo (2026-10-21, implementada: ver #9)
 
 - **Contexto:** hoy se crean cursos, se inscriben participantes y la emision vive en una pagina
   aparte (`/emitir`).
@@ -92,7 +93,8 @@ Detalle de la decision #4 aplicada al backend:
 - **Logs** con pino (pino-pretty en desarrollo). Las variables de entorno se validan con Zod al arrancar.
 - **PDF**: puppeteer-core con el Chromium del sistema y un solo navegador reutilizado.
 - **Desarrollo en Docker**: el repo completo se monta en `/app`. `npm run setup` instala las dependencias
-  dentro del contenedor y `node_modules` queda en el host, para que el IDE tenga tipos.
+  dentro del contenedor. (Corregido en la misma fase: `node_modules` vive en volumenes de Docker porque
+  instalar sobre el bind mount de Windows tardaba mas de 30 minutos; el IDE usa Dev Containers.)
 - **Alternativas descartadas**: Knex (decision #3), nombres camelCase con mapeo (demasiada
   superficie de cambio para el frontend) y Drizzle (el usuario eligio Prisma).
 
@@ -107,3 +109,57 @@ Detalle de la decision #4 aplicada al backend:
 - `GET /api/courses/:id/participants` incluye `certificate` por participante, y el listado de cursos incluye
   `template_id`/`template_name`.
 - Los errores de multer (formato o tamaño de imagen) responden 400 en lugar de 500.
+
+## #7 - Arquitectura del frontend v2 (2026-10-21)
+
+Detalle de la decision #4 aplicada al frontend:
+
+- **TypeScript estricto** (mismo `tsconfig.base.json` que el backend). Tipos de entrada desde los
+  esquemas Zod de `@certify/shared` y de salida desde `packages/shared/src/responses.ts`, que documenta
+  el contrato de la API. Si el backend cambia una respuesta se actualiza ahi y el typecheck senala los usos.
+- **React 19, React Router 8** (modo declarativo `BrowserRouter`) y **Vite 8**. Una pagina = un chunk (`lazy`).
+- **TanStack Query** para todo dato del servidor: cache, estados de carga y refresco por invalidacion.
+  Las claves estan centralizadas en `src/api/keys.ts` con prefijo por dominio, y las mutaciones usan
+  `useApiMutation` (invalida, muestra toast de exito y de error). Reemplaza el patron
+  `useEffect + useState + callback de recarga` que se repetia en cada pagina.
+- **Validacion de formularios con los mismos esquemas Zod** del backend (`lib/form.ts`), asi los mensajes y
+  reglas coinciden.
+- **Estilos con clases CSS** y tokens en `styles/global.css` en lugar de objetos de estilo en linea por
+  componente (el codigo se redujo de ~7.900 a ~5.100 lineas con mas funcionalidad).
+- **Rutas relativas** `/api` y `/storage`: Vite hace proxy en desarrollo (`BACKEND_URL`) y nginx en
+  produccion. Se elimino `VITE_API_URL`.
+- **Alternativas descartadas**: Tailwind o una libreria de componentes (cambio visual grande sin pedirlo;
+  se conserva el aspecto existente), React Router en modo framework/data (no aporta para una SPA con
+  autenticacion por token) y Redux/Zustand (el estado del cliente es minimo; el del servidor lo lleva Query).
+
+## #8 - Las vistas previas las renderiza el backend (2026-10-21)
+
+- **Contexto:** el editor de plantillas tenia en el frontend una copia de los datos de ejemplo y del
+  reemplazo de variables, que ya se habia desincronizado del backend (nombres de variables, archivo de firma
+  mal escrito).
+- **Decision:** `POST /api/templates/render` devuelve el HTML de una plantilla con datos de ejemplo y
+  `POST /api/courses/:id/certificate-preview` el del certificado del curso con sus datos reales y un
+  participante de ejemplo (HTML o PDF). El frontend solo lo muestra en un iframe con `sandbox`.
+- **Consecuencias:** una sola implementacion del renderizado; la vista previa es exactamente lo que se emite.
+  Se elimino `GET /api/templates/sample-qr`.
+
+## #9 - Pagina del curso implementada (2026-10-21)
+
+Implementa la decision #5:
+
+- Ruta `/cursos/:id/:tab` con pestañas Participantes, Diseño, Generar, Certificados e Informacion.
+  La pestaña va en la URL para poder enlazarla (por ejemplo, tras crear un curso se abre Participantes).
+- Se eliminaron la pagina `/emitir` (redirige a `/cursos`) y el modal de detalle del curso.
+- Diseño: guardar la plantilla cambia `courses.template_id`; los certificados ya emitidos no cambian
+  hasta reimprimirlos.
+- Generar: solo muestra a quien tiene asistencia completada y no tiene certificado valido; la emision
+  usa la plantilla del curso.
+- Certificados: reimpresion con confirmacion (explica que se conserva el QR) y enlace a la verificacion publica.
+- Participantes: inscripcion por busqueda con seleccion multiple y accion "Marcar todos como completados".
+
+## #10 - Sin CI por ahora (2026-10-21)
+
+- **Contexto:** el plan de la reestructura incluia GitHub Actions.
+- **Decision (del usuario):** no se pidio CI, solo la reestructura. No se agrega.
+- **Consecuencias:** la verificacion es local: `npm run check` (typecheck + lint + tests de todos los
+  paquetes, dentro de Docker). Si en el futuro se quiere CI, basta con correr ese mismo comando.
