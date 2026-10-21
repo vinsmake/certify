@@ -25,15 +25,14 @@ JWT_EXPIRATION=8h
 
 ### 1.3 URL base
 ```
-BASE_URL=http://localhost:5173
-API_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:5173
 VERIFICATION_BASE_URL=http://localhost:5173/verificar
 ```
 La variable VERIFICATION_BASE_URL es la que se usa para generar los QR de los certificados. En produccion debe apuntar al dominio publico, por ejemplo: `https://certificados.miorganizacion.com/verificar`
 
 ### 1.4 Frontend
 ```
-VITE_API_URL=http://localhost:3000/api
+# El frontend usa rutas relativas /api y /storage (proxy de Vite o nginx); no necesita la URL del backend.
 VITE_APP_TITLE=Plataforma de Credenciales Digitales
 ```
 
@@ -55,7 +54,7 @@ El branding institucional (logo, colores, fuente, nombre de organizacion) se ges
 
 Para crear la version inicial o una nueva version:
 
-1. Subir el logo institucional via el endpoint POST /api/branding/versions/:id/logo o colocarlo manualmente en backend/src/storage/logos/branding/ con nombre descriptivo (ej: logo_institucional_v1.png).
+1. Subir el logo institucional via el endpoint POST /api/branding/versions/:id/logo o colocarlo manualmente en storage/logos/branding/ con nombre descriptivo (ej: logo_institucional_v1.png).
 2. Crear la version en la base de datos via POST /api/branding/versions con los datos:
    - version_label: etiqueta descriptiva (ej: "2024-original", "2025-nuevo-logo")
    - logo_path: ruta relativa al logo institucional (ej: "logos/branding/logo_institucional_v1.png")
@@ -240,33 +239,12 @@ Al crear o editar una plantilla desde el panel admin, el formulario incluye un *
 </html>
 ```
 
-## 5. Configuracion del Frontend (theme.js)
+## 5. Apariencia del panel
 
-El archivo `frontend/src/config/theme.js` contiene la configuracion visual del panel de administracion (no del certificado PDF).
-
-```javascript
-// frontend/src/config/theme.js
-export const theme = {
-  colors: {
-    primary: '#1a237e',
-    secondary: '#0d47a1',
-    success: '#2e7d32',
-    danger: '#c62828',
-    warning: '#f57f17',
-    background: '#f5f5f5',
-    surface: '#ffffff',
-    text: '#212121',
-    textLight: '#757575',
-  },
-  fonts: {
-    primary: "'Roboto', sans-serif",
-    heading: "'Roboto', sans-serif",
-  },
-  appTitle: 'Plataforma de Credenciales Digitales',
-};
-```
-
-Estos valores afectan unicamente la apariencia del panel de administracion, NO la de los certificados PDF. Los certificados usan la configuracion de branding_versions para colores/fuente y las plantillas para el diseno.
+Los colores, tipografia y radios del panel de administracion son variables CSS en `:root` de
+`frontend/src/styles/global.css` (`--color-primary`, `--font-sans`, etc.). El titulo sale de
+`VITE_APP_TITLE` (`frontend/src/config.ts`). Esto afecta solo al panel, NO a los certificados PDF: estos
+usan la version de branding activa y la plantilla.
 
 ## 6. Configuracion inicial para nueva instalacion
 
@@ -274,13 +252,11 @@ Para instalar la plataforma en una nueva organizacion:
 
 1. Clonar el repositorio.
 2. Copiar .env.example a .env y configurar las variables.
-3. Colocar el logo institucional en backend/src/storage/logos/branding/.
-4. Colocar los logos de las dependencias en backend/src/storage/logos/dependencies/.
-5. Editar frontend/src/config/theme.js con los colores y fuentes del panel admin.
-6. Ejecutar docker compose up --build.
-7. El sistema se inicializa con el esquema de base de datos, la plantilla de certificado por defecto y la dependencia general.
-8. Login con admin@admin.com y la contrasena definida en el seed.
-9. Desde el panel admin:
+3. (Opcional) Ajustar los colores del panel en frontend/src/styles/global.css.
+4. Ejecutar npm run setup y npm run up.
+5. El backend aplica migraciones y seed: plantillas, branding inicial y la dependencia general.
+6. Login con SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD de .env.
+7. Desde el panel admin (los logos se suben ahi y quedan en storage/logos/):
    a. Crear las dependencias de la organizacion y subir sus logos.
    b. Crear la primera version de branding institucional (logo, colores, fuente, nombre).
    c. Crear usuarios emisores y asignarlos a sus dependencias.

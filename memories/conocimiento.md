@@ -23,6 +23,9 @@ llamadas "dependencias".
 - Idioma: la UI, la documentacion y los comentarios van en español. Los identificadores
   de codigo van en ingles.
 - Hacer commits solo cuando el usuario lo pida. El usuario a veces hace commit por su cuenta.
+- Commits limpios por bloque (pedido 2026-10-21): un commit por bloque logico (API, frontend, feature, docs),
+  cada uno verificado. Antes de commitear revisar `git status`: los `git rm` quedan en el index y se cuelan
+  en el siguiente commit aunque se agreguen rutas concretas.
 - El proyecto esta en desarrollo y no hay produccion activa (desde 2026-10-21): se puede
   modificar la BD libremente. Aun asi, todo cambio de schema va como **migracion**, para
   que un futuro despliegue sea limpio.
@@ -73,4 +76,13 @@ llamadas "dependencias".
   produccion se pasa un valor de relleno.
 - Tests: `npm test` (raiz) corre Vitest en el contenedor del backend contra la BD `<POSTGRES_DB>_test`,
   que se migra sola. Cubren el flujo completo, con PDF real (Chromium) incluido.
+- Tests: el frontend no tiene tests automaticos todavia; se verifica con typecheck, lint, build y prueba en
+  navegador.
+- **Trampa:** Prisma Studio (dependencia de prisma) trae React 18 y npm lo eleva a la raiz del monorepo, mientras
+  el frontend usa React 19 en `frontend/node_modules`. Sin `resolve.dedupe` en `vite.config.ts`, TanStack Query
+  (elevado a la raiz) toma React 18 y la app queda en blanco ("Invalid hook call").
+- **Trampa:** `.env` trae `NODE_ENV=development` y los contenedores lo heredan; `vite build` con eso genera un
+  bundle de desarrollo. El script `build` del frontend fuerza `NODE_ENV=production`.
+- **Trampa:** escribir varios archivos con heredoc en el Bash de esta maquina puede fallar al parsear
+  ("unexpected EOF"); usar la herramienta de escritura de archivos.
 - Prisma 8 esta en RC (2026-10). Se fijo 7.10.1; actualizar cuando salga estable, siguiendo su guia de migracion.

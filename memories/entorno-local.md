@@ -4,7 +4,7 @@ Todo corre en Docker; no se instala nada en el host (regla del proyecto).
 
 | Servicio | Tecnologia | URL local |
 |---|---|---|
-| frontend | React + Vite (hot reload) | http://localhost:5173 |
+| frontend | React 19 + Vite 8 (hot reload, proxy de /api y /storage al backend) | http://localhost:5173 |
 | backend | Node 24 + Express 5 + Prisma 7 + Puppeteer | http://localhost:3000/api |
 | database | PostgreSQL 16 | localhost:5432 |
 | Prisma Studio | `npm run db:studio` | http://localhost:5555 |
@@ -33,11 +33,20 @@ Credenciales de desarrollo: ver `credenciales.md`.
 | `npm run setup` | Reconstruye las imagenes y reinstala dependencias (despues de cambiar package.json) |
 | `npm run check` | Typecheck + lint + tests de todos los paquetes |
 | `npm test` | Tests del backend (BD `<POSTGRES_DB>_test`) |
+| `docker compose exec frontend npx tsc --noEmit` | Typecheck solo del frontend |
 | `npm run db:migrate -- --name x` | Crea y aplica una migracion a partir de `schema.prisma` |
 | `npm run db:status` | Estado de las migraciones |
 | `npm run db:seed` | Re-ejecuta el seed (idempotente) |
 | `npm run db:reset` | Borra la BD de desarrollo y la recrea con migraciones + seed |
 | `npm run remake` | Borra `database/data` y el storage y reconstruye todo |
+
+## Frontend
+
+- Usa rutas relativas `/api` y `/storage`; Vite las reenvia a `BACKEND_URL` (en compose: `http://backend:3000`).
+  No hay variable con la URL del backend.
+- La primera carga completa de una pagina tarda unos segundos (Vite sirve muchos modulos sobre el bind
+  mount con polling). Navegar dentro de la app es inmediato.
+- Build de produccion: `npm run build -w @certify/frontend` (deja `frontend/dist`, ignorado por git).
 
 ## Editor
 

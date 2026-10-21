@@ -64,5 +64,6 @@ y fix de PDF (`a53a537`).
   completo en navegador (inscribir, completar, diseño, generar, reimprimir, verificacion publica).
 - Commits por bloque (el usuario lo pidio): `6dfc5bc` API, `f52ba50` frontend, `28504e1` pagina del curso,
   `85c9054` fix.
-- Pendiente: actualizar `readme.md` de la raiz (sigue describiendo v1), `entorno-local.md` y `conocimiento.md`
-  con lo del frontend.
+- Documentacion al dia: `readme.md` reescrito para v2, `arquitectura.md` nueva (la anterior en
+  `arquitectura-v1.md`), `configuracion.md`, `entorno-local.md` y `conocimiento.md` actualizados.
+- Pendiente sugerido (no pedido): tests automaticos del frontend; logo `default_logo.png` del seed.
