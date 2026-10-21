@@ -4,6 +4,7 @@ const BrandingVersion = require('../models/BrandingVersion');
 const { resolveLogos } = require('../services/templateService');
 const { generateQR } = require('../services/qrService');
 const { readFileAsBase64 } = require('../utils/fileUtils');
+const { VERIFICATION_BASE_URL } = require('../config/environment');
 const puppeteer = require('puppeteer');
 
 const listTemplates = async (req, res, next) => {
@@ -100,7 +101,7 @@ const previewTemplate = async (req, res, next) => {
     const brandingVersion = await BrandingVersion.findActive();
     const { institutionalLogoBase64 } = resolveLogos(brandingVersion, []);
 
-    // Generar QR de ejemplo apuntando a vinsmake.dev
+    // Generar QR de ejemplo apuntando a VERIFICATION_BASE_URL
     const sampleUuid = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     const sampleQrBase64 = await generateQR(sampleUuid);
 
@@ -113,7 +114,7 @@ const previewTemplate = async (req, res, next) => {
       instructor: 'Dra. Amanda Isbosseth',
       issue_date: '15 de febrero de 2026',
       certificate_uuid: sampleUuid,
-      verification_url: 'https://vinsmake.dev/verificar/' + sampleUuid,
+      verification_url: `${VERIFICATION_BASE_URL}/${sampleUuid}`,
       qr_code_base64: sampleQrBase64,
       institutional_logo_base64: institutionalLogoBase64,
       dependency_logos_html: '',

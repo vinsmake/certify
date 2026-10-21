@@ -36,6 +36,8 @@ El sistema permite emitir, gestionar y revocar credenciales digitales que acredi
 
 ## Instalacion Rapida
 
+> Para correr en local restaurando los datos del backup, ver [LOCAL.md](LOCAL.md).
+
 1. Clonar el repositorio:
 ```bash
 git clone <url-del-repositorio>

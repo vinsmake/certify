@@ -28,7 +28,7 @@ const SAMPLE_DATA = {
   // Certificado
   certificate_uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   issue_date: '15 de febrero de 2026',
-  verification_url: 'https://vinsmake.dev/verificar/a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  verification_url: `${window.location.origin}/verificar/a1b2c3d4-e5f6-7890-abcd-ef1234567890`,
   qr_code_base64: '',
 
   // Firma del instructor (vacio por defecto en preview; se muestra solo si el curso tiene firma)

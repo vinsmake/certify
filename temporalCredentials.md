@@ -16,7 +16,7 @@
 | Campo | Valor |
 |---|---|
 | Email | vinsmakedev@gmail.com |
-| Password | @VinsmakeXboxeth4815162342 |
+| Password | @Vinsmake2121 |
 | Rol | admin |
 | dependency_id | null (ve todo) |
 
