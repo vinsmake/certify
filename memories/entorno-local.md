@@ -97,7 +97,7 @@ Para recuperar los datos de produccion en lugar de empezar limpio, usar `restore
 
 ## Mas documentacion
 
-- `readme.md` — modulos y API en detalle.
+- `../readme.md` — modulos y API en detalle.
 - `arquitectura.md` — modelo de datos, endpoints, estructura.
-- `config.md` — personalizacion (plantillas, branding).
-- `server.md` — despliegue en servidor (produccion).
+- `configuracion.md` — personalizacion (plantillas, branding).
+- `despliegue-servidor.md` — despliegue en servidor (produccion).

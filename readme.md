@@ -36,7 +36,7 @@ El sistema permite emitir, gestionar y revocar credenciales digitales que acredi
 
 ## Instalacion Rapida
 
-> Para correr en local restaurando los datos del backup, ver [LOCAL.md](LOCAL.md).
+> Para correr en local restaurando los datos del backup, ver [memories/entorno-local.md](memories/entorno-local.md).
 
 1. Clonar el repositorio:
 ```bash
@@ -129,25 +129,25 @@ npm run pull:sync
 
 ## Estructura del Proyecto
 
-Consultar [arquitectura.md](arquitectura.md) para la estructura completa de carpetas, modelo de datos y diagramas de flujo.
+Consultar [memories/arquitectura.md](memories/arquitectura.md) para la estructura completa de carpetas, modelo de datos y diagramas de flujo.
 
 ## Configuracion y Personalizacion
 
-Consultar [config.md](config.md) para la guia completa de personalizacion (branding, logos, plantillas, dependencias).
+Consultar [memories/configuracion.md](memories/configuracion.md) para la guia completa de personalizacion (branding, logos, plantillas, dependencias).
 
 ## Flujo de Trabajo de Desarrollo
 
-Consultar [instructions.md](instructions.md) para el proceso a seguir al implementar cada tarea.
+Consultar [memories/flujo-de-trabajo.md](memories/flujo-de-trabajo.md) para el proceso a seguir al implementar cada tarea.
 
 ## Progreso del Desarrollo
 
-Consultar [todo.md](todo.md) para la lista detallada de tareas y su estado actual.
+Consultar [memories/todo-historico.md](memories/todo-historico.md) para la lista detallada de tareas y su estado actual.
 
 ---
 
 ## Documentacion por Modulo
 
-> Las siguientes secciones se completaran a medida que cada modulo sea implementado, siguiendo las instrucciones de [instructions.md](instructions.md).
+> Las siguientes secciones se completaran a medida que cada modulo sea implementado, siguiendo las instrucciones de [memories/flujo-de-trabajo.md](memories/flujo-de-trabajo.md).
 
 ---
 
