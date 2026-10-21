@@ -67,3 +67,9 @@ y fix de PDF (`a53a537`).
 - Documentacion al dia: `readme.md` reescrito para v2, `arquitectura.md` nueva (la anterior en
   `arquitectura-v1.md`), `configuracion.md`, `entorno-local.md` y `conocimiento.md` actualizados.
 - Pendiente sugerido (no pedido): tests automaticos del frontend; logo `default_logo.png` del seed.
+
+## 2026-10-21 - Merge a main
+
+- `reestructura-v2` se fusiono en `main` (merge `c6db072`, sin fast-forward para conservar los bloques).
+  Verificado despues del merge: typecheck, lint, 20/20 tests, backend y frontend arriba.
+- `main` local va 10 commits por delante de `origin/main` (incluye `42a10e3 restart` del usuario); falta el push.
