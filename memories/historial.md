@@ -35,3 +35,17 @@ y fix de PDF (`a53a537`).
   2. Frontend con TypeScript.
   3. Tooling: ESLint, Prettier, tests y CI.
   4. Pagina de curso (decision #5).
+
+## 2026-10-21 - Fase 1: backend v2 (TypeScript + Prisma)
+
+- Se reescribio el backend completo a TypeScript (Express 5, Prisma 7, Zod 4, pino), organizado en
+  modulos por dominio. Detalle en la decision #6.
+- Se elimino `database/init/`: el schema ahora vive en `backend/prisma/schema.prisma` y en las migraciones
+  (`backend/prisma/migrations/<fecha>_init`). Se recreo la BD local desde cero con la migracion init + seed.
+- Las plantillas del seed se extrajeron de la BD a `backend/prisma/seed-data/templates/*.html`.
+- La variable `BASE_URL` se renombro a `FRONTEND_URL`.
+- Los `node_modules` pasaron a volumenes de Docker y se agrego `.devcontainer/`.
+- Verificado: typecheck y ESLint limpios, 18/18 tests (flujo completo con PDF real), los 17 endpoints que
+  usa el frontend responden 200 con el frontend viejo funcionando, y la imagen de produccion construye,
+  migra y genera PDFs.
+- Pendiente: fase 2 (frontend TS), fase 3 (CI) y fase 4 (pagina de curso).

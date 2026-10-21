@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/.env*
+!**/.env.example
+.git
+database
+storage
+memories
+**/src/generated

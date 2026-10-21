@@ -1,0 +1,26 @@
+// Abre el repo dentro del contenedor del backend (VS Code: "Dev Containers: Reopen in Container").
+// Asi el editor ve node_modules (que viven en volumenes de Docker) y tiene tipos, lint y tests
+// sin instalar nada en el host.
+{
+  "name": "Certify",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "runServices": ["database", "backend", "frontend"],
+  "shutdownAction": "none",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Prisma.prisma",
+        "vitest.explorer"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    }
+  }
+}

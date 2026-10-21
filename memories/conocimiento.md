@@ -53,13 +53,24 @@ llamadas "dependencias".
 
 ## Desarrollo (v2, desde 2026-10-21)
 
-- Primera vez: `npm run setup` (instala en el contenedor) y luego `npm run up:build`.
+- Primera vez: `npm run setup` (construye las imagenes e instala dentro del contenedor) y luego `npm run up`.
 - El backend aplica las migraciones y el seed en cada arranque de desarrollo (`npm run dev` del backend).
 - Para cambiar el schema: editar `backend/prisma/schema.prisma` y correr `npm run db:migrate -- --name <cambio>`.
   Eso crea la migracion en `backend/prisma/migrations/` (versionada) y regenera el cliente.
-- **Trampa:** `npm install` sobre un bind mount de Windows es muy lento (mas de 20 minutos la primera vez).
-  Si se vuelve un problema, mover el repo dentro del filesystem de WSL2.
+- Para agregar una dependencia: `docker compose run --rm --no-deps backend sh -c "cd /app && npm install <pkg> -w @certify/backend"`.
+- `node_modules` vive en **volumenes de Docker**, no en el host. Para tener tipos en el editor, abrir el repo
+  con Dev Containers (`.devcontainer/`). Si cambian las dependencias, volver a correr `npm run setup`.
+- **Trampa:** `npm install` sobre el bind mount de Windows tardaba mas de 30 minutos; en volumen tarda ~1 minuto.
+  Por eso `node_modules` no se monta desde el host.
 - **Trampa:** en un bind mount de Windows los watchers no reciben eventos de archivos. nodemon usa
   `legacyWatch` (polling) y Vite usa `usePolling`.
+- **Trampa:** npm 11 bloquea los install scripts que no estan en `allowScripts` (`package.json` raiz).
+  Si una dependencia nueva los necesita (motores, binarios nativos), hay que aprobarla con
+  `npm install-scripts approve <pkg>`.
+- **Trampa:** Vitest define `process.env.BASE_URL = '/'`. Por eso la variable del origen del frontend se
+  llama `FRONTEND_URL`.
+- **Trampa:** `prisma.config.ts` exige `DATABASE_URL` incluso para `prisma generate`. En el build de
+  produccion se pasa un valor de relleno.
 - Tests: `npm test` (raiz) corre Vitest en el contenedor del backend contra la BD `<POSTGRES_DB>_test`,
-  que se migra sola.
+  que se migra sola. Cubren el flujo completo, con PDF real (Chromium) incluido.
+- Prisma 8 esta en RC (2026-10). Se fijo 7.10.1; actualizar cuando salga estable, siguiendo su guia de migracion.

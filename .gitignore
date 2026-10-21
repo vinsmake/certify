@@ -7,8 +7,12 @@ node_modules/
 .env.prod.local
 .env.local
 
-# Build de frontend
+# Builds
 dist/
+*.tsbuildinfo
+
+# Cliente de Prisma generado (se regenera con `prisma generate`)
+backend/src/generated/
 
 # Datos persistentes (carpetas locales)
 database/data/
@@ -19,6 +23,6 @@ storage/signatures/
 # Logs
 *.log
 
-# OS
+# OS / editores
 .DS_Store
 Thumbs.db

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1056px;
+    height: 816px;
+    font-family: '{{font_family}}', 'Roboto', sans-serif;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .certificate {
+    width: 1006px;
+    height: 766px;
+    border: 3px solid {{primary_color}};
+    padding: 40px 50px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .certificate::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 1px solid {{secondary_color}};
+    pointer-events: none;
+  }
+
+  .header {
+    text-align: center;
+    width: 100%;
+  }
+
+  .logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 15px;
+  }
+
+  .logos img {
+    max-height: 100px;
+    max-width: 200px;
+    object-fit: contain;
+  }
+
+  .org-name {
+    font-size: 14px;
+    color: {{primary_color}};
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+  }
+
+  .title {
+    font-size: 32px;
+    font-weight: 700;
+    color: {{primary_color}};
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-top: 10px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+  }
+
+  .body {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .certify-text {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .participant-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    border-bottom: 2px solid {{secondary_color}};
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+  }
+
+  .description {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .course-name {
+    font-weight: 700;
+    color: {{primary_color}};
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .footer-left {
+    text-align: center;
+  }
+
+  .footer-center {
+    text-align: center;
+  }
+
+  .footer-right {
+    text-align: center;
+  }
+
+  .qr-code img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .qr-label {
+    font-size: 8px;
+    color: #999;
+    margin-top: 3px;
+  }
+
+  .issue-date {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .instructor-signature {
+    max-height: 80px;
+    max-width: 220px;
+    object-fit: contain;
+    margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .instructor-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    border-top: 1px solid #999;
+    padding-top: 5px;
+    min-width: 200px;
+  }
+
+  .instructor-label {
+    font-size: 10px;
+    color: #888;
+  }
+
+  .dependency-logos {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 8px;
+  }
+
+  .dependency-logos img {
+    max-height: 40px;
+    max-width: 80px;
+    object-fit: contain;
+  }
+
+  .uuid {
+    font-size: 8px;
+    color: #ccc;
+    position: absolute;
+    bottom: 12px;
+    right: 15px;
+  }
+</style>
+</head>
+<body>
+  <div class="certificate">
+    <div class="header">
+      <div class="logos">
+        <img src="{{institutional_logo_base64}}" alt="Logo Institucional" />
+      </div>
+      <div class="org-name">{{organization_name}}</div>
+      <div class="title">{{certificate_noun}}</div>
+      <div class="subtitle">{{course_type}}</div>
+    </div>
+
+    <div class="body">
+      <div class="certify-text">Se certifica que</div>
+      <div class="participant-name">{{participant_name}}</div>
+      <div class="description">
+        Ha completado satisfactoriamente {{course_label}} <span class="course-name">{{course_name}}</span>,
+        con una duracion de <strong>{{course_duration}} horas</strong>.
+      </div>
+      <div class="dependency-logos">
+        {{dependency_logos_html}}
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">
+        <div class="qr-code">
+          <img src="{{qr_code_base64}}" alt="QR Verificacion" />
+        </div>
+        <div class="qr-label">Escanea para verificar</div>
+      </div>
+
+      <div class="footer-center">
+        <div class="issue-date">Fecha de emision: {{issue_date}}</div>
+        <br/>
+        {{instructor_signature_html}}
+        <div class="instructor-name">{{instructor}}</div>
+        <div class="instructor-label">Instructor</div>
+      </div>
+
+      <div class="footer-right">
+      </div>
+    </div>
+
+    <div class="uuid">{{certificate_uuid}}</div>
+  </div>
+</body>
+</html>
