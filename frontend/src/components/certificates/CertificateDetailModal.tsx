@@ -110,8 +110,6 @@ const Detail = ({ cert, onClose }: { cert: CertificateDetail; onClose: () => voi
         rows={[
           ['Fecha de emision', formatDate(cert.issue_date)],
           ['Emitido por', cert.issued_by_name],
-          ['Plantilla', cert.template_name],
-          ['Branding', cert.branding_label],
           ['Reimpresiones', cert.reprint_count ? `${cert.reprint_count} (ultima: ${formatDateTime(cert.last_reprinted_at)})` : '0'],
           ...(cert.status === 'revoked'
             ? ([

@@ -79,7 +79,6 @@ export const CertificatesTab = ({ course }: CourseTabProps) => {
             ),
           },
           { key: 'date', header: 'Emision', render: (c) => formatDate(c.issue_date) },
-          { key: 'template', header: 'Diseño', render: (c) => c.template_name ?? '—' },
           {
             key: 'reprints',
             header: 'Reimpresiones',
@@ -125,8 +124,8 @@ export const CertificatesTab = ({ course }: CourseTabProps) => {
           Se regenerara el PDF de <strong>{reprinting?.participant_name}</strong> con los datos y el diseño actuales del curso.
         </p>
         <p className="small">
-          Se conservan el mismo QR (uuid), la fecha de emision y el branding original, asi que las copias impresas anteriores
-          siguen verificando igual.
+          Se conservan el mismo QR (uuid) y la fecha de emision, asi que las copias impresas anteriores siguen verificando
+          igual.
         </p>
       </ConfirmDialog>
     </div>

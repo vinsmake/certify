@@ -63,7 +63,6 @@ const GlobalCertificatesPage = () => {
           { key: 'participant', header: 'Participante', render: (c) => c.participant_name ?? '—' },
           { key: 'course', header: 'Curso', render: (c) => <Link to={`/cursos/${c.course_id}`}>{c.course_name}</Link> },
           { key: 'dependency', header: 'Dependencia', render: (c) => c.dependency_name ?? '—' },
-          { key: 'template', header: 'Plantilla', render: (c) => c.template_name ?? '—' },
           { key: 'date', header: 'Emision', render: (c) => formatDate(c.issue_date) },
           { key: 'issuer', header: 'Emitido por', render: (c) => c.issued_by_name ?? '—' },
           { key: 'reprints', header: 'Reimpr.', className: 'num', render: (c) => c.reprint_count },

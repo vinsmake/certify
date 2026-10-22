@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import type { EmitResponse } from '@certify/shared';
 import { certificateApi } from '../../../api';
-import { useTemplates } from '../../../api/queries';
 import { useApiMutation } from '../../../api/useApiMutation';
 import { CERTIFICATE_RELATED } from '../../../components/certificates/certificateActions';
 import { Alert } from '../../../components/ui/Alert';
@@ -16,7 +15,6 @@ import { useCourseParticipants } from './ParticipantsTab';
 
 export const GenerateTab = ({ course }: CourseTabProps) => {
   const { data, isPending } = useCourseParticipants(course.id);
-  const templates = useTemplates();
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState<EmitResponse | null>(null);
@@ -25,8 +23,6 @@ export const GenerateTab = ({ course }: CourseTabProps) => {
   const eligible = participants.filter((p) => p.attendance_status === 'completed' && p.certificate?.status !== 'valid');
   const notCompleted = participants.filter((p) => p.attendance_status !== 'completed').length;
   const nameOf = (id: number) => participants.find((p) => p.participant_id === id)?.full_name ?? `#${id}`;
-  const templateName =
-    course.template_name ?? templates.data?.find((t) => t.is_default)?.name ?? 'plantilla por defecto';
 
   const emit = useApiMutation({
     mutationFn: () => certificateApi.emit({ course_id: course.id, participant_ids: [...selected] }),
@@ -52,7 +48,7 @@ export const GenerateTab = ({ course }: CourseTabProps) => {
     <div className="stack">
       <div className="card stack-sm">
         <p>
-          Se emitira con el diseño <strong>{templateName}</strong> (<Link to={`/cursos/${course.id}/diseno`}>cambiar</Link>).
+          Se emitira con el diseño de este curso (<Link to={`/cursos/${course.id}/diseno`}>revisar o editar</Link>).
           Cada certificado lleva un QR unico a su pagina publica de verificacion.
         </p>
         <p className="small">
@@ -136,7 +132,7 @@ export const GenerateTab = ({ course }: CourseTabProps) => {
       >
         <p>
           Se generara un PDF para {plural(selected.size, 'participante', 'participantes')} de <strong>{course.name}</strong> con
-          el diseño <strong>{templateName}</strong>.
+          el diseño actual del curso.
         </p>
         <p className="small">Los certificados no se borran; si hay un error se pueden revocar o reimprimir.</p>
       </ConfirmDialog>

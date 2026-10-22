@@ -21,7 +21,6 @@ const UsersPage = lazy(() => import('./pages/admin/UsersPage'));
 const GlobalEventsPage = lazy(() => import('./pages/admin/GlobalEventsPage'));
 const GlobalCertificatesPage = lazy(() => import('./pages/admin/GlobalCertificatesPage'));
 const ActivityLogPage = lazy(() => import('./pages/admin/ActivityLogPage'));
-const SettingsPage = lazy(() => import('./pages/admin/SettingsPage'));
 
 export const App = () => (
   <BrowserRouter>
@@ -51,7 +50,6 @@ export const App = () => (
               <Route path="/admin/eventos" element={<GlobalEventsPage />} />
               <Route path="/admin/certificados-global" element={<GlobalCertificatesPage />} />
               <Route path="/admin/actividad" element={<ActivityLogPage />} />
-              <Route path="/configuracion" element={<SettingsPage />} />
             </Route>
           </Route>
         </Route>

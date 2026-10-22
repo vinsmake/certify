@@ -23,6 +23,7 @@ import { Spinner } from '../../components/ui/Spinner';
 import { Table } from '../../components/ui/Table';
 import { openBlob } from '../../lib/files';
 import { validate, type FieldErrors } from '../../lib/form';
+import { TEMPLATE_VARIABLES } from '../../lib/templateVariables';
 import { toast } from '../../lib/toast';
 import { useDebounced } from '../../lib/useDebounced';
 
@@ -35,31 +36,7 @@ const PAGE_OPTIONS = [
   { value: 'A4', label: 'A4' },
 ];
 
-// Variables que el backend sustituye en las plantillas (ver backend/src/rendering/certificate-html.ts)
-const VARIABLES = [
-  'participant_name',
-  'course_name',
-  'course_type',
-  'course_duration',
-  'instructor',
-  'certificate_noun',
-  'course_label',
-  'issue_date',
-  'certificate_uuid',
-  'verification_url',
-  'qr_code_base64',
-  'institutional_logo_base64',
-  'dependency_logos_html',
-  'dependency_signatures_html',
-  'instructor_signature_html',
-  'dependency_names',
-  'primary_color',
-  'secondary_color',
-  'font_family',
-  'organization_name',
-];
-
-export const previewTemplatePdf = (id: number) =>
+const previewTemplatePdf = (id: number) =>
   templateApi
     .previewPdf(id)
     .then((pdf) => openBlob(pdf))
@@ -142,7 +119,7 @@ const TemplateForm = ({
       </div>
       <p className="field__hint">
         Variables disponibles:{' '}
-        {VARIABLES.map((v) => (
+        {TEMPLATE_VARIABLES.map((v) => (
           <code key={v}>{`{{${v}}} `}</code>
         ))}
       </p>
@@ -204,7 +181,11 @@ const TemplatesPage = () => {
 
   return (
     <>
-      <PageHeader title="Plantillas de certificado" actions={<Button onClick={() => setCreating(true)}>Nueva plantilla</Button>} />
+      <PageHeader
+        title="Plantillas base"
+        subtitle="Puntos de partida para el diseño de los cursos. Cada curso trabaja sobre su propia copia: cambiar una plantilla aqui no modifica los cursos existentes."
+        actions={<Button onClick={() => setCreating(true)}>Nueva plantilla</Button>}
+      />
       <Table
         rows={data}
         loading={isPending}
@@ -263,8 +244,8 @@ const TemplatesPage = () => {
         confirmLabel="Desactivar"
       >
         <p>
-          <strong>{deactivating?.name}</strong> dejara de estar disponible. Los cursos que la usan pasaran a la plantilla por
-          defecto.
+          <strong>{deactivating?.name}</strong> dejara de estar disponible como punto de partida. Los cursos que ya la
+          copiaron no cambian.
         </p>
       </ConfirmDialog>
     </>

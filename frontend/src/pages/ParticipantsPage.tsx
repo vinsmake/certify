@@ -47,7 +47,6 @@ const ParticipantCertificates = ({ participant }: { participant: Participant }) 
             columns={[
               { key: 'course', header: 'Curso', render: (c) => <Link to={`/cursos/${c.course_id}`}>{c.course_name}</Link> },
               { key: 'date', header: 'Emision', render: (c) => formatDate(c.issue_date) },
-              { key: 'template', header: 'Plantilla', render: (c) => c.template_name ?? '—' },
               { key: 'status', header: 'Estado', render: (c) => <Badge status={c.status} /> },
             ]}
           />

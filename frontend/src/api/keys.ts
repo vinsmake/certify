@@ -8,7 +8,7 @@ export const keys = {
     list: (params: object) => ['courses', 'list', params] as const,
     detail: (id: number) => ['courses', id] as const,
     participants: (id: number) => ['courses', id, 'participants'] as const,
-    preview: (id: number, templateId: number | undefined) => ['courses', id, 'preview', templateId] as const,
+    preview: (id: number, draft: object) => ['courses', id, 'preview', draft] as const,
   },
   participants: {
     all: ['participants'] as const,
@@ -24,7 +24,6 @@ export const keys = {
   tags: { all: ['tags'] as const },
   templates: { all: ['templates'] as const, detail: (id: number) => ['templates', id] as const },
   users: { all: ['users'] as const },
-  branding: { all: ['branding'] as const },
   admin: {
     events: (params: object) => ['admin', 'events', params] as const,
     certificates: (params: object) => ['admin', 'certificates', params] as const,

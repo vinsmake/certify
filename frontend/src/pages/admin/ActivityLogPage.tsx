@@ -12,7 +12,6 @@ const TYPES: Record<ActivityType, { label: string; tone: 'success' | 'danger' | 
   certificate_reprint: { label: 'Reimpresion', tone: 'warning' },
   revocation: { label: 'Revocacion', tone: 'danger' },
   course_creation: { label: 'Curso creado', tone: 'info' },
-  branding_change: { label: 'Branding', tone: 'purple' },
 };
 
 const LIMIT = 100;

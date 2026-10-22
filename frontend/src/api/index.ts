@@ -5,7 +5,6 @@ import type {
   ActivityItem,
   AdminCertificate,
   AdminEvent,
-  BrandingVersion,
   CertificateDetail,
   CertificateListItem,
   CertificateStatus,
@@ -14,8 +13,8 @@ import type {
   CourseDetail,
   CourseListItem,
   CourseParticipantsResponse,
+  CoursePreview,
   CourseType,
-  CreateBrandingInput,
   CreateCourseInput,
   CreateDependencyInput,
   CreateParticipantInput,
@@ -31,8 +30,6 @@ import type {
   LoginResponse,
   MessageResponse,
   MyStats,
-  Orientation,
-  PageSize,
   Paginated,
   Participant,
   ParticipantCertificatesResponse,
@@ -41,7 +38,8 @@ import type {
   Tag,
   Template,
   TemplateSummary,
-  UpdateBrandingInput,
+  UpdateCourseDependencyInput,
+  UpdateCourseDesignInput,
   UpdateCourseInput,
   UpdateDependencyInput,
   UpdateParticipantInput,
@@ -108,19 +106,25 @@ export const courseApi = {
   uploadSignature: (id: number, file: File) => upload<MessageResponse>(`/courses/${id}/signature`, 'signature', file),
   deleteSignature: (id: number) => del<MessageResponse>(`/courses/${id}/signature`),
 
-  previewHtml: (id: number, templateId?: number) =>
-    post<CoursePreview>(`/courses/${id}/certificate-preview`, { template_id: templateId, format: 'html' }),
-  previewPdf: (id: number, templateId?: number) =>
-    postBlob(`/courses/${id}/certificate-preview`, { template_id: templateId, format: 'pdf' }),
-};
+  // ---- Diseño del certificado (todo es por curso) ----
+  updateDesign: (id: number, data: UpdateCourseDesignInput) => put<CourseDetail>(`/courses/${id}/design`, data),
+  applyTemplate: (id: number, templateId: number) =>
+    post<CourseDetail>(`/courses/${id}/design/apply-template`, { template_id: templateId }),
+  uploadLogo: (id: number, file: File) => upload<MessageResponse>(`/courses/${id}/logo`, 'logo', file),
+  deleteLogo: (id: number) => del<MessageResponse>(`/courses/${id}/logo`),
+  updateDependency: (id: number, dependencyId: number, data: UpdateCourseDependencyInput) =>
+    put<unknown>(`/courses/${id}/dependencies/${dependencyId}`, data),
+  uploadDependencyFile: (id: number, dependencyId: number, kind: 'logo' | 'signature', file: File) =>
+    upload<MessageResponse>(`/courses/${id}/dependencies/${dependencyId}/${kind}`, kind, file),
+  deleteDependencyFile: (id: number, dependencyId: number, kind: 'logo' | 'signature') =>
+    del<MessageResponse>(`/courses/${id}/dependencies/${dependencyId}/${kind}`),
 
-export interface CoursePreview {
-  html: string;
-  template_id: number;
-  template_name: string;
-  orientation: Orientation;
-  page_size: PageSize;
-}
+  /** Vista previa con los datos del curso; el borrador reemplaza a los campos de diseño guardados. */
+  previewHtml: (id: number, draft: UpdateCourseDesignInput = {}) =>
+    post<CoursePreview>(`/courses/${id}/certificate-preview`, { ...draft, format: 'html' }),
+  previewPdf: (id: number, draft: UpdateCourseDesignInput = {}) =>
+    postBlob(`/courses/${id}/certificate-preview`, { ...draft, format: 'pdf' }),
+};
 
 export const participantApi = {
   list: (q: PageQuery & { search?: string; dependency_id?: string; course_id?: string; tag_id?: string }) =>
@@ -156,10 +160,6 @@ export const dependencyApi = {
   create: (data: CreateDependencyInput) => post<Dependency>('/dependencies', data),
   update: (id: number, data: UpdateDependencyInput) => put<Dependency>(`/dependencies/${id}`, data),
   deactivate: (id: number) => del<MessageResponse>(`/dependencies/${id}`),
-  uploadLogo: (id: number, file: File) => upload<MessageResponse>(`/dependencies/${id}/logo`, 'logo', file),
-  uploadSignature: (id: number, file: File) =>
-    upload<MessageResponse>(`/dependencies/${id}/signature`, 'signature', file),
-  deleteSignature: (id: number) => del<MessageResponse>(`/dependencies/${id}/signature`),
 };
 
 export const tagApi = {
@@ -186,16 +186,6 @@ export const userApi = {
   create: (data: CreateUserInput) => post<UserItem>('/users', data),
   update: (id: number, data: UpdateUserInput) => put<UserItem>(`/users/${id}`, data),
   deactivate: (id: number) => del<MessageResponse>(`/users/${id}`),
-};
-
-export const brandingApi = {
-  active: () => get<BrandingVersion | null>('/branding/active'),
-  versions: () => get<BrandingVersion[]>('/branding/versions'),
-  create: (data: CreateBrandingInput) => post<BrandingVersion>('/branding/versions', data),
-  update: (id: number, data: UpdateBrandingInput) => put<BrandingVersion>(`/branding/versions/${id}`, data),
-  activate: (id: number) => put<BrandingVersion>(`/branding/versions/${id}/activate`),
-  remove: (id: number) => del<MessageResponse>(`/branding/versions/${id}`),
-  uploadLogo: (id: number, file: File) => upload<MessageResponse>(`/branding/versions/${id}/logo`, 'logo', file),
 };
 
 export const adminApi = {

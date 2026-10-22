@@ -65,7 +65,7 @@ const VerifyPage = () => {
   const course = cert.course;
 
   return (
-    <Shell logo={cert.branding.logo_path} org={cert.branding.organization_name}>
+    <Shell logo={cert.organization.logo_path} org={cert.organization.name}>
       {valid ? (
         <Banner tone="valid" icon={'✓'} title="CERTIFICADO VALIDO" text="Este certificado fue emitido y se encuentra vigente." />
       ) : (
@@ -131,10 +131,6 @@ const VerifyPage = () => {
           </div>
         </div>
       )}
-
-      <p className="muted small">
-        Emitido bajo la version de branding: <strong>{cert.branding.version_label ?? '—'}</strong>
-      </p>
     </Shell>
   );
 };

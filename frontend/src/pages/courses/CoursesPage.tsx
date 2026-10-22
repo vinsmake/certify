@@ -87,7 +87,6 @@ const CoursesPage = () => {
                 '—'
               ),
           },
-          { key: 'template', header: 'Diseño', render: (c) => c.template_name ?? <span className="muted">Por defecto</span> },
           { key: 'hours', header: 'Horas', render: (c) => (c.duration_hours ? `${c.duration_hours} h` : '—') },
           { key: 'start', header: 'Inicio', render: (c) => formatDate(c.start_date) },
           { key: 'end', header: 'Fin', render: (c) => formatDate(c.end_date) },

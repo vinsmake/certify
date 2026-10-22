@@ -1,3 +1,5 @@
+// Dependencias: definen permisos (usuarios rol dependencia) y agrupan cursos y participantes.
+// Su logo, firma y firmante en el certificado se configuran en cada curso (pestaña Diseño).
 import { useState, type FormEvent } from 'react';
 import { createDependencySchema, type CreateDependencyInput, type Dependency } from '@certify/shared';
 import { dependencyApi } from '../../api';
@@ -8,10 +10,8 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { Input } from '../../components/ui/Field';
-import { FileButton } from '../../components/ui/FileButton';
 import { Modal } from '../../components/ui/Modal';
 import { PageHeader } from '../../components/ui/PageHeader';
-import { StoredImage } from '../../components/ui/StoredImage';
 import { Table } from '../../components/ui/Table';
 import { validate, type FieldErrors } from '../../lib/form';
 
@@ -28,16 +28,11 @@ const DependencyForm = ({
 }) => {
   const [name, setName] = useState(initial?.name ?? '');
   const [abbreviation, setAbbreviation] = useState(initial?.abbreviation ?? '');
-  const [managerName, setManagerName] = useState(initial?.manager_name ?? '');
   const [errors, setErrors] = useState<FieldErrors>({});
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const result = validate(createDependencySchema, {
-      name,
-      abbreviation: abbreviation.trim() || null,
-      manager_name: managerName.trim() || null,
-    });
+    const result = validate(createDependencySchema, { name, abbreviation: abbreviation.trim() || null });
     if (!result.ok) return setErrors(result.errors);
     onSubmit(result.data);
   };
@@ -46,12 +41,6 @@ const DependencyForm = ({
     <form className="form" onSubmit={handleSubmit} noValidate>
       <Input label="Nombre" required value={name} error={errors.name} onChange={(e) => setName(e.target.value)} />
       <Input label="Abreviatura" value={abbreviation} onChange={(e) => setAbbreviation(e.target.value)} placeholder="Opcional" />
-      <Input
-        label="Nombre del encargado"
-        value={managerName}
-        onChange={(e) => setManagerName(e.target.value)}
-        hint="Aparece bajo su firma en el certificado."
-      />
       <div className="form__actions">
         <Button variant="secondary" onClick={onCancel} disabled={loading}>
           Cancelar
@@ -89,36 +78,22 @@ const DependenciesPage = () => {
     success: (_res, { active }) => (active ? 'Dependencia activada.' : 'Dependencia desactivada.'),
     onSuccess: () => setDeactivating(null),
   });
-  const uploadLogo = useApiMutation({
-    mutationFn: ({ id, file }: { id: number; file: File }) => dependencyApi.uploadLogo(id, file),
-    invalidate,
-    success: 'Logo actualizado.',
-  });
-  const uploadSignature = useApiMutation({
-    mutationFn: ({ id, file }: { id: number; file: File }) => dependencyApi.uploadSignature(id, file),
-    invalidate,
-    success: 'Firma actualizada.',
-  });
-  const deleteSignature = useApiMutation({
-    mutationFn: (id: number) => dependencyApi.deleteSignature(id),
-    invalidate,
-    success: 'Firma eliminada.',
-  });
 
   return (
     <>
-      <PageHeader title="Dependencias" actions={<Button onClick={() => setCreating(true)}>Nueva dependencia</Button>} />
+      <PageHeader
+        title="Dependencias"
+        subtitle="Definen que ve cada usuario. El logo y la firma de una dependencia en el certificado se configuran en cada curso."
+        actions={<Button onClick={() => setCreating(true)}>Nueva dependencia</Button>}
+      />
       <Table
         rows={data}
         loading={isPending}
         rowKey={(d) => d.id}
         empty="No hay dependencias registradas."
         columns={[
-          { key: 'logo', header: 'Logo', render: (d) => <StoredImage path={d.logo_path} alt={d.name} /> },
           { key: 'name', header: 'Nombre', render: (d) => d.name },
           { key: 'abbr', header: 'Abreviatura', render: (d) => d.abbreviation ?? '—' },
-          { key: 'manager', header: 'Encargado', render: (d) => d.manager_name ?? '—' },
-          { key: 'signature', header: 'Firma', render: (d) => <StoredImage path={d.signature_path} alt="Firma" /> },
           { key: 'status', header: 'Estado', render: (d) => <Badge status={d.is_active ? 'active' : 'inactive'} /> },
           {
             key: 'actions',
@@ -128,17 +103,6 @@ const DependenciesPage = () => {
                 <Button size="sm" variant="secondary" onClick={() => setEditing(d)}>
                   Editar
                 </Button>
-                <FileButton variant="ghost" onSelect={(file) => uploadLogo.mutate({ id: d.id, file })}>
-                  Logo
-                </FileButton>
-                <FileButton variant="ghost" onSelect={(file) => uploadSignature.mutate({ id: d.id, file })}>
-                  Firma
-                </FileButton>
-                {d.signature_path && (
-                  <Button size="sm" variant="ghost" onClick={() => deleteSignature.mutate(d.id)}>
-                    Quitar firma
-                  </Button>
-                )}
                 {d.is_active ? (
                   <Button size="sm" variant="danger" onClick={() => setDeactivating(d)}>
                     Desactivar

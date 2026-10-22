@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { createCourseSchema, type Course, type CreateCourseInput } from '@certify/shared';
-import { useDependencies, useTemplates } from '../../api/queries';
+import { useDependencies } from '../../api/queries';
 import { useCurrentUser } from '../../auth/useAuth';
 import { courseTypeOptions, toDateInput } from '../../lib/format';
 import { validate, type FieldErrors } from '../../lib/form';
@@ -16,7 +16,6 @@ interface CourseFormProps {
 
 export const CourseForm = ({ initial, onSubmit, onCancel, loading }: CourseFormProps) => {
   const { isAdmin } = useCurrentUser();
-  const templates = useTemplates();
   // Las colaboradoras se eligen al crear (admin); despues se gestionan en la pagina del curso
   const pickDependencies = isAdmin && !initial;
   const deps = useDependencies(true, pickDependencies);
@@ -29,7 +28,6 @@ export const CourseForm = ({ initial, onSubmit, onCancel, loading }: CourseFormP
     instructor: initial?.instructor ?? '',
     start_date: toDateInput(initial?.start_date),
     end_date: toDateInput(initial?.end_date),
-    template_id: initial?.template_id ? String(initial.template_id) : '',
   });
   const [dependencyIds, setDependencyIds] = useState<number[]>([]);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -50,7 +48,6 @@ export const CourseForm = ({ initial, onSubmit, onCancel, loading }: CourseFormP
       instructor: form.instructor.trim() || null,
       start_date: form.start_date || null,
       end_date: form.end_date || null,
-      template_id: form.template_id ? Number(form.template_id) : null,
       ...(pickDependencies && { dependency_ids: dependencyIds }),
     });
     if (!result.ok) return setErrors(result.errors);
@@ -62,17 +59,12 @@ export const CourseForm = ({ initial, onSubmit, onCancel, loading }: CourseFormP
   return (
     <form className="form" onSubmit={handleSubmit} noValidate>
       <Input label="Nombre" required value={form.name} onChange={set('name')} error={errors.name} placeholder="Ej: Primeros Auxilios" />
-      <div className="grid-2">
-        <Select label="Tipo" required value={form.type} onChange={set('type')} options={courseTypeOptions} error={errors.type} />
-        <Select
-          label="Diseño de certificado"
-          value={form.template_id}
-          onChange={set('template_id')}
-          options={(templates.data ?? []).map((t) => ({ value: t.id, label: t.name }))}
-          placeholder="Plantilla por defecto"
-          error={errors.template_id}
-        />
-      </div>
+      <Select label="Tipo" required value={form.type} onChange={set('type')} options={courseTypeOptions} error={errors.type} />
+      {!initial && (
+        <p className="field__hint">
+          El certificado se diseña despues, en la pestaña Diseño del curso (empieza con la plantilla base por defecto).
+        </p>
+      )}
       <Textarea label="Descripcion" rows={2} value={form.description} onChange={set('description')} />
       <div className="grid-2">
         <Input

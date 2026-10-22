@@ -17,12 +17,11 @@ const MENU: MenuItem[] = [
 const ADMIN_MENU: MenuItem[] = [
   { label: 'Dependencias', path: '/admin/dependencias' },
   { label: 'Tags', path: '/admin/tags' },
-  { label: 'Plantillas', path: '/admin/plantillas' },
+  { label: 'Plantillas base', path: '/admin/plantillas' },
   { label: 'Usuarios', path: '/admin/usuarios' },
   { label: 'Eventos globales', path: '/admin/eventos' },
   { label: 'Certificados global', path: '/admin/certificados-global' },
   { label: 'Actividad', path: '/admin/actividad' },
-  { label: 'Configuracion', path: '/configuracion' },
 ];
 
 const MenuLink = ({ item }: { item: MenuItem }) => (
