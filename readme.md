@@ -6,15 +6,16 @@ HTML/CSS e incluye un QR a su pagina publica de verificacion.
 
 ## Caracteristicas
 
-- **Pagina por curso** con todo su ciclo: participantes y asistencia, diseño de certificado con vista
-  previa usando los datos reales del curso, generacion, y certificados emitidos.
-- **Reimpresion con el mismo QR**: regenera el PDF con los datos y el diseño actuales conservando el
-  identificador, la fecha de emision y el branding original.
+- **Pagina por curso** con todo su ciclo: participantes y asistencia, diseño del certificado,
+  generacion y certificados emitidos.
+- **Diseño por curso**: cada curso tiene su propio HTML/CSS (copia de una plantilla base) y su logo,
+  organizacion, colores, fuente y firmas, con vista previa en vivo usando sus datos reales.
+- **Reimpresion con el mismo QR**: regenera el PDF con los datos y el diseño actuales del curso
+  conservando el identificador y la fecha de emision.
 - **Revocacion** con motivo y registro; la verificacion publica refleja el estado al instante.
-- **Plantillas HTML/CSS** intercambiables, editables con vista previa en vivo.
-- **Dependencias** (unidades organizacionales) con logo, encargado y firma; un curso puede tener varias
-  colaboradoras y todas aparecen en el certificado.
-- **Branding versionado**: cada certificado guarda la version con la que se emitio.
+- **Plantillas base** HTML/CSS como puntos de partida, editables con vista previa en vivo.
+- **Dependencias** (unidades organizacionales) para permisos; un curso puede tener varias colaboradoras
+  y sus logos y firmas (configurados en el curso) aparecen en el certificado.
 - **Roles**: `admin` (todo) y `dependencia` (solo sus datos y los cursos donde colabora).
 - Participantes con tags, estadisticas por dependencia y vistas globales para el admin.
 
@@ -43,7 +44,7 @@ npm run up                # levanta BD, backend y frontend
 - API: http://localhost:3000/api (`/api/health`)
 
 Al arrancar, el backend aplica las migraciones pendientes y corre el seed (admin inicial desde
-`SEED_ADMIN_*`, dependencia por defecto, branding y plantillas).
+`SEED_ADMIN_*`, dependencia por defecto y plantillas base).
 
 ## Comandos
 
@@ -67,4 +68,4 @@ Todo el contexto del proyecto vive en [`memories/`](memories/README.md):
 - [`entorno-local.md`](memories/entorno-local.md): desarrollo local en detalle.
 - [`conocimiento.md`](memories/conocimiento.md): reglas del proyecto y trampas conocidas.
 - [`decisiones.md`](memories/decisiones.md) e [`historial.md`](memories/historial.md): por que esta asi y que cambio.
-- [`configuracion.md`](memories/configuracion.md): personalizacion de branding, logos y plantillas.
+- [`configuracion.md`](memories/configuracion.md): diseño por curso, plantillas base y dependencias.

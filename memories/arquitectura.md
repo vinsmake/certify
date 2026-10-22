@@ -65,12 +65,11 @@ Todos bajo `/api`. Autenticacion con `Authorization: Bearer <JWT>` salvo login, 
 |---|---|
 | auth | `POST /auth/login`, `GET /auth/me` |
 | users (admin) | `GET/POST /users`, `PUT/DELETE /users/:id` |
-| dependencies | `GET /dependencies`, `POST/PUT/DELETE` (admin), `POST /:id/logo`, `POST/DELETE /:id/signature` |
+| dependencies | `GET /dependencies`, `POST/PUT/DELETE` (admin). Solo nombre y abreviatura |
 | tags | CRUD `/tags` y `POST /tags/:id/logo` |
-| templates | `GET /templates`, `GET /:id`, CRUD (admin), `PUT /:id/default`, `POST /:id/preview` (PDF de ejemplo), `POST /templates/render` (HTML de ejemplo para el editor) |
-| branding | `GET /branding/active`, `GET/POST /versions`, `PUT /versions/:id`, `PUT /versions/:id/activate`, `DELETE /versions/:id`, `POST /versions/:id/logo` |
+| templates (plantillas base) | `GET /templates`, `GET /:id`, CRUD (admin), `PUT /:id/default`, `POST /:id/preview` (PDF de ejemplo), `POST /templates/render` (HTML de ejemplo para el editor) |
 | participants | CRUD `/participants` (filtros search, dependency_id, course_id, tag_id), `GET /:id/certificates` |
-| courses | CRUD `/courses`; `POST/DELETE /:id/dependencies/:depId`; `GET/POST /:id/participants`, `PUT/DELETE /:id/participants/:participantId`; `POST/DELETE /:id/signature`; `POST /:id/certificate-preview` |
+| courses | CRUD `/courses`; `GET/POST /:id/participants`, `PUT/DELETE /:id/participants/:participantId`; diseño: `PUT /:id/design`, `POST /:id/design/apply-template`, `POST/DELETE /:id/logo`, `POST/DELETE /:id/signature` (instructor), `POST /:id/certificate-preview` (acepta borrador); colaboradoras: `POST/DELETE /:id/dependencies/:depId` (admin), `PUT /:id/dependencies/:depId` (firmante), `POST/DELETE /:id/dependencies/:depId/logo` y `/signature` |
 | certificates | `GET /certificates`, `GET /:id`, `POST /emit`, `GET /:id/download`, `POST /:id/reprint`, `POST /:id/revoke` |
 | verification | `GET /verify/:uuid` (publico) |
 | stats | `GET /stats` (admin), `GET /stats/me`, `GET /stats/dependency/:id` |
@@ -81,31 +80,31 @@ Errores: `{ error, details?: [{ field, message }] }`. 400 validacion, 401 sin se
 
 ## Acceso por rol
 
-- **admin**: todo. Gestiona usuarios, dependencias, plantillas, branding y dependencias colaboradoras.
+- **admin**: todo. Gestiona usuarios, dependencias, plantillas base y agrega/quita colaboradoras de un curso.
 - **dependencia**: sus participantes y los cursos donde su dependencia es duena o colaboradora
   (y los certificados de esos cursos). Un curso que crea queda a nombre de su dependencia.
 
 ## Pagina del curso (`/cursos/:id/:tab`)
 
-Concentra el ciclo de vida del curso (decisiones #5 y #9):
+Concentra el ciclo de vida del curso (decisiones #5, #9 y #11):
 
 | Pestaña | Que hace |
 |---|---|
 | Participantes | Inscribir (buscador con seleccion multiple), asistencia, baja, estado del certificado |
-| Diseño | Elegir la plantilla del curso; vista previa con sus datos reales; ver como PDF |
+| Diseño | TODO el certificado del curso: HTML propio con vista previa en vivo, cargar plantilla base, organizacion, colores, fuente, formato, logo, firma del instructor y colaboradoras (logo, firma, firmante) |
 | Generar | Emitir a quienes completaron y no tienen certificado valido |
 | Certificados | Emitidos del curso: PDF, detalle, reimpresion (mismo QR) y revocacion (desde el detalle) |
-| Informacion | Datos, edicion, eliminacion, firma del instructor y dependencias colaboradoras |
+| Informacion | Datos generales, edicion y eliminacion |
 
 ## Generacion de certificados
 
-1. Plantilla: la indicada, la del curso (`courses.template_id`) o la marcada por defecto (solo activas).
-2. Variables `{{...}}`: participante, curso, dependencias (logos y firmas en base64), QR,
-   branding (`backend/src/rendering/certificate-html.ts` documenta la lista).
-3. Puppeteer renderiza el HTML a PDF con orientacion y tamaño de la plantilla y se guarda en
-   `storage/certificates/`.
-4. **Reimpresion**: mismo `uuid` (mismo QR), misma `issue_date` y branding original; datos y plantilla
-   actuales del curso. Archivo `certificate_<uuid>_r<n>.pdf`; el anterior no se borra.
+1. HTML: la copia propia del curso (`courses.certificate_html`), con su orientacion y tamaño.
+2. Variables `{{...}}`: participante, curso, diseño del curso (logo, organizacion, colores, fuente),
+   colaboradoras (logos y firmas del curso en base64) y QR. `backend/src/rendering/certificate-html.ts`
+   documenta la lista.
+3. Puppeteer renderiza el HTML a PDF y se guarda en `storage/certificates/`.
+4. **Reimpresion**: mismo `uuid` (mismo QR) y misma `issue_date`; datos y diseño actuales del curso.
+   Archivo `certificate_<uuid>_r<n>.pdf`; el anterior no se borra.
 5. **Revocacion**: el certificado nunca se borra; queda `revoked` y se registra en `revocation_log`.
 
 Las vistas previas (editor de plantillas y pestaña Diseño) usan el mismo renderizado del backend,
@@ -115,5 +114,5 @@ asi lo que se ve es exactamente lo que se emitira (decision #8).
 
 El schema vive en `backend/prisma/schema.prisma` y se aplica solo con migraciones
 (`backend/prisma/migrations/`). Tablas: dependencies, users, certificate_templates, courses,
-course_dependencies, participants, tags, participant_tags, course_participants, branding_versions,
-certificates, revocation_log.
+course_dependencies, participants, tags, participant_tags, course_participants, certificates,
+revocation_log. (`branding_versions` existio hasta la migracion `20261022120000_diseno_por_curso`.)

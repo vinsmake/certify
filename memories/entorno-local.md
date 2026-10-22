@@ -22,7 +22,7 @@ npm run logs              # seguir logs
 ```
 
 Al arrancar, el backend aplica las migraciones pendientes y corre el seed (admin inicial, dependencia
-por defecto, branding v1 y 4 plantillas). Comprobar con `curl localhost:3000/api/health`.
+por defecto y 4 plantillas base). Comprobar con `curl localhost:3000/api/health`.
 
 Credenciales de desarrollo: ver `credenciales.md`.
 

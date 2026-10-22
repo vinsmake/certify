@@ -74,13 +74,17 @@ y fix de PDF (`a53a537`).
   Verificado despues del merge: typecheck, lint, 20/20 tests, backend y frontend arriba.
 - `main` local va 10 commits por delante de `origin/main` (incluye `42a10e3 restart` del usuario); falta el push.
 
-## 2026-10-22 - EN CURSO: diseño del certificado por curso (decision #11)
+## 2026-10-22 - Diseño del certificado por curso (decision #11)
 
-Plan por bloques (cada uno con su commit):
-1. BD + backend: HECHO. Migracion `20261022120000_diseno_por_curso` (copia datos y borra branding),
-   endpoints `PUT /courses/:id/design`, `POST /courses/:id/design/apply-template`, `POST/DELETE /courses/:id/logo`,
-   `PUT /courses/:id/dependencies/:depId` y su `/logo` y `/signature`; preview acepta borrador; 25/25 tests.
-2. Frontend: pestaña Diseño completa (HTML + vista previa en vivo + logo/colores/fuente/firmas/colaboradoras),
-   quitar Configuracion y logo/firma de Dependencias, quitar plantilla del formulario de curso.
-3. Docs: arquitectura, conocimiento, configuracion, historial.
-Si se pierde el contexto: revisar `git status` y `git diff` para ver en que punto quedo.
+- Pedido del usuario: todo el diseño del certificado se edita en el curso; Configuracion deja de existir.
+- BD: migracion `20261022120000_diseno_por_curso`. Copia a cada curso el HTML de su plantilla (o la default),
+  el branding activo y los logos/firmas/encargados de sus dependencias; despues borra `branding_versions`,
+  `courses.template_id`, `certificates.template_id/branding_version_id` y logo/firma/encargado de `dependencies`.
+  Verificado en la BD local: los 2 cursos quedaron con HTML, organizacion y colores; el logo inexistente se descarto.
+- Backend: endpoints de diseño, logo del curso, carga de plantilla base y archivos de colaboradoras por curso;
+  la vista previa acepta un borrador; sin logo se usa una imagen transparente (adios al icono roto). 25/25 tests.
+- Frontend: pestaña Diseño con todo el certificado (HTML + vista previa en vivo del borrador, identidad, firmas y
+  colaboradoras); se eliminan Configuracion y logo/firma de Dependencias; "Plantillas" pasa a "Plantillas base".
+- Verificado en navegador: cambio de organizacion visible en la vista previa sin guardar, guardado, /configuracion
+  da 404, reimpresion de un certificado previo a la migracion conserva el QR y usa el diseño nuevo.
+- Commits: `e99de8d` (API), `8b0a484` (frontend) y el de documentacion.

@@ -36,91 +36,60 @@ La variable VERIFICATION_BASE_URL es la que se usa para generar los QR de los ce
 VITE_APP_TITLE=Plataforma de Credenciales Digitales
 ```
 
-## 2. Sistema de Branding Versionado (Institucional)
+## 2. Diseño del certificado (todo es por curso)
 
-El branding institucional (logo, colores, fuente, nombre de organizacion) se gestiona mediante versiones en la base de datos. Esto garantiza que los certificados historicos conserven el branding con el que fueron emitidos.
+Desde 2026-10-22 (decision #11) **todo lo que aparece en el certificado se configura en cada curso**,
+en la pestaña **Diseño** de su pagina (`/cursos/:id/diseno`). No hay branding global ni pagina de
+Configuracion.
 
-**Importante:** El branding institucional es independiente de los logos de dependencias. El branding define la identidad visual global (colores, fuente, logo institucional), mientras que cada dependencia tiene su propio logo que se muestra adicionalmente en los certificados.
+### 2.1 Que se configura en el curso
 
-### 2.1 Como funciona
+| Elemento | Variable de plantilla | Como se guarda |
+|---|---|---|
+| HTML/CSS del certificado | (el documento entero) | "Guardar diseño" |
+| Orientacion y tamaño de pagina | - | "Guardar diseño" |
+| Organizacion emisora | `{{organization_name}}` | "Guardar diseño" |
+| Color principal y secundario | `{{primary_color}}`, `{{secondary_color}}` | "Guardar diseño" |
+| Fuente | `{{font_family}}` | "Guardar diseño" |
+| Logo | `{{institutional_logo_base64}}` | Al subirlo |
+| Firma del instructor | `{{instructor_signature_html}}` | Al subirla |
+| Logo, firma y firmante de cada colaboradora | `{{dependency_logos_html}}`, `{{dependency_signatures_html}}`, `{{dependency_names}}` | Al subirlos / al salir del campo |
 
-- La tabla `branding_versions` almacena cada version de marca institucional.
-- Solo una version puede estar activa a la vez (campo `is_active`).
-- Al emitir un certificado, se guarda la referencia a la version de branding activa en ese momento (`branding_version_id` en la tabla `certificates`).
-- Al cambiar de logo o colores institucionales, se crea una NUEVA version de branding. La anterior se desactiva pero no se elimina.
-- Cuando se visualiza o descarga un certificado historico, se usa la version de branding con la que fue emitido, NO la activa actual.
+- La vista previa en vivo muestra el borrador (sin guardar) con los datos reales del curso y un
+  participante de ejemplo. "Ver como PDF" genera el PDF exacto.
+- Sin logo, el certificado usa una imagen transparente (no sale el icono de imagen rota).
+- Los certificados ya emitidos no cambian. Para aplicar un diseño nuevo a uno existente se reimprime desde
+  la pestaña Certificados: conserva el mismo QR y la fecha de emision.
 
-### 2.2 Crear una version de branding
+### 2.2 Plantillas base
 
-Para crear la version inicial o una nueva version:
+- La pagina **Plantillas base** (admin) es un catalogo de puntos de partida.
+- Al crear un curso se copia la plantilla marcada por defecto. En la pestaña Diseño se puede cargar otra
+  ("Cargar"): reemplaza el HTML, la orientacion y el tamaño del curso, y conserva logo, colores y firmas.
+- Editar o desactivar una plantilla base no modifica los cursos que ya la copiaron.
 
-1. Subir el logo institucional via el endpoint POST /api/branding/versions/:id/logo o colocarlo manualmente en storage/logos/branding/ con nombre descriptivo (ej: logo_institucional_v1.png).
-2. Crear la version en la base de datos via POST /api/branding/versions con los datos:
-   - version_label: etiqueta descriptiva (ej: "2024-original", "2025-nuevo-logo")
-   - logo_path: ruta relativa al logo institucional (ej: "logos/branding/logo_institucional_v1.png")
-   - primary_color: color primario en hex (ej: "#1a237e")
-   - secondary_color: color secundario en hex (ej: "#0d47a1")
-   - font_family: familia tipografica (ej: "Roboto")
-   - organization_name: nombre oficial de la organizacion (ej: "Ministerio de Educacion")
-3. Activar la version via PUT /api/branding/versions/:id/activate.
+## 3. Dependencias
 
-### 2.3 Cambiar de logo institucional (sin afectar certificados anteriores)
+- Una dependencia define permisos (los usuarios con rol `dependencia` solo ven lo suyo) y agrupa cursos y
+  participantes. En la pagina Dependencias solo se edita nombre y abreviatura.
+- Un curso puede tener varias **colaboradoras** (las agrega el admin, porque les da acceso al curso).
+  Su logo, firma y nombre del firmante se configuran en la pestaña Diseño de cada curso y solo aplican ahi.
+- Si no se escribe firmante, se usa el nombre de la dependencia.
 
-1. Subir el nuevo logo institucional al sistema.
-2. Crear una nueva version de branding con el nuevo logo y los colores/fuente deseados.
-3. Activar la nueva version.
-4. Los certificados emitidos anteriormente seguiran mostrando el logo anterior porque estan vinculados a la version de branding con la que fueron emitidos.
+## 4. Plantillas base (HTML)
 
-## 3. Sistema de Dependencias (Unidades Organizacionales)
-
-Las dependencias representan las unidades organizacionales que pueden emitir certificados (ej: "Direccion de Capacitacion", "Direccion de Tecnologia").
-
-### 3.1 Configuracion de una dependencia
-
-Cada dependencia tiene:
-- **name:** Nombre completo (ej: "Direccion Nacional de Capacitacion")
-- **abbreviation:** Abreviatura (ej: "DNC")
-- **logo_path:** Ruta al logo de la dependencia (almacenado en storage/logos/dependencies/)
-
-### 3.2 Logos de dependencia en certificados
-
-- Cada dependencia tiene su propio logo, independiente del logo institucional.
-- Al emitir un certificado, se incluyen: el logo institucional (del branding activo) + los logos de todas las dependencias asociadas al curso.
-- Si un curso es colaborativo entre dos dependencias, ambos logos aparecen en el certificado.
-- Los logos de dependencia se muestran en el orden definido por `display_order` en la tabla `course_dependencies`.
-
-### 3.3 Cursos con multiples dependencias
-
-Un curso puede tener una o mas dependencias asociadas:
-- La **dependencia principal** se asigna automaticamente al crear el curso (la del usuario emisor que lo crea).
-- Se pueden agregar **dependencias colaboradoras** via POST /api/courses/:id/dependencies.
-- Cada dependencia asociada tiene un `display_order` que determina el orden de aparicion de los logos en el certificado.
-- Ejemplo: Un taller creado por la "Direccion de Capacitacion" con colaboracion de la "Direccion de Tecnologia" mostrara ambos logos.
-
-### 3.4 Asignacion de usuarios a dependencias
-
-- Los usuarios con rol **admin** no necesitan estar vinculados a una dependencia (dependency_id puede ser null). Tienen acceso global.
-- Los usuarios con rol **emisor** deben estar vinculados a una dependencia (dependency_id requerido). Solo pueden gestionar cursos y certificados de su dependencia.
-
-## 4. Sistema de Plantillas de Certificado
-
-Las plantillas permiten crear multiples modelos/disenos de certificado sin modificar codigo. Cada plantilla es un documento HTML/CSS autocontenido que se renderiza a PDF con Puppeteer.
+Cada plantilla es un documento HTML/CSS autocontenido con variables `{{variable}}` que el backend
+sustituye y Puppeteer convierte a PDF.
 
 ### 4.1 Como funciona
 
-- La tabla `certificate_templates` almacena las plantillas.
-- Cada plantilla tiene un `html_content` que es el HTML/CSS completo del certificado.
-- Una plantilla puede marcarse como `is_default` para usarse cuando no se selecciona una especificamente.
-- Al emitir certificados, el usuario selecciona la plantilla a usar.
-- El certificado emitido guarda referencia a la plantilla usada (`template_id`).
+- La tabla `certificate_templates` guarda las plantillas base; una se marca `is_default`.
+- El curso guarda su propia copia en `courses.certificate_html` (junto con `orientation` y `page_size`).
+- Al emitir o reimprimir se usa siempre el HTML del curso.
 
 ### 4.2 Plantillas incluidas por defecto
 
-El sistema incluye 3 plantillas base:
-
-1. **default** - Plantilla estandar: horizontal, tamano carta, diseno limpio con zonas bien definidas.
-2. **formal** - Plantilla formal: bordes decorativos, tipografia serif, estilo clasico.
-3. **modern** - Plantilla moderna: minimalista, colores planos, tipografia sans-serif.
+El seed crea 4 plantillas base (`backend/prisma/seed-data/templates/`): default, formal, modern y circuits.
 
 ### 4.3 Variables disponibles en las plantillas
 
@@ -142,14 +111,14 @@ Las siguientes variables se inyectan dinamicamente al generar el PDF:
 - `{{verification_url}}` - URL completa de verificacion
 
 **Logos e identidad visual:**
-- `{{institutional_logo_base64}}` - Logo institucional (del branding activo) en base64
+- `{{institutional_logo_base64}}` - Logo del curso en base64 (imagen transparente si no tiene)
 - `{{dependency_logos_html}}` - Bloque HTML con los logos de dependencias del curso y sus nombres debajo, cada dependencia como una columna (generado automaticamente, imgs en base64, en orden de display_order)
 
-**Branding institucional:**
-- `{{primary_color}}` - Color primario de la version de branding
+**Diseño del curso:**
+- `{{primary_color}}` - Color principal del curso
 - `{{secondary_color}}` - Color secundario
-- `{{font_family}}` - Fuente de la version de branding
-- `{{organization_name}}` - Nombre de la organizacion
+- `{{font_family}}` - Fuente del curso
+- `{{organization_name}}` - Organizacion emisora del curso
 
 **QR:**
 - `{{qr_code_base64}}` - Imagen QR en base64
@@ -167,15 +136,12 @@ Las siguientes variables se inyectan dinamicamente al generar el PDF:
 3. Usar POST /api/templates/:id/preview para generar un PDF de prueba con datos ficticios.
 4. (Opcional) Establecer como plantilla por defecto con PUT /api/templates/:id/default.
 
-### 4.5 Preview en tiempo real
+### 4.5 Vista previa en tiempo real
 
-Al crear o editar una plantilla desde el panel admin, el formulario incluye un **modulo de preview en tiempo real** que muestra como se vera el certificado mientras se escribe el HTML/CSS.
-
-- El preview reemplaza los placeholders `{{variable}}` con datos de ejemplo (nombre ficticio, colores, fechas, etc.)
-- Se renderiza en un iframe aislado con las dimensiones reales del documento (segun orientacion y tamano de pagina)
-- Se escala automaticamente al tamano disponible del contenedor
-- Se puede ocultar/mostrar con un boton toggle para disponer de mas espacio de edicion
-- Cambia automaticamente al modificar la orientacion o tamano de pagina en el formulario
+Tanto el editor de Plantillas base como la pestaña Diseño del curso muestran la vista previa mientras se
+escribe. El HTML lo renderiza el backend (POST /api/templates/render con datos de ejemplo, o
+POST /api/courses/:id/certificate-preview con los datos del curso), asi que es exactamente lo que se emitira.
+Se muestra en un iframe aislado, a escala, con las dimensiones reales de la pagina.
 
 ### 4.6 Consideraciones tecnicas de las plantillas
 
@@ -244,7 +210,7 @@ Al crear o editar una plantilla desde el panel admin, el formulario incluye un *
 Los colores, tipografia y radios del panel de administracion son variables CSS en `:root` de
 `frontend/src/styles/global.css` (`--color-primary`, `--font-sans`, etc.). El titulo sale de
 `VITE_APP_TITLE` (`frontend/src/config.ts`). Esto afecta solo al panel, NO a los certificados PDF: estos
-usan la version de branding activa y la plantilla.
+usan el diseño de cada curso.
 
 ## 6. Configuracion inicial para nueva instalacion
 
@@ -254,13 +220,13 @@ Para instalar la plataforma en una nueva organizacion:
 2. Copiar .env.example a .env y configurar las variables.
 3. (Opcional) Ajustar los colores del panel en frontend/src/styles/global.css.
 4. Ejecutar npm run setup y npm run up.
-5. El backend aplica migraciones y seed: plantillas, branding inicial y la dependencia general.
+5. El backend aplica migraciones y seed: plantillas base y la dependencia general.
 6. Login con SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD de .env.
-7. Desde el panel admin (los logos se suben ahi y quedan en storage/logos/):
-   a. Crear las dependencias de la organizacion y subir sus logos.
-   b. Crear la primera version de branding institucional (logo, colores, fuente, nombre).
-   c. Crear usuarios emisores y asignarlos a sus dependencias.
-   d. (Opcional) Personalizar o crear nuevas plantillas de certificado.
+7. Desde el panel admin:
+   a. Crear las dependencias de la organizacion.
+   b. Crear usuarios y asignarlos a sus dependencias.
+   c. (Opcional) Ajustar las plantillas base y elegir la de por defecto.
+8. En cada curso, pestaña Diseño: logo, organizacion, colores, firmas y colaboradoras (quedan en storage/).
 
 ## 7. Respaldo y migracion
 

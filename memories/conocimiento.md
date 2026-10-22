@@ -11,8 +11,11 @@ Puppeteer desde una plantilla HTML/CSS e incluye un QR a la pagina publica
 llamadas "dependencias".
 
 - Roles: `admin` (todo) y `dependencia` (solo los datos de su dependencia).
-- Un curso puede tener varias dependencias colaboradoras, y sus logos y firmas salen en el certificado.
-- El branding esta versionado: cada certificado guarda la version con la que se emitio.
+- **Todo el diseño del certificado es por curso** (decision #11, 2026-10-22): HTML propio, logo, organizacion,
+  colores, fuente, firma del instructor y logo/firma/firmante de cada colaboradora. Se edita en la pestaña
+  Diseño del curso. No hay branding global ni pagina Configuracion.
+- Un curso puede tener varias dependencias colaboradoras; su logo y firma en el certificado son del curso.
+- Las plantillas son solo puntos de partida: el curso copia una y edita su copia.
 - Los certificados no se borran: se revocan, y queda un registro en `revocation_log`.
 
 ## Reglas del proyecto (definidas por el usuario)
@@ -34,7 +37,7 @@ llamadas "dependencias".
 
 - El dominio `certify.vinsmake.dev` ya no existe. Todo corre en local (ver `entorno-local.md`).
 - La BD local se reinicio a cero: solo existen los datos del seed (admin, "Dependencia General",
-  branding v1 y 4 plantillas).
+  4 plantillas base).
 - Las credenciales del admin estan en `credenciales.md`.
 
 ## Trampas conocidas
@@ -45,8 +48,8 @@ llamadas "dependencias".
 - `env_file` se lee al crear el contenedor: despues de cambiar `.env`, usar
   `docker compose up -d` (recrea el contenedor), no `restart`.
 - El backup de storage no incluye `storage/signatures/`: hay que crearla a mano.
-- El branding v1 del seed apunta a `/storage/logos/branding/default_logo.png`, que no existe.
-  Los PDFs se generan igual, pero sin logo institucional.
+- Si un curso no tiene logo, el certificado usa un GIF transparente (`EMPTY_IMAGE`) para no mostrar el icono
+  de imagen rota. (Antes el seed apuntaba a un `default_logo.png` inexistente; la migracion lo descarto.)
 - `VERIFICATION_BASE_URL` define la URL del QR. En local es `localhost`, asi que el QR solo
   abre desde la misma maquina.
 - Los static files (`/storage/logos`, `/storage/signatures`) se sirven **antes** de helmet
@@ -85,4 +88,11 @@ llamadas "dependencias".
   bundle de desarrollo. El script `build` del frontend fuerza `NODE_ENV=production`.
 - **Trampa:** escribir varios archivos con heredoc en el Bash de esta maquina puede fallar al parsear
   ("unexpected EOF"); usar la herramienta de escritura de archivos.
+- **Trampa:** dentro de `node -e "..."` en Bash, los backticks (template strings) se ejecutan como comandos del
+  shell y se pierden. Para scripts con backticks, escribir un archivo `.cjs` en el scratchpad y ejecutarlo.
+  Node de Windows no ve `/tmp` de Git Bash.
+- **Trampa:** `prisma migrate dev` no funciona sin terminal interactiva. Para crear una migracion: editar
+  `schema.prisma`, generar el SQL con `npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script`,
+  guardarlo en `prisma/migrations/<fecha>_<nombre>/migration.sql` (ajustando la copia de datos a mano) y aplicar con
+  `npx prisma migrate deploy` + `npx prisma generate`.
 - Prisma 8 esta en RC (2026-10). Se fijo 7.10.1; actualizar cuando salga estable, siguiendo su guia de migracion.
