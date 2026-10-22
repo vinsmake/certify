@@ -3,13 +3,13 @@ import { conflict, orNotFound } from '../../lib/http-error';
 import { prisma } from '../../lib/prisma';
 import {
   dependencySignatureBlock,
+  EMPTY_IMAGE,
   instructorSignatureHtml,
   renderTemplate,
   sampleAssetDataUrl,
 } from '../../rendering/certificate-html';
 import { renderPdf } from '../../rendering/pdf';
 import { generateQr, verificationUrl } from '../../rendering/qr';
-import { publicFileAsDataUrl } from '../../lib/storage';
 
 const NOT_FOUND = 'Plantilla no encontrada';
 export const SAMPLE_UUID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
@@ -83,14 +83,8 @@ export const setDefault = async (id: number) => {
 };
 
 
-/**
- * PDF de muestra con datos ficticios (sincronizados con TemplatePreviewPanel del frontend).
- * Usa el logo del branding activo para que el preview se parezca al resultado real.
- */
 /** Variables de ejemplo para previsualizar una plantilla sin curso ni participante reales. */
-const sampleVariables = async () => {
-  const branding = await prisma.brandingVersion.findFirst({ where: { is_active: true } });
-  return {
+const sampleVariables = async () => ({
     participant_name: 'Enrique Emmanuel Plascencia Soltero',
     course_name: 'Diplomado en Gestion de Proyectos',
     course_type: 'Diplomado',
@@ -103,7 +97,7 @@ const sampleVariables = async () => {
     certificate_uuid: SAMPLE_UUID,
     verification_url: verificationUrl(SAMPLE_UUID),
     qr_code_base64: await generateQr(SAMPLE_UUID),
-    institutional_logo_base64: publicFileAsDataUrl(branding?.logo_path),
+    institutional_logo_base64: EMPTY_IMAGE,
     dependency_logos_html: '',
     dependency_names: 'Dependencia General',
     instructor_signature_html: instructorSignatureHtml(sampleAssetDataUrl('sample-signature.png')),
@@ -115,8 +109,7 @@ const sampleVariables = async () => {
     secondary_color: '#c9a84c',
     font_family: 'Georgia',
     organization_name: 'Vinsmake University',
-  };
-};
+});
 
 /** HTML de la plantilla con datos de ejemplo (preview en vivo del editor). */
 export const renderSampleHtml = async (htmlContent: string) => ({

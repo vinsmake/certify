@@ -11,7 +11,6 @@ import {
 } from './enums';
 
 const id = z.coerce.number().int().positive();
-const optionalId = z.coerce.number().int().positive().optional();
 const hexColor = z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Debe ser un color hexadecimal valido (#RRGGBB)');
 const nonEmpty = (msg: string) => z.string().trim().min(1, msg);
 const isoDate = z.iso.date({ error: 'Fecha invalida (AAAA-MM-DD)' }).or(z.iso.datetime());
@@ -60,13 +59,11 @@ export const updateUserSchema = z.object({
 export const createDependencySchema = z.object({
   name: nonEmpty('Nombre es requerido'),
   abbreviation: z.string().trim().nullish(),
-  manager_name: z.string().trim().nullish(),
 });
 
 export const updateDependencySchema = z.object({
   name: nonEmpty('Nombre no puede estar vacio').optional(),
   abbreviation: z.string().trim().nullish(),
-  manager_name: z.string().trim().nullish(),
   is_active: z.boolean().optional(),
 });
 
@@ -108,17 +105,6 @@ export const updateTemplateSchema = createTemplateSchema.partial().extend({
   slug: nonEmpty('Slug no puede estar vacio').optional(),
 });
 
-// ---------- Branding ----------
-export const createBrandingSchema = z.object({
-  version_label: nonEmpty('version_label es requerido'),
-  primary_color: hexColor,
-  secondary_color: hexColor,
-  font_family: nonEmpty('font_family es requerido'),
-  organization_name: nonEmpty('organization_name es requerido'),
-});
-
-export const updateBrandingSchema = createBrandingSchema.partial();
-
 // ---------- Participantes ----------
 export const listParticipantsQuerySchema = paginationQuerySchema.extend({
   search: z.string().trim().optional(),
@@ -152,7 +138,6 @@ const courseFields = {
   instructor: z.string().nullish(),
   start_date: isoDate.nullish(),
   end_date: isoDate.nullish(),
-  template_id: z.coerce.number().int().positive().nullish(),
 };
 
 export const createCourseSchema = z.object({
@@ -164,12 +149,33 @@ export const updateCourseSchema = z.object(courseFields).partial().extend({
   name: nonEmpty('Nombre no puede estar vacio').optional(),
 });
 
+// Diseño del certificado del curso (todo es por curso). Campos opcionales: se actualiza lo que llega.
+export const courseDesignSchema = z.object({
+  certificate_html: nonEmpty('El HTML del certificado no puede estar vacio'),
+  orientation: z.enum(ORIENTATIONS, { error: 'Orientacion debe ser landscape o portrait' }),
+  page_size: z.enum(PAGE_SIZES, { error: 'Tamano debe ser letter o A4' }),
+  organization_name: z.string().trim().nullable(),
+  primary_color: hexColor,
+  secondary_color: hexColor,
+  font_family: nonEmpty('La fuente es requerida'),
+});
+export const updateCourseDesignSchema = courseDesignSchema.partial();
+
+// Copia una plantilla base al curso (reemplaza su HTML, orientacion y tamano)
+export const applyTemplateSchema = z.object({ template_id: id });
+
 export const addCourseDependencySchema = z.object({
   dependency_id: id,
   display_order: z.coerce.number().int().min(1).optional(),
 });
 
 export const courseDependencyParamsSchema = z.object({ id, depId: id });
+
+// Datos de la colaboradora propios del curso (el logo y la firma se suben aparte)
+export const updateCourseDependencySchema = z.object({
+  signer_name: z.string().trim().nullish(),
+  display_order: z.coerce.number().int().min(1).optional(),
+});
 export const courseParticipantParamsSchema = z.object({ id, participantId: id });
 
 export const enrollParticipantsSchema = z.object({
@@ -180,9 +186,9 @@ export const updateAttendanceSchema = z.object({
   attendance_status: z.enum(ATTENDANCE_STATUSES, { error: 'attendance_status debe ser: enrolled o completed' }),
 });
 
-// Vista previa del certificado del curso con sus datos reales y un participante de ejemplo
-export const coursePreviewSchema = z.object({
-  template_id: optionalId,
+// Vista previa del certificado del curso con sus datos reales y un participante de ejemplo.
+// Los campos de diseño que lleguen se usan en lugar de los guardados (borrador del editor).
+export const coursePreviewSchema = updateCourseDesignSchema.extend({
   format: z.enum(['html', 'pdf']).default('html'),
 });
 
@@ -196,8 +202,6 @@ export const listCertificatesQuerySchema = paginationQuerySchema.extend({
 export const emitCertificatesSchema = z.object({
   course_id: id,
   participant_ids: z.array(id).min(1, 'participant_ids debe ser un array con al menos un elemento'),
-  // Si no se envia, se usa la plantilla del curso o la plantilla por defecto
-  template_id: optionalId,
 });
 
 export const revokeCertificateSchema = z.object({
@@ -234,8 +238,6 @@ export type CreateTagInput = z.infer<typeof createTagSchema>;
 export type UpdateTagInput = z.infer<typeof updateTagSchema>;
 export type CreateTemplateInput = z.infer<typeof createTemplateSchema>;
 export type UpdateTemplateInput = z.infer<typeof updateTemplateSchema>;
-export type CreateBrandingInput = z.infer<typeof createBrandingSchema>;
-export type UpdateBrandingInput = z.infer<typeof updateBrandingSchema>;
 export type ListParticipantsQuery = z.infer<typeof listParticipantsQuerySchema>;
 export type CreateParticipantInput = z.infer<typeof createParticipantSchema>;
 export type UpdateParticipantInput = z.infer<typeof updateParticipantSchema>;
@@ -243,6 +245,9 @@ export type ListCoursesQuery = z.infer<typeof listCoursesQuerySchema>;
 export type CreateCourseInput = z.infer<typeof createCourseSchema>;
 export type UpdateCourseInput = z.infer<typeof updateCourseSchema>;
 export type ListCertificatesQuery = z.infer<typeof listCertificatesQuerySchema>;
+export type CourseDesignInput = z.infer<typeof courseDesignSchema>;
+export type UpdateCourseDesignInput = z.infer<typeof updateCourseDesignSchema>;
+export type UpdateCourseDependencyInput = z.infer<typeof updateCourseDependencySchema>;
 export type CoursePreviewInput = z.infer<typeof coursePreviewSchema>;
 export type EmitCertificatesInput = z.infer<typeof emitCertificatesSchema>;
 export type AdminEventsQuery = z.infer<typeof adminEventsQuerySchema>;

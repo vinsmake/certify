@@ -9,7 +9,6 @@ import { absoluteDir, STORAGE_DIRS } from './lib/storage';
 import { errorHandler } from './middlewares/error-handler';
 import { adminRoutes } from './modules/admin/admin.routes';
 import { authRoutes } from './modules/auth/auth.routes';
-import { brandingRoutes } from './modules/branding/branding.routes';
 import { certificateRoutes } from './modules/certificates/certificates.routes';
 import { courseRoutes } from './modules/courses/courses.routes';
 import { dependencyRoutes } from './modules/dependencies/dependencies.routes';
@@ -47,7 +46,6 @@ export const createApp = () => {
   app.use('/api/templates', templateRoutes);
   app.use('/api/courses', courseRoutes);
   app.use('/api/participants', participantRoutes);
-  app.use('/api/branding', brandingRoutes);
   app.use('/api/certificates', certificateRoutes);
   app.use('/api/verify', verificationRoutes);
   app.use('/api/stats', statsRoutes);

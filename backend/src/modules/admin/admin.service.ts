@@ -53,13 +53,11 @@ export const certificates = async (q: AdminCertificatesQuery) => {
              p.full_name AS participant_name,
              co.name AS course_name, co.type AS course_type,
              d.name AS dependency_name,
-             ct.name AS template_name,
              u.full_name AS issued_by_name
       FROM certificates c
       LEFT JOIN participants p            ON c.participant_id = p.id
       LEFT JOIN courses co                ON c.course_id = co.id
       LEFT JOIN dependencies d            ON co.dependency_id = d.id
-      LEFT JOIN certificate_templates ct  ON c.template_id = ct.id
       LEFT JOIN users u                   ON c.issued_by = u.id
       ${where}
       ORDER BY c.created_at DESC
@@ -70,7 +68,7 @@ export const certificates = async (q: AdminCertificatesQuery) => {
   return { data, total: count?.total ?? 0, page: q.page, limit: q.limit };
 };
 
-/** Actividad reciente: emisiones, reimpresiones, revocaciones, cursos creados y cambios de branding. */
+/** Actividad reciente: emisiones, reimpresiones, revocaciones y cursos creados. */
 export const activity = async (limit: number) => {
   const data = await prisma.$queryRaw`
     SELECT * FROM (
@@ -107,12 +105,6 @@ export const activity = async (limit: number) => {
       FROM courses co
       LEFT JOIN users u        ON co.created_by = u.id
       LEFT JOIN dependencies d ON co.dependency_id = d.id
-
-      UNION ALL
-      SELECT 'branding_change', bv.created_at, u.full_name,
-             bv.version_label, NULL, NULL, bv.version_label
-      FROM branding_versions bv
-      LEFT JOIN users u ON bv.created_by = u.id
     ) activity
     ORDER BY event_at DESC
     LIMIT ${limit}`;

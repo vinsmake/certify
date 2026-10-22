@@ -5,8 +5,6 @@ import {
   listDependenciesQuerySchema,
   updateDependencySchema,
 } from '@certify/shared';
-import { badRequest } from '../../lib/http-error';
-import { imageUpload, STORAGE_DIRS, toPublicPath } from '../../lib/storage';
 import { authenticate, requireRole } from '../../middlewares/auth';
 import { parseBody, parseParams, parseQuery } from '../../middlewares/validate';
 import * as dependencies from './dependencies.service';
@@ -35,30 +33,4 @@ dependencyRoutes.put('/:id', requireRole('admin'), async (req, res) => {
 
 dependencyRoutes.delete('/:id', requireRole('admin'), async (req, res) => {
   res.json(await dependencies.deactivate(parseParams(idParamSchema, req).id));
-});
-
-dependencyRoutes.post(
-  '/:id/logo',
-  requireRole('admin'),
-  imageUpload(STORAGE_DIRS.dependencyLogos, 'logo'),
-  async (req, res) => {
-    const { id } = parseParams(idParamSchema, req);
-    if (!req.file) throw badRequest('Archivo de logo requerido');
-    res.json(await dependencies.setLogo(id, toPublicPath(STORAGE_DIRS.dependencyLogos, req.file.filename)));
-  },
-);
-
-dependencyRoutes.post(
-  '/:id/signature',
-  requireRole('admin'),
-  imageUpload(STORAGE_DIRS.signatures, 'signature'),
-  async (req, res) => {
-    const { id } = parseParams(idParamSchema, req);
-    if (!req.file) throw badRequest('Archivo de firma requerido');
-    res.json(await dependencies.setSignature(id, toPublicPath(STORAGE_DIRS.signatures, req.file.filename)));
-  },
-);
-
-dependencyRoutes.delete('/:id/signature', requireRole('admin'), async (req, res) => {
-  res.json(await dependencies.setSignature(parseParams(idParamSchema, req).id, null));
 });

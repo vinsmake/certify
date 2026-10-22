@@ -73,3 +73,14 @@ y fix de PDF (`a53a537`).
 - `reestructura-v2` se fusiono en `main` (merge `c6db072`, sin fast-forward para conservar los bloques).
   Verificado despues del merge: typecheck, lint, 20/20 tests, backend y frontend arriba.
 - `main` local va 10 commits por delante de `origin/main` (incluye `42a10e3 restart` del usuario); falta el push.
+
+## 2026-10-22 - EN CURSO: diseño del certificado por curso (decision #11)
+
+Plan por bloques (cada uno con su commit):
+1. BD + backend: HECHO. Migracion `20261022120000_diseno_por_curso` (copia datos y borra branding),
+   endpoints `PUT /courses/:id/design`, `POST /courses/:id/design/apply-template`, `POST/DELETE /courses/:id/logo`,
+   `PUT /courses/:id/dependencies/:depId` y su `/logo` y `/signature`; preview acepta borrador; 25/25 tests.
+2. Frontend: pestaña Diseño completa (HTML + vista previa en vivo + logo/colores/fuente/firmas/colaboradoras),
+   quitar Configuracion y logo/firma de Dependencias, quitar plantilla del formulario de curso.
+3. Docs: arquitectura, conocimiento, configuracion, historial.
+Si se pierde el contexto: revisar `git status` y `git diff` para ver en que punto quedo.

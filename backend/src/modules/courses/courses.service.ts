@@ -1,48 +1,42 @@
-import type { AttendanceStatus, CreateCourseInput, ListCoursesQuery, UpdateCourseInput } from '@certify/shared';
+import type {
+  AttendanceStatus,
+  CreateCourseInput,
+  ListCoursesQuery,
+  UpdateCourseDependencyInput,
+  UpdateCourseDesignInput,
+  UpdateCourseInput,
+} from '@certify/shared';
 import type { AuthUser } from '../../lib/auth';
 import { badRequest, conflict, forbidden, notFound, orNotFound } from '../../lib/http-error';
 import { prisma, type Prisma } from '../../lib/prisma';
+import { findDefault as findDefaultTemplate } from '../templates/templates.service';
 import { coursesVisibleTo, getAccessibleCourse } from './course-access';
 
 const listInclude = {
   creator: { select: { full_name: true } },
-  template: { select: { name: true } },
   course_dependencies: {
     select: { dependency: { select: { id: true, name: true } } },
     orderBy: { display_order: 'asc' },
   },
 } satisfies Prisma.CourseInclude;
 
-type CourseListRow = Prisma.CourseGetPayload<{ include: typeof listInclude }>;
+// El listado omite el HTML del diseño (pesado); el detalle lo incluye
+type CourseListRow = Omit<Prisma.CourseGetPayload<{ include: typeof listInclude }>, 'certificate_html'>;
 
-const toListItem = ({ creator, template, course_dependencies, ...c }: CourseListRow) => ({
+const toListItem = ({ creator, course_dependencies, ...c }: CourseListRow) => ({
   ...c,
-  template_name: template?.name ?? null,
   created_by_name: creator?.full_name ?? null,
   dependencies: course_dependencies.map((cd) => cd.dependency),
 });
 
-/** Dependencias colaboradoras con los datos que usa el certificado (logo, encargado, firma). */
+/** Dependencias colaboradoras con su logo, firma y firmante en este curso. */
 export const courseDependencies = async (courseId: number) => {
   const rows = await prisma.courseDependency.findMany({
     where: { course_id: courseId },
     include: { dependency: true },
     orderBy: { display_order: 'asc' },
   });
-  return rows.map(({ dependency: d, ...cd }) => ({
-    ...cd,
-    dependency_name: d.name,
-    abbreviation: d.abbreviation,
-    logo_path: d.logo_path,
-    manager_name: d.manager_name,
-    signature_path: d.signature_path,
-  }));
-};
-
-const assertTemplateUsable = async (templateId: number | null | undefined) => {
-  if (!templateId) return;
-  const template = await prisma.certificateTemplate.findUnique({ where: { id: templateId } });
-  if (!template?.is_active) throw badRequest('La plantilla seleccionada no existe o esta inactiva');
+  return rows.map(({ dependency: d, ...cd }) => ({ ...cd, dependency_name: d.name, abbreviation: d.abbreviation }));
 };
 
 export const list = async (query: ListCoursesQuery, dependencyId: number | null | undefined) => {
@@ -55,6 +49,7 @@ export const list = async (query: ListCoursesQuery, dependencyId: number | null 
     prisma.course.findMany({
       where,
       include: listInclude,
+      omit: { certificate_html: true },
       orderBy: { created_at: 'desc' },
       skip: (query.page - 1) * query.limit,
       take: query.limit,
@@ -67,11 +62,13 @@ export const list = async (query: ListCoursesQuery, dependencyId: number | null 
 export const get = async (id: number, user: AuthUser) => {
   await getAccessibleCourse(id, user, 'ver');
   const course = await prisma.course.findUniqueOrThrow({ where: { id }, include: listInclude });
-  return { ...toListItem(course), dependencies: await courseDependencies(id) };
+  return { ...toListItem(course), certificate_html: course.certificate_html, dependencies: await courseDependencies(id) };
 };
 
 export const create = async (input: CreateCourseInput, user: AuthUser) => {
-  await assertTemplateUsable(input.template_id);
+  // El curso nace con una copia de la plantilla base por defecto; despues edita su propia copia
+  const base = await findDefaultTemplate();
+  if (!base) throw badRequest('No hay plantillas base activas para crear el diseño del curso');
   const isDependencia = user.role === 'dependencia';
   // La dependencia del usuario creador es la duena y siempre colaboradora;
   // admin crea cursos sin dueno y elige colaboradoras.
@@ -86,7 +83,9 @@ export const create = async (input: CreateCourseInput, user: AuthUser) => {
       instructor: input.instructor ?? null,
       start_date: input.start_date ? new Date(input.start_date) : null,
       end_date: input.end_date ? new Date(input.end_date) : null,
-      template_id: input.template_id ?? null,
+      certificate_html: base.html_content,
+      orientation: base.orientation,
+      page_size: base.page_size,
       dependency_id: isDependencia ? user.dependency_id : null,
       created_by: user.userId,
       course_dependencies: { create: collaborators.map((dependency_id) => ({ dependency_id })) },
@@ -98,7 +97,6 @@ const optionalDate = (v: string | null | undefined) => (v === undefined ? undefi
 
 export const update = async (id: number, input: UpdateCourseInput, user: AuthUser) => {
   await getAccessibleCourse(id, user, 'editar');
-  await assertTemplateUsable(input.template_id);
   return prisma.course.update({
     where: { id },
     data: {
@@ -109,9 +107,32 @@ export const update = async (id: number, input: UpdateCourseInput, user: AuthUse
       instructor: input.instructor,
       start_date: optionalDate(input.start_date),
       end_date: optionalDate(input.end_date),
-      template_id: input.template_id,
     },
   });
+};
+
+// ---------- Diseño del certificado ----------
+
+export const updateDesign = async (id: number, input: UpdateCourseDesignInput, user: AuthUser) => {
+  await getAccessibleCourse(id, user, 'editar');
+  return prisma.course.update({ where: { id }, data: input });
+};
+
+/** Reemplaza el HTML, orientacion y tamano del curso por una copia de la plantilla base. */
+export const applyTemplate = async (id: number, templateId: number, user: AuthUser) => {
+  await getAccessibleCourse(id, user, 'editar');
+  const template = await prisma.certificateTemplate.findUnique({ where: { id: templateId } });
+  if (!template?.is_active) throw badRequest('La plantilla seleccionada no existe o esta inactiva');
+  return prisma.course.update({
+    where: { id },
+    data: { certificate_html: template.html_content, orientation: template.orientation, page_size: template.page_size },
+  });
+};
+
+export const setLogo = async (id: number, logoPath: string | null, user: AuthUser) => {
+  await getAccessibleCourse(id, user, 'editar');
+  await prisma.course.update({ where: { id }, data: { logo_path: logoPath } });
+  return logoPath ? { message: 'Logo actualizado', logo_path: logoPath } : { message: 'Logo eliminado' };
 };
 
 export const remove = async (id: number, user: AuthUser) => {
@@ -123,7 +144,9 @@ export const remove = async (id: number, user: AuthUser) => {
   return { message: 'Curso eliminado', id };
 };
 
-// ---------- Dependencias colaboradoras (solo admin) ----------
+// ---------- Dependencias colaboradoras ----------
+// Agregar o quitar colaboradoras es solo del admin porque da acceso al curso a otra dependencia.
+// Su logo, firma y firmante en el certificado los edita cualquiera que pueda editar el curso.
 
 const assertAdmin = (user: AuthUser) => {
   if (user.role !== 'admin') throw forbidden('Solo el administrador puede gestionar dependencias colaboradoras');
@@ -147,6 +170,41 @@ export const removeDependency = async (id: number, dependencyId: number, user: A
   const { count } = await prisma.courseDependency.deleteMany({ where: { course_id: id, dependency_id: dependencyId } });
   if (!count) throw notFound('Asociacion no encontrada');
   return { message: 'Dependencia removida del curso' };
+};
+
+const findCollaboration = async (id: number, dependencyId: number, user: AuthUser) => {
+  await getAccessibleCourse(id, user, 'editar');
+  return orNotFound(
+    await prisma.courseDependency.findUnique({
+      where: { course_id_dependency_id: { course_id: id, dependency_id: dependencyId } },
+    }),
+    'La dependencia no colabora en este curso',
+  );
+};
+
+export const updateDependency = async (
+  id: number,
+  dependencyId: number,
+  input: UpdateCourseDependencyInput,
+  user: AuthUser,
+) => {
+  const collaboration = await findCollaboration(id, dependencyId, user);
+  return prisma.courseDependency.update({
+    where: { id: collaboration.id },
+    data: { signer_name: input.signer_name, display_order: input.display_order },
+  });
+};
+
+export const setDependencyFile = async (
+  id: number,
+  dependencyId: number,
+  field: 'logo_path' | 'signature_path',
+  filePath: string | null,
+  user: AuthUser,
+) => {
+  const collaboration = await findCollaboration(id, dependencyId, user);
+  await prisma.courseDependency.update({ where: { id: collaboration.id }, data: { [field]: filePath } });
+  return { message: filePath ? 'Archivo actualizado' : 'Archivo eliminado', [field]: filePath };
 };
 
 // ---------- Inscripciones ----------

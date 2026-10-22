@@ -163,3 +163,26 @@ Implementa la decision #5:
 - **Decision (del usuario):** no se pidio CI, solo la reestructura. No se agrega.
 - **Consecuencias:** la verificacion es local: `npm run check` (typecheck + lint + tests de todos los
   paquetes, dentro de Docker). Si en el futuro se quiere CI, basta con correr ese mismo comando.
+
+## #11 - Todo el diseño del certificado es por curso (2026-10-22)
+
+- **Contexto:** el usuario vio el logo roto en la vista previa y no encontraba donde subirlo (estaba en
+  Configuracion, branding global). Pidio: "Todos los datos de los certificados deben ser por curso. Todo
+  se debe editar en el curso. Editar en configuracion deja de existir. Todo el diseño se hace en el curso."
+- **Decisiones (respuestas del usuario a 3 preguntas):**
+  - Plantillas: **HTML propio por curso**. Al crear el curso se copia la plantilla base por defecto; en la
+    pestaña Diseño se edita el HTML con vista previa en vivo o se carga otra plantilla base (reemplaza la copia).
+    La pagina Plantillas queda como catalogo de diseños base.
+  - Dependencias colaboradoras: **logo, firma y nombre del firmante por curso** (en `course_dependencies`).
+    La dependencia solo sirve para permisos y agrupar; se quitan `logo_path`, `manager_name` y
+    `signature_path` de `dependencies`.
+  - Reimpresion: usa **el diseño actual del curso** (el PDF anterior se conserva en disco).
+- **Consecuencias:**
+  - Se elimina el branding global: tabla `branding_versions`, modulo `/api/branding`, pagina Configuracion y
+    `certificates.branding_version_id`. Tambien `certificates.template_id` y `courses.template_id`.
+  - `courses` gana: `certificate_html`, `orientation`, `page_size`, `logo_path`, `organization_name`,
+    `primary_color`, `secondary_color`, `font_family`. Las variables de plantilla conservan sus nombres
+    (`institutional_logo_base64` = logo del curso, etc.).
+  - La migracion copia los datos existentes (HTML de la plantilla del curso o la default, branding activo,
+    logos/firmas de las dependencias) antes de borrar columnas.
+  - Reemplaza parcialmente a #5/#9 (plantilla elegida por curso) y al branding versionado de v1.

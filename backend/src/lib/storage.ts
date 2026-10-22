@@ -9,7 +9,7 @@ import { badRequest } from './http-error';
 
 export const STORAGE_DIRS = {
   certificates: 'certificates',
-  brandingLogos: 'logos/branding',
+  courseLogos: 'logos/courses',
   dependencyLogos: 'logos/dependencies',
   tagLogos: 'logos/tags',
   signatures: 'signatures',

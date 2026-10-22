@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   addCourseDependencySchema,
+  applyTemplateSchema,
   courseDependencyParamsSchema,
   courseParticipantParamsSchema,
   coursePreviewSchema,
@@ -9,6 +10,8 @@ import {
   idParamSchema,
   listCoursesQuerySchema,
   updateAttendanceSchema,
+  updateCourseDependencySchema,
+  updateCourseDesignSchema,
   updateCourseSchema,
 } from '@certify/shared';
 import { badRequest } from '../../lib/http-error';
@@ -57,6 +60,40 @@ courseRoutes.delete('/:id/dependencies/:depId', async (req, res) => {
   res.json(await courses.removeDependency(id, depId, currentUser(req)));
 });
 
+// Firmante, orden, logo y firma de la colaboradora en este curso
+courseRoutes.put('/:id/dependencies/:depId', async (req, res) => {
+  const { id, depId } = parseParams(courseDependencyParamsSchema, req);
+  res.json(await courses.updateDependency(id, depId, parseBody(updateCourseDependencySchema, req), currentUser(req)));
+});
+
+courseRoutes.post('/:id/dependencies/:depId/logo', imageUpload(STORAGE_DIRS.dependencyLogos, 'logo'), async (req, res) => {
+  const { id, depId } = parseParams(courseDependencyParamsSchema, req);
+  if (!req.file) throw badRequest('Archivo de logo requerido');
+  const path = toPublicPath(STORAGE_DIRS.dependencyLogos, req.file.filename);
+  res.json(await courses.setDependencyFile(id, depId, 'logo_path', path, currentUser(req)));
+});
+
+courseRoutes.delete('/:id/dependencies/:depId/logo', async (req, res) => {
+  const { id, depId } = parseParams(courseDependencyParamsSchema, req);
+  res.json(await courses.setDependencyFile(id, depId, 'logo_path', null, currentUser(req)));
+});
+
+courseRoutes.post(
+  '/:id/dependencies/:depId/signature',
+  imageUpload(STORAGE_DIRS.signatures, 'signature'),
+  async (req, res) => {
+    const { id, depId } = parseParams(courseDependencyParamsSchema, req);
+    if (!req.file) throw badRequest('Archivo de firma requerido');
+    const path = toPublicPath(STORAGE_DIRS.signatures, req.file.filename);
+    res.json(await courses.setDependencyFile(id, depId, 'signature_path', path, currentUser(req)));
+  },
+);
+
+courseRoutes.delete('/:id/dependencies/:depId/signature', async (req, res) => {
+  const { id, depId } = parseParams(courseDependencyParamsSchema, req);
+  res.json(await courses.setDependencyFile(id, depId, 'signature_path', null, currentUser(req)));
+});
+
 // ---------- Inscripciones ----------
 
 courseRoutes.get('/:id/participants', async (req, res) => {
@@ -80,9 +117,32 @@ courseRoutes.delete('/:id/participants/:participantId', async (req, res) => {
   res.json(await courses.unenroll(id, participantId, currentUser(req)));
 });
 
-// ---------- Diseno del certificado ----------
+// ---------- Diseno del certificado (todo es por curso) ----------
 
-// Vista previa con los datos del curso; template_id permite probar otra plantilla antes de guardarla
+courseRoutes.put('/:id/design', async (req, res) => {
+  const { id } = parseParams(idParamSchema, req);
+  res.json(await courses.updateDesign(id, parseBody(updateCourseDesignSchema, req), currentUser(req)));
+});
+
+// Copia una plantilla base al curso (reemplaza su HTML)
+courseRoutes.post('/:id/design/apply-template', async (req, res) => {
+  const { id } = parseParams(idParamSchema, req);
+  const { template_id } = parseBody(applyTemplateSchema, req);
+  res.json(await courses.applyTemplate(id, template_id, currentUser(req)));
+});
+
+courseRoutes.post('/:id/logo', imageUpload(STORAGE_DIRS.courseLogos, 'logo'), async (req, res) => {
+  const { id } = parseParams(idParamSchema, req);
+  if (!req.file) throw badRequest('Archivo de logo requerido');
+  res.json(await courses.setLogo(id, toPublicPath(STORAGE_DIRS.courseLogos, req.file.filename), currentUser(req)));
+});
+
+courseRoutes.delete('/:id/logo', async (req, res) => {
+  res.json(await courses.setLogo(parseParams(idParamSchema, req).id, null, currentUser(req)));
+});
+
+// Vista previa con los datos del curso; los campos de diseño enviados (borrador del editor) se usan
+// en lugar de los guardados
 courseRoutes.post('/:id/certificate-preview', async (req, res) => {
   const { id } = parseParams(idParamSchema, req);
   const preview = await coursePreview(id, parseBody(coursePreviewSchema, req), currentUser(req));

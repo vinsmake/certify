@@ -46,17 +46,15 @@ enum PageSize {
   A4
 }
 
-/// Unidad organizacional. Tiene logo, encargado y firma que aparecen en los certificados.
+/// Unidad organizacional: define permisos (usuarios rol dependencia) y agrupa cursos y participantes.
+/// Su logo y firma en el certificado se configuran por curso (CourseDependency).
 model Dependency {
   id             Int      @id @default(autoincrement())
   name           String   @db.VarChar(255)
-  abbreviation   String?  @db.VarChar(50)
-  logo_path      String?  @db.VarChar(500)
-  manager_name   String?  @db.VarChar(255)
-  signature_path String?  @db.VarChar(500)
-  is_active      Boolean  @default(true)
-  created_at     DateTime @default(now()) @db.Timestamp(6)
-  updated_at     DateTime @default(now()) @updatedAt @db.Timestamp(6)
+  abbreviation String?  @db.VarChar(50)
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @default(now()) @updatedAt @db.Timestamp(6)
 
   users               User[]
   courses             Course[]
@@ -80,7 +78,6 @@ model User {
   dependency           Dependency?           @relation(fields: [dependency_id], references: [id])
   templates_created    CertificateTemplate[]
   courses_created      Course[]
-  branding_created     BrandingVersion[]
   certificates_issued  Certificate[]         @relation("CertificateIssuedBy")
   certificates_revoked Certificate[]         @relation("CertificateRevokedBy")
   revocations          RevocationLog[]
@@ -89,7 +86,8 @@ model User {
   @@map("users")
 }
 
-/// Plantilla HTML/CSS con variables {{...}} que se renderiza a PDF con Puppeteer.
+/// Diseño base HTML/CSS con variables {{...}}. Al crear un curso (o al cargarla en su pestaña Diseño)
+/// se COPIA al curso; despues el curso edita su propia copia.
 model CertificateTemplate {
   id             Int         @id @default(autoincrement())
   name           String      @db.VarChar(255)
@@ -104,9 +102,7 @@ model CertificateTemplate {
   created_at     DateTime    @default(now()) @db.Timestamp(6)
   created_by     Int?
 
-  creator      User?         @relation(fields: [created_by], references: [id])
-  courses      Course[]
-  certificates Certificate[]
+  creator User? @relation(fields: [created_by], references: [id])
 
   @@map("certificate_templates")
 }
@@ -118,9 +114,8 @@ model Course {
   type           CourseType
   duration_hours Int?
   instructor     String?    @db.VarChar(255)
+  /// Firma del instructor
   signature_path String?    @db.VarChar(500)
-  /// Diseño de certificado del curso. Si es null se usa la plantilla por defecto.
-  template_id    Int?
   start_date     DateTime?  @db.Date
   end_date       DateTime?  @db.Date
   /// Dependencia duena (la del usuario creador si es rol dependencia)
@@ -129,9 +124,19 @@ model Course {
   created_at     DateTime   @default(now()) @db.Timestamp(6)
   updated_at     DateTime   @default(now()) @updatedAt @db.Timestamp(6)
 
-  template            CertificateTemplate? @relation(fields: [template_id], references: [id])
-  dependency          Dependency?          @relation(fields: [dependency_id], references: [id])
-  creator             User?                @relation(fields: [created_by], references: [id])
+  // ---- Diseño del certificado (todo por curso) ----
+  /// HTML/CSS propio del curso con variables {{...}}; nace como copia de una plantilla base
+  certificate_html  String
+  orientation       Orientation @default(landscape)
+  page_size         PageSize    @default(letter)
+  logo_path         String?     @db.VarChar(500)
+  organization_name String?     @db.VarChar(255)
+  primary_color     String      @default("#61859D") @db.VarChar(7)
+  secondary_color   String      @default("#EA8215") @db.VarChar(7)
+  font_family       String      @default("Roboto") @db.VarChar(100)
+
+  dependency          Dependency?         @relation(fields: [dependency_id], references: [id])
+  creator             User?               @relation(fields: [created_by], references: [id])
   course_dependencies CourseDependency[]
   course_participants CourseParticipant[]
   certificates        Certificate[]
@@ -140,12 +145,15 @@ model Course {
   @@map("courses")
 }
 
-/// Dependencias colaboradoras de un curso (sus logos y firmas salen en el certificado).
+/// Dependencias colaboradoras de un curso. Su logo, firma y firmante son propios de este curso.
 model CourseDependency {
-  id            Int @id @default(autoincrement())
-  course_id     Int
-  dependency_id Int
-  display_order Int @default(1)
+  id             Int     @id @default(autoincrement())
+  course_id      Int
+  dependency_id  Int
+  display_order  Int     @default(1)
+  logo_path      String? @db.VarChar(500)
+  signature_path String? @db.VarChar(500)
+  signer_name    String? @db.VarChar(255)
 
   course     Course     @relation(fields: [course_id], references: [id], onDelete: Cascade)
   dependency Dependency @relation(fields: [dependency_id], references: [id])
@@ -199,26 +207,8 @@ model ParticipantTag {
   @@map("participant_tags")
 }
 
-/// Branding institucional versionado: cada certificado guarda la version con la que se emitio.
-model BrandingVersion {
-  id                Int      @id @default(autoincrement())
-  version_label     String   @db.VarChar(50)
-  logo_path         String   @db.VarChar(500)
-  primary_color     String   @db.VarChar(7)
-  secondary_color   String   @db.VarChar(7)
-  font_family       String   @db.VarChar(100)
-  organization_name String   @db.VarChar(255)
-  is_active         Boolean  @default(false)
-  created_at        DateTime @default(now()) @db.Timestamp(6)
-  created_by        Int?
-
-  creator      User?         @relation(fields: [created_by], references: [id])
-  certificates Certificate[]
-
-  @@map("branding_versions")
-}
-
-/// Certificado emitido. Nunca se borra: se revoca. Se puede reimprimir conservando el uuid (mismo QR).
+/// Certificado emitido. Nunca se borra: se revoca. Se puede reimprimir conservando el uuid (mismo QR);
+/// la reimpresion usa el diseño actual del curso.
 model Certificate {
   id                  Int               @id @default(autoincrement())
   uuid                String            @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -226,8 +216,6 @@ model Certificate {
   course_id           Int
   issued_by           Int?
   issue_date          DateTime          @db.Date
-  branding_version_id Int?
-  template_id         Int?
   pdf_path            String?           @db.VarChar(500)
   status              CertificateStatus @default(valid)
   revocation_reason   String?
@@ -237,13 +225,11 @@ model Certificate {
   last_reprinted_at   DateTime?         @db.Timestamp(6)
   created_at          DateTime          @default(now()) @db.Timestamp(6)
 
-  participant      Participant          @relation(fields: [participant_id], references: [id])
-  course           Course               @relation(fields: [course_id], references: [id])
-  issuer           User?                @relation("CertificateIssuedBy", fields: [issued_by], references: [id])
-  revoker          User?                @relation("CertificateRevokedBy", fields: [revoked_by], references: [id])
-  branding_version BrandingVersion?     @relation(fields: [branding_version_id], references: [id])
-  template         CertificateTemplate? @relation(fields: [template_id], references: [id])
-  revocation_logs  RevocationLog[]
+  participant     Participant     @relation(fields: [participant_id], references: [id])
+  course          Course          @relation(fields: [course_id], references: [id])
+  issuer          User?           @relation("CertificateIssuedBy", fields: [issued_by], references: [id])
+  revoker         User?           @relation("CertificateRevokedBy", fields: [revoked_by], references: [id])
+  revocation_logs RevocationLog[]
 
   @@index([status])
   @@index([course_id])

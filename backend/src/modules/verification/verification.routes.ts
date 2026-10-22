@@ -14,7 +14,6 @@ verificationRoutes.get('/:uuid', async (req, res) => {
   if (!cert) throw notFound('CERTIFICADO NO ENCONTRADO');
 
   const deps = await courseDependencies(cert.course_id);
-  const bv = cert.branding_version;
 
   res.json({
     status: cert.status === 'valid' ? 'VALIDO' : 'REVOCADO',
@@ -34,14 +33,8 @@ verificationRoutes.get('/:uuid', async (req, res) => {
         start_date: cert.course.start_date,
         end_date: cert.course.end_date,
       },
-      branding: {
-        version_label: bv?.version_label ?? null,
-        logo_path: bv?.logo_path ?? null,
-        organization_name: bv?.organization_name ?? null,
-        primary_color: bv?.primary_color ?? null,
-        secondary_color: bv?.secondary_color ?? null,
-        font_family: bv?.font_family ?? null,
-      },
+      // Organizacion emisora segun el diseño del curso
+      organization: { name: cert.course.organization_name, logo_path: cert.course.logo_path },
       dependencies: deps.map((d) => ({
         name: d.dependency_name,
         abbreviation: d.abbreviation,

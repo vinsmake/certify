@@ -7,6 +7,8 @@
 //   institutional_logo_base64, dependency_logos_html, dependency_signatures_html,
 //   instructor_signature_html, dependency_names,
 //   primary_color, secondary_color, font_family, organization_name
+//
+// Todo el diseño (HTML, logo, colores, fuente, organizacion, colaboradoras) viene del curso.
 import path from 'node:path';
 import type { CourseType } from '@certify/shared';
 import { env } from '../config/env';
@@ -15,20 +17,22 @@ import { verificationUrl } from './qr';
 
 export type TemplateVariables = Record<string, string>;
 
+/** Colaboradora del curso con su logo, firma y firmante propios de ese curso. */
 export interface RenderDependency {
   name: string;
-  manager_name: string | null;
+  signer_name: string | null;
   logo_path: string | null;
   signature_path: string | null;
   display_order: number;
 }
 
-export interface RenderBranding {
+/** Diseño visual del curso. */
+export interface RenderDesign {
   logo_path: string | null;
+  organization_name: string | null;
   primary_color: string;
   secondary_color: string;
   font_family: string;
-  organization_name: string;
 }
 
 export interface CertificateRenderData {
@@ -40,7 +44,7 @@ export interface CertificateRenderData {
     instructor: string | null;
     signature_path: string | null;
   };
-  branding: RenderBranding | null;
+  design: RenderDesign;
   dependencies: RenderDependency[];
   issueDate: string;
   uuid: string;
@@ -94,22 +98,25 @@ const dependencyLogosHtml = (deps: ResolvedDependency[]) => {
   return `<div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:20px;">${items.join('')}</div>`;
 };
 
-export const brandingVariables = (branding: RenderBranding | null): TemplateVariables => ({
-  institutional_logo_base64: publicFileAsDataUrl(branding?.logo_path),
-  primary_color: branding?.primary_color || '#61859D',
-  secondary_color: branding?.secondary_color || '#EA8215',
-  font_family: branding?.font_family || 'Roboto',
-  organization_name: branding?.organization_name || '',
+/** GIF transparente de 1x1: evita el icono de imagen rota cuando el curso no tiene logo. */
+export const EMPTY_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+export const designVariables = (design: RenderDesign): TemplateVariables => ({
+  institutional_logo_base64: publicFileAsDataUrl(design.logo_path) || EMPTY_IMAGE,
+  primary_color: design.primary_color,
+  secondary_color: design.secondary_color,
+  font_family: design.font_family,
+  organization_name: design.organization_name ?? '',
 });
 
 export const buildCertificateVariables = (data: CertificateRenderData): TemplateVariables => {
-  const { participant, course, branding, issueDate, uuid, qrCodeBase64 } = data;
+  const { participant, course, design, issueDate, uuid, qrCodeBase64 } = data;
 
   const deps: ResolvedDependency[] = [...data.dependencies]
     .sort((a, b) => a.display_order - b.display_order)
     .map((d) => ({
       name: d.name,
-      signerName: d.manager_name || d.name,
+      signerName: d.signer_name || d.name,
       logo: publicFileAsDataUrl(d.logo_path),
       signature: publicFileAsDataUrl(d.signature_path),
     }));
@@ -135,7 +142,7 @@ export const buildCertificateVariables = (data: CertificateRenderData): Template
     dependency_names: deps.map((d) => d.signerName).join(', '),
     instructor_signature_html: instructorSignatureHtml(publicFileAsDataUrl(course.signature_path)),
 
-    ...brandingVariables(branding),
+    ...designVariables(design),
   };
 };
 

@@ -14,7 +14,7 @@ export const get = findOrFail;
 
 export const create = (input: CreateDependencyInput) =>
   prisma.dependency.create({
-    data: { name: input.name, abbreviation: input.abbreviation || null, manager_name: input.manager_name || null },
+    data: { name: input.name, abbreviation: input.abbreviation || null },
   });
 
 export const update = async (id: number, input: UpdateDependencyInput) => {
@@ -24,7 +24,6 @@ export const update = async (id: number, input: UpdateDependencyInput) => {
     data: {
       name: input.name,
       abbreviation: input.abbreviation,
-      manager_name: input.manager_name,
       is_active: input.is_active,
     },
   });
@@ -34,18 +33,4 @@ export const deactivate = async (id: number) => {
   await findOrFail(id);
   await prisma.dependency.update({ where: { id }, data: { is_active: false } });
   return { message: 'Dependencia desactivada', id };
-};
-
-export const setLogo = async (id: number, logoPath: string) => {
-  await findOrFail(id);
-  await prisma.dependency.update({ where: { id }, data: { logo_path: logoPath } });
-  return { message: 'Logo actualizado', logo_path: logoPath };
-};
-
-export const setSignature = async (id: number, signaturePath: string | null) => {
-  await findOrFail(id);
-  await prisma.dependency.update({ where: { id }, data: { signature_path: signaturePath } });
-  return signaturePath
-    ? { message: 'Firma actualizada', signature_path: signaturePath }
-    : { message: 'Firma eliminada' };
 };

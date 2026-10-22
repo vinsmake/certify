@@ -58,9 +58,6 @@ export interface Dependency {
   id: number;
   name: string;
   abbreviation: string | null;
-  logo_path: string | null;
-  manager_name: string | null;
-  signature_path: string | null;
   is_active: boolean;
   created_at: IsoDate;
   updated_at: IsoDate;
@@ -79,7 +76,7 @@ export interface Tag {
 
 export type TagSummary = Pick<Tag, 'id' | 'name' | 'slug' | 'logo_path'>;
 
-// ---------- Plantillas y branding ----------
+// ---------- Plantillas base ----------
 
 export interface TemplateSummary {
   id: number;
@@ -97,19 +94,6 @@ export interface TemplateSummary {
 
 export interface Template extends TemplateSummary {
   html_content: string;
-}
-
-export interface BrandingVersion {
-  id: number;
-  version_label: string;
-  logo_path: string;
-  primary_color: string;
-  secondary_color: string;
-  font_family: string;
-  organization_name: string;
-  is_active: boolean;
-  created_at: IsoDate;
-  created_by: number | null;
 }
 
 // ---------- Participantes ----------
@@ -136,7 +120,6 @@ export interface ParticipantCertificate {
   course_name: string;
   course_type: CourseType;
   duration_hours: number | null;
-  template_name: string | null;
 }
 
 export interface ParticipantCertificatesResponse {
@@ -154,17 +137,23 @@ export interface Course {
   duration_hours: number | null;
   instructor: string | null;
   signature_path: string | null;
-  template_id: number | null;
   start_date: IsoDate | null;
   end_date: IsoDate | null;
   dependency_id: number | null;
   created_by: number | null;
   created_at: IsoDate;
   updated_at: IsoDate;
+  // Diseño del certificado (el HTML solo viene en el detalle)
+  orientation: Orientation;
+  page_size: PageSize;
+  logo_path: string | null;
+  organization_name: string | null;
+  primary_color: string;
+  secondary_color: string;
+  font_family: string;
 }
 
 export interface CourseListItem extends Course {
-  template_name: string | null;
   created_by_name: string | null;
   dependencies: { id: number; name: string }[];
 }
@@ -176,13 +165,21 @@ export interface CourseDependency {
   display_order: number;
   dependency_name: string;
   abbreviation: string | null;
+  /** Logo, firma y firmante de la colaboradora en ESTE curso */
   logo_path: string | null;
-  manager_name: string | null;
   signature_path: string | null;
+  signer_name: string | null;
 }
 
 export interface CourseDetail extends Omit<CourseListItem, 'dependencies'> {
+  certificate_html: string;
   dependencies: CourseDependency[];
+}
+
+export interface CoursePreview {
+  html: string;
+  orientation: Orientation;
+  page_size: PageSize;
 }
 
 export interface EnrollmentCertificate {
@@ -237,9 +234,6 @@ export interface CertificateListItem {
   course_type: CourseType;
   dependency_id: number | null;
   dependency_name: string | null;
-  template_id: number | null;
-  template_name: string | null;
-  branding_label: string | null;
   issued_by_name: string | null;
 }
 
@@ -250,8 +244,6 @@ export interface CertificateDetail {
   course_id: number;
   issued_by: number | null;
   issue_date: IsoDate;
-  branding_version_id: number | null;
-  template_id: number | null;
   pdf_path: string | null;
   status: CertificateStatus;
   revocation_reason: string | null;
@@ -270,15 +262,6 @@ export interface CertificateDetail {
   end_date: IsoDate | null;
   dependency_id: number | null;
   dependency_name: string | null;
-  template_name: string | null;
-  orientation: Orientation | null;
-  page_size: PageSize | null;
-  branding_label: string | null;
-  primary_color: string | null;
-  secondary_color: string | null;
-  font_family: string | null;
-  organization_name: string | null;
-  branding_logo_path: string | null;
   issued_by_name: string | null;
 }
 
@@ -311,14 +294,8 @@ export interface VerificationResponse {
       start_date: IsoDate | null;
       end_date: IsoDate | null;
     };
-    branding: {
-      version_label: string | null;
-      logo_path: string | null;
-      organization_name: string | null;
-      primary_color: string | null;
-      secondary_color: string | null;
-      font_family: string | null;
-    };
+    /** Organizacion emisora segun el diseño del curso */
+    organization: { name: string | null; logo_path: string | null };
     dependencies: { name: string; abbreviation: string | null; logo_path: string | null; display_order: number }[];
   };
 }
@@ -386,16 +363,10 @@ export interface AdminCertificate {
   course_name: string | null;
   course_type: CourseType | null;
   dependency_name: string | null;
-  template_name: string | null;
   issued_by_name: string | null;
 }
 
-export type ActivityType =
-  | 'certificate_emission'
-  | 'certificate_reprint'
-  | 'revocation'
-  | 'course_creation'
-  | 'branding_change';
+export type ActivityType = 'certificate_emission' | 'certificate_reprint' | 'revocation' | 'course_creation';
 
 export interface ActivityItem {
   type: ActivityType;

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import type { CoursePreviewInput, EmitCertificatesInput, ListCertificatesQuery } from '@certify/shared';
 import type { AuthUser } from '../../lib/auth';
-import { badRequest, conflict, forbidden, notFound, orNotFound } from '../../lib/http-error';
+import { conflict, forbidden, notFound, orNotFound } from '../../lib/http-error';
 import { logger } from '../../lib/logger';
 import { prisma, type Prisma } from '../../lib/prisma';
 import { toAbsolutePath } from '../../lib/storage';
@@ -11,7 +11,6 @@ import { renderPdf, savePdf } from '../../rendering/pdf';
 import { generateQr } from '../../rendering/qr';
 import { canAccessCourse, coursesVisibleTo, getAccessibleCourse } from '../courses/course-access';
 import { courseDependencies } from '../courses/courses.service';
-import { findDefault as findDefaultTemplate } from '../templates/templates.service';
 
 const NOT_FOUND = 'Certificado no encontrado';
 
@@ -20,8 +19,6 @@ const NOT_FOUND = 'Certificado no encontrado';
 const listInclude = {
   participant: { select: { full_name: true } },
   course: { select: { name: true, type: true, dependency_id: true, dependency: { select: { name: true } } } },
-  template: { select: { name: true } },
-  branding_version: { select: { version_label: true } },
   issuer: { select: { full_name: true } },
 } satisfies Prisma.CertificateInclude;
 
@@ -43,9 +40,6 @@ const toListItem = (c: Prisma.CertificateGetPayload<{ include: typeof listInclud
   course_type: c.course.type,
   dependency_id: c.course.dependency_id,
   dependency_name: c.course.dependency?.name ?? null,
-  template_id: c.template_id,
-  template_name: c.template?.name ?? null,
-  branding_label: c.branding_version?.version_label ?? null,
   issued_by_name: c.issuer?.full_name ?? null,
 });
 
@@ -72,16 +66,14 @@ export const list = async (query: ListCertificatesQuery, dependencyId: number | 
 const detailInclude = {
   participant: { select: { full_name: true, email: true } },
   course: { include: { dependency: { select: { name: true } } } },
-  template: { select: { name: true, orientation: true, page_size: true } },
-  branding_version: true,
   issuer: { select: { full_name: true } },
 } satisfies Prisma.CertificateInclude;
 
 export type CertificateDetail = Prisma.CertificateGetPayload<{ include: typeof detailInclude }>;
 
-/** Forma plana heredada del detalle (certificado + participante + curso + plantilla + branding). */
+/** Forma plana del detalle (certificado + participante + curso). */
 export const toDetail = (c: CertificateDetail) => {
-  const { participant, course, template, branding_version: bv, issuer, ...cert } = c;
+  const { participant, course, issuer, ...cert } = c;
   return {
     ...cert,
     participant_name: participant.full_name,
@@ -94,15 +86,6 @@ export const toDetail = (c: CertificateDetail) => {
     end_date: course.end_date,
     dependency_id: course.dependency_id,
     dependency_name: course.dependency?.name ?? null,
-    template_name: template?.name ?? null,
-    orientation: template?.orientation ?? null,
-    page_size: template?.page_size ?? null,
-    branding_label: bv?.version_label ?? null,
-    primary_color: bv?.primary_color ?? null,
-    secondary_color: bv?.secondary_color ?? null,
-    font_family: bv?.font_family ?? null,
-    organization_name: bv?.organization_name ?? null,
-    branding_logo_path: bv?.logo_path ?? null,
     issued_by_name: issuer?.full_name ?? null,
   };
 };
@@ -119,42 +102,23 @@ const getAccessible = async (id: number, user: AuthUser, action: string) => {
 export const get = async (id: number, user: AuthUser) => toDetail(await getAccessible(id, user, 'ver'));
 
 // ---------- Generacion del PDF ----------
-
-/** Plantilla a usar: la indicada, la del curso o la default. */
-const resolveTemplate = async (...candidates: (number | null | undefined)[]) => {
-  for (const id of candidates) {
-    if (!id) continue;
-    const template = await prisma.certificateTemplate.findUnique({ where: { id } });
-    if (template?.is_active) return template;
-  }
-  const fallback = await findDefaultTemplate();
-  if (!fallback) throw badRequest('No hay plantillas de certificado activas');
-  return fallback;
-};
+// Todo el diseño sale del curso: HTML, formato, logo, colores, fuente y colaboradoras (decision #11).
 
 /** Fecha de hoy como DATE (medianoche UTC). */
 const today = () => new Date(new Date().toISOString().slice(0, 10));
 
 type Course = NonNullable<Awaited<ReturnType<typeof prisma.course.findUnique>>>;
-type Template = Awaited<ReturnType<typeof resolveTemplate>>;
-type Branding = NonNullable<Awaited<ReturnType<typeof prisma.brandingVersion.findUnique>>>;
 
-const renderCertificateHtml = async (args: {
-  uuid: string;
-  participantName: string;
-  course: Course;
-  template: Template;
-  branding: Branding | null;
-  issueDate: Date;
-}) => {
-  const deps = await courseDependencies(args.course.id);
+const renderCertificateHtml = async (args: { uuid: string; participantName: string; course: Course; issueDate: Date }) => {
+  const { course } = args;
+  const deps = await courseDependencies(course.id);
   const variables = buildCertificateVariables({
     participant: { full_name: args.participantName },
-    course: args.course,
-    branding: args.branding,
+    course,
+    design: course,
     dependencies: deps.map((d) => ({
       name: d.dependency_name,
-      manager_name: d.manager_name,
+      signer_name: d.signer_name,
       logo_path: d.logo_path,
       signature_path: d.signature_path,
       display_order: d.display_order,
@@ -163,27 +127,27 @@ const renderCertificateHtml = async (args: {
     uuid: args.uuid,
     qrCodeBase64: await generateQr(args.uuid),
   });
-  return renderTemplate(args.template.html_content, variables);
+  return renderTemplate(course.certificate_html, variables);
 };
 
 const renderCertificatePdf = async (args: Parameters<typeof renderCertificateHtml>[0]) =>
-  renderPdf(await renderCertificateHtml(args), args.template);
+  renderPdf(await renderCertificateHtml(args), args.course);
 
 // ---------- Vista previa del curso ----------
 
 const PREVIEW_UUID = '00000000-0000-4000-8000-000000000000';
 
 /**
- * Certificado del curso con sus datos reales (dependencias, firmas, branding activo) y un participante
- * de ejemplo. Sirve para revisar el diseno antes de emitir. No guarda nada.
+ * Certificado del curso con sus datos reales y un participante de ejemplo. Los campos de diseño que
+ * lleguen (borrador del editor) reemplazan a los guardados. No guarda nada.
  */
 export const coursePreview = async (courseId: number, input: CoursePreviewInput, user: AuthUser) => {
-  const course = await getAccessibleCourse(courseId, user, 'ver');
-  const template = await resolveTemplate(input.template_id, course.template_id);
-  const branding = await prisma.brandingVersion.findFirst({ where: { is_active: true } });
-  const args = { uuid: PREVIEW_UUID, participantName: 'Nombre del Participante', course, template, branding, issueDate: today() };
-  const meta = { template_id: template.id, template_name: template.name, orientation: template.orientation, page_size: template.page_size };
-  if (input.format === 'pdf') return { ...meta, format: 'pdf' as const, pdf: await renderCertificatePdf(args) };
+  const saved = await getAccessibleCourse(courseId, user, 'ver');
+  const { format, ...draft } = input;
+  const course = { ...saved, ...draft };
+  const args = { uuid: PREVIEW_UUID, participantName: 'Nombre del Participante', course, issueDate: today() };
+  const meta = { orientation: course.orientation, page_size: course.page_size };
+  if (format === 'pdf') return { ...meta, format: 'pdf' as const, pdf: await renderCertificatePdf(args) };
   return { ...meta, format: 'html' as const, html: await renderCertificateHtml(args) };
 };
 
@@ -191,9 +155,6 @@ export const coursePreview = async (courseId: number, input: CoursePreviewInput,
 
 export const emit = async (input: EmitCertificatesInput, user: AuthUser) => {
   const course = await getAccessibleCourse(input.course_id, user, 'emitir certificados de');
-  const template = await resolveTemplate(input.template_id, course.template_id);
-  const branding = await prisma.brandingVersion.findFirst({ where: { is_active: true } });
-  if (!branding) throw badRequest('No hay version de branding activa');
 
   const results = {
     emitted: [] as { participant_id: number; certificate_id: number; uuid: string }[],
@@ -230,8 +191,6 @@ export const emit = async (input: EmitCertificatesInput, user: AuthUser) => {
         uuid,
         participantName: enrollment.participant.full_name,
         course,
-        template,
-        branding,
         issueDate,
       });
       const certificate = await prisma.certificate.create({
@@ -241,8 +200,6 @@ export const emit = async (input: EmitCertificatesInput, user: AuthUser) => {
           course_id: course.id,
           issued_by: user.userId,
           issue_date: issueDate,
-          branding_version_id: branding.id,
-          template_id: template.id,
           pdf_path: savePdf(pdf, `certificate_${uuid}.pdf`),
         },
       });
@@ -259,22 +216,18 @@ export const emit = async (input: EmitCertificatesInput, user: AuthUser) => {
 // ---------- Reimpresion ----------
 
 /**
- * Regenera el PDF conservando uuid (mismo QR), fecha de emision y version de branding original.
- * Usa los datos actuales del participante y del curso, y la plantilla actual del curso.
+ * Regenera el PDF conservando uuid (mismo QR) y fecha de emision.
+ * Usa los datos y el diseño actuales del participante y del curso (decision #11).
  * El PDF anterior se conserva en disco.
  */
 export const reprint = async (id: number, user: AuthUser) => {
   const cert = await getAccessible(id, user, 'reimprimir');
   if (cert.status !== 'valid') throw conflict('Solo se pueden reimprimir certificados validos');
 
-  const template = await resolveTemplate(cert.course.template_id, cert.template_id);
-  const branding = cert.branding_version ?? (await prisma.brandingVersion.findFirst({ where: { is_active: true } }));
   const pdf = await renderCertificatePdf({
     uuid: cert.uuid,
     participantName: cert.participant.full_name,
     course: cert.course,
-    template,
-    branding,
     issueDate: cert.issue_date,
   });
 
@@ -283,7 +236,6 @@ export const reprint = async (id: number, user: AuthUser) => {
     where: { id },
     data: {
       pdf_path: savePdf(pdf, `certificate_${cert.uuid}_r${reprintNumber}.pdf`),
-      template_id: template.id,
       reprint_count: reprintNumber,
       last_reprinted_at: new Date(),
     },

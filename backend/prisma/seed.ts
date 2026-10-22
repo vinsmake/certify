@@ -43,23 +43,6 @@ const seedDependency = async () => {
   console.log('[seed] dependencia por defecto creada');
 };
 
-const seedBranding = async (createdBy: number | undefined) => {
-  if (await prisma.brandingVersion.count()) return;
-  await prisma.brandingVersion.create({
-    data: {
-      version_label: 'v1',
-      logo_path: '/storage/logos/branding/default_logo.png',
-      primary_color: '#61859D',
-      secondary_color: '#EA8215',
-      font_family: 'Roboto',
-      organization_name: 'Organizacion',
-      is_active: true,
-      created_by: createdBy,
-    },
-  });
-  console.log('[seed] branding v1 creado');
-};
-
 const seedTemplates = async (createdBy: number | undefined) => {
   const seeds: TemplateSeed[] = JSON.parse(fs.readFileSync(path.join(TEMPLATES_DIR, 'templates.json'), 'utf8'));
   const hasDefault = (await prisma.certificateTemplate.count({ where: { is_default: true } })) > 0;
@@ -80,7 +63,6 @@ const seedTemplates = async (createdBy: number | undefined) => {
 const main = async () => {
   const admin = (await seedAdmin()) ?? (await prisma.user.findFirst({ where: { role: 'admin' }, orderBy: { id: 'asc' } }));
   await seedDependency();
-  await seedBranding(admin?.id);
   await seedTemplates(admin?.id);
 };
 

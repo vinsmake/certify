@@ -102,7 +102,6 @@ export const certificates = async (id: number, user: AuthUser) => {
     where: { participant_id: id },
     include: {
       course: { select: { name: true, type: true, duration_hours: true } },
-      template: { select: { name: true } },
     },
     orderBy: { issue_date: 'desc' },
   });
@@ -119,7 +118,6 @@ export const certificates = async (id: number, user: AuthUser) => {
       course_name: c.course.name,
       course_type: c.course.type,
       duration_hours: c.course.duration_hours,
-      template_name: c.template?.name ?? null,
     })),
   };
 };

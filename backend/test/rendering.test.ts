@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildCertificateVariables,
+  EMPTY_IMAGE,
   formatIssueDate,
   renderTemplate,
 } from '../src/rendering/certificate-html';
@@ -19,10 +20,10 @@ describe('buildCertificateVariables', () => {
   const base = {
     participant: { full_name: 'Ana Torres' },
     course: { name: 'React', type: 'diploma' as const, duration_hours: 40, instructor: 'Dr. X', signature_path: null },
-    branding: null,
+    design: { logo_path: null, organization_name: 'Org', primary_color: '#61859D', secondary_color: '#EA8215', font_family: 'Roboto' },
     dependencies: [
-      { name: 'DTI', manager_name: 'Lic. B', logo_path: null, signature_path: null, display_order: 2 },
-      { name: 'RRHH', manager_name: null, logo_path: null, signature_path: null, display_order: 1 },
+      { name: 'DTI', signer_name: 'Lic. B', logo_path: null, signature_path: null, display_order: 2 },
+      { name: 'RRHH', signer_name: null, logo_path: null, signature_path: null, display_order: 1 },
     ],
     issueDate: '1 de enero de 2026',
     uuid: '11111111-1111-1111-1111-111111111111',
@@ -38,12 +39,15 @@ describe('buildCertificateVariables', () => {
     expect(v.verification_url).toMatch(/\/11111111-1111-1111-1111-111111111111$/);
   });
 
-  it('ordena dependencias por display_order y usa el encargado como firmante', () => {
+  it('ordena dependencias por display_order y usa el firmante del curso (o el nombre)', () => {
     expect(buildCertificateVariables(base).dependency_names).toBe('RRHH, Lic. B');
   });
 
-  it('usa colores por defecto si no hay branding', () => {
-    expect(buildCertificateVariables(base).primary_color).toBe('#61859D');
+  it('usa el diseño del curso y una imagen vacia si no hay logo', () => {
+    const v = buildCertificateVariables(base);
+    expect(v.primary_color).toBe('#61859D');
+    expect(v.organization_name).toBe('Org');
+    expect(v.institutional_logo_base64).toBe(EMPTY_IMAGE);
   });
 });
 

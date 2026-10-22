@@ -161,7 +161,7 @@ describe('vistas previas', () => {
     const html = await api().post(`/api/courses/${course.body.id}/certificate-preview`).set(auth()).send({}).expect(200);
     expect(html.body.html).toContain('Curso para preview');
     expect(html.body.html).toContain('Nombre del Participante');
-    expect(html.body).toMatchObject({ template_name: 'Prueba', orientation: 'landscape', page_size: 'letter' });
+    expect(html.body).toMatchObject({ orientation: 'landscape', page_size: 'letter' });
 
     const pdf = await api()
       .post(`/api/courses/${course.body.id}/certificate-preview`)
@@ -169,5 +169,63 @@ describe('vistas previas', () => {
       .send({ format: 'pdf' })
       .expect(200);
     expect(pdf.headers['content-type']).toBe('application/pdf');
+  });
+
+  it('usa el borrador del editor en lugar del diseño guardado', async () => {
+    const course = await api().post('/api/courses').set(auth()).send({ name: 'Borrador', type: 'curso' }).expect(201);
+    const res = await api()
+      .post(`/api/courses/${course.body.id}/certificate-preview`)
+      .set(auth())
+      .send({ certificate_html: '<p>{{organization_name}}|{{course_name}}</p>', organization_name: 'Org Borrador' })
+      .expect(200);
+    expect(res.body.html).toBe('<p>Org Borrador|Borrador</p>');
+  });
+});
+
+describe('diseño por curso', () => {
+  let courseId: number;
+
+  it('el curso nace con una copia de la plantilla base por defecto', async () => {
+    const course = await api().post('/api/courses').set(auth()).send({ name: 'Diseño propio', type: 'curso' }).expect(201);
+    courseId = course.body.id;
+    const detail = await api().get(`/api/courses/${courseId}`).set(auth()).expect(200);
+    expect(detail.body.certificate_html).toContain('{{participant_name}}');
+    // El listado no trae el HTML
+    const list = await api().get('/api/courses').set(auth()).expect(200);
+    expect(list.body.data[0]).not.toHaveProperty('certificate_html');
+  });
+
+  it('guarda el diseño del curso y lo usa en la vista previa', async () => {
+    await api()
+      .put(`/api/courses/${courseId}/design`)
+      .set(auth())
+      .send({ certificate_html: '<h1>{{organization_name}}</h1>', organization_name: 'Mi Org', primary_color: '#112233' })
+      .expect(200);
+    const preview = await api().post(`/api/courses/${courseId}/certificate-preview`).set(auth()).send({}).expect(200);
+    expect(preview.body.html).toBe('<h1>Mi Org</h1>');
+
+    await api().put(`/api/courses/${courseId}/design`).set(auth()).send({ primary_color: 'rojo' }).expect(400);
+  });
+
+  it('carga una plantilla base reemplazando la copia del curso', async () => {
+    const [template] = (await api().get('/api/templates').set(auth()).expect(200)).body;
+    const res = await api()
+      .post(`/api/courses/${courseId}/design/apply-template`)
+      .set(auth())
+      .send({ template_id: template.id })
+      .expect(200);
+    expect(res.body.certificate_html).toContain('{{participant_name}}');
+  });
+
+  it('configura el firmante de una colaboradora solo para este curso', async () => {
+    const dep = await api().post('/api/dependencies').set(auth()).send({ name: 'Colaboradora' }).expect(201);
+    await api().post(`/api/courses/${courseId}/dependencies`).set(auth()).send({ dependency_id: dep.body.id }).expect(201);
+    await api()
+      .put(`/api/courses/${courseId}/dependencies/${dep.body.id}`)
+      .set(auth())
+      .send({ signer_name: 'Lic. Firmante' })
+      .expect(200);
+    const detail = await api().get(`/api/courses/${courseId}`).set(auth()).expect(200);
+    expect(detail.body.dependencies[0]).toMatchObject({ dependency_name: 'Colaboradora', signer_name: 'Lic. Firmante' });
   });
 });
